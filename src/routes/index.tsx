@@ -16,7 +16,7 @@ const routeList: RouteObject[] = [
   {
     path: 'admin/',
     element: (
-      <WrapperRouteComponent>
+      <WrapperRouteComponent auth={true}>
         <Layout />
       </WrapperRouteComponent>
     ),

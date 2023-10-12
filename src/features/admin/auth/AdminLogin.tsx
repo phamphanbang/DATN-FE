@@ -24,7 +24,7 @@ const initialLoginParams: LoginParams = {
 const AdminLogin = () => {
   const redirectURL = getItem(LocalStorageKeys.prevURL)
     ? getItem(LocalStorageKeys.prevURL)
-    : '/';
+    : '/admin/users';
 
   useEffect(() => {
     const accessToken = getItem(LocalStorageKeys.accessToken);

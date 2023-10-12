@@ -1,7 +1,6 @@
 import {
   HStack,
   Heading,
-  // Image,
   VStack,
   Text,
   Menu,
@@ -10,31 +9,17 @@ import {
   MenuList,
   Icon,
   IconButton,
-  // Link,
-  // Accordion,
-  // AccordionButton,
-  // AccordionIcon,
-  // AccordionItem,
-  // AccordionPanel,
-  // Box,
-  // useColorModeValue,
 } from '@chakra-ui/react';
 import { NavLink } from 'common/components/SideBar/NavLink';
 import {
   TbAppsFilled,
-  // TbArticleFilledFilled,
-  // TbLayoutBoard,
-  // TbBrandMastercard,
-  // TbSpeakerphone,
-  // TbUserCog,
-  // TbHomeEdit,
 } from 'react-icons/tb';
 import { BiLogOutCircle } from 'react-icons/bi';
 import { VscKebabVertical } from 'react-icons/vsc';
-// import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router-dom';
-// import Logo from 'assets/images/ncc_logo.svg';
 import { useSetAppConfig } from 'stores/appConfig';
+import { removeItem } from 'utils';
+import { LocalStorageKeys } from 'common/enums';
 
 export const SideBarContent = () => {
   const NavList = [
@@ -66,7 +51,7 @@ export const SideBarContent = () => {
 
   const onNavigate = (to: string, logout?: boolean) => () => {
     if (logout) {
-      // removeItem(LocalStorageKeys.accessToken);
+      removeItem(LocalStorageKeys.accessToken);
     }
     navigate(to);
   };
@@ -136,7 +121,7 @@ export const SideBarContent = () => {
               display="flex"
               gap="12px"
               bg="dark"
-              onClick={onNavigate('/login', true)}
+              onClick={onNavigate('/admin/login', true)}
               _hover={{
                 backgroundColor: "gray.800"
               }}

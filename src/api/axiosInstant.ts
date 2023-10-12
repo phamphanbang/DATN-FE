@@ -43,7 +43,7 @@ axios.interceptors.response.use(
     if (isAxiosError(error)) {
       const { data } = (error.response as AxiosResponse) ?? {};
       const { message } = error;
-      const errorMessage = data?.error?.message || message;
+      const errorMessage = data?.message || message;
       toast({
         title: errorMessage,
         status: 'error',

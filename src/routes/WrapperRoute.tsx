@@ -1,14 +1,14 @@
 import { RouteProps } from 'react-router';
-// import PrivateRoute from 'routes/privateRoute';
+import PrivateRoute from 'routes/privateRoute';
 
 export type WrapperRouteProps = RouteProps & {
   auth?: boolean;
 };
 
-const WrapperRoute = ({ children }: WrapperRouteProps) => {
-  // if (auth) {
-  //   return <PrivateRoute>{children}</PrivateRoute>;
-  // }
+const WrapperRoute = ({ auth, children }: WrapperRouteProps) => {
+  if (auth) {
+    return <PrivateRoute>{children}</PrivateRoute>;
+  }
   return <>{children}</>;
 };
 
