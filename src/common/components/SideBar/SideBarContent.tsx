@@ -43,39 +43,22 @@ export const SideBarContent = () => {
       text: 'User',
       icon: TbAppsFilled,
     },
+    {
+      to: '/templates',
+      text: 'Templates',
+      icon: TbAppsFilled,
+    },
+    {
+      to: '/exams',
+      text: 'Exams',
+      icon: TbAppsFilled,
+    },
+    {
+      to: '/blogs',
+      text: 'Blogs',
+      icon: TbAppsFilled,
+    },
   ];
-
-  // const AdminNavList = [
-  //   {
-  //     to: '/administration',
-  //     text: 'Administration',
-  //     icon: TbUserCog,
-  //     subMenu: [
-  //       {
-  //         to: '/administration/user-management',
-  //         text: 'User management',
-  //         icon: TbBrandMastercard,
-  //       },
-  //       // {
-  //       //   to: '/settings',
-  //       //   text: 'Settings',
-  //       //   icon: TbSettingsBolt,
-  //       // },
-  //     ],
-  //   },
-  //   {
-  //     to: '/report',
-  //     text: 'Report',
-  //     icon: TbSpeakerphone,
-  //     subMenu: [
-  //       {
-  //         to: '/report-wfh',
-  //         text: 'Report WFH',
-  //         icon: TbHomeEdit,
-  //       },
-  //     ],
-  //   },
-  // ];
 
   // const user = useRecoilValue(userState);
   const navigate = useNavigate();
