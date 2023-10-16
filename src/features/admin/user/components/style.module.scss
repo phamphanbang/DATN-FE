@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  flex-direction: column;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 15px;
+
+  .spinner {
+      min-width: 24px;
+      margin-right: 5px;
+  }
+}
+
+.containerSpinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  min-width: 30vw;
+  min-height: 50vh;
+}

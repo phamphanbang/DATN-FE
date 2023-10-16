@@ -7,6 +7,8 @@ import AdminLogin from '../features/admin/auth/AdminLogin';
 import Users from '../features/admin/user';
 import WrapperRouteComponent from 'routes/WrapperRoute';
 import Layout from 'common/components/Layout';
+import { Suspense } from 'react';
+import AdminNotFound from 'common/components/AdminNotFound';
 
 const routeList: RouteObject[] = [
   {
@@ -32,7 +34,17 @@ const routeList: RouteObject[] = [
             <Users />
           </WrapperRouteComponent>
         ),
-      }
+      },
+      {
+        path: '*',
+        element: (
+          <Suspense>
+            <WrapperRouteComponent>
+              <AdminNotFound />
+            </WrapperRouteComponent>
+          </Suspense>
+        ),
+      },
 
     ]
   }

@@ -24,23 +24,28 @@ import { LocalStorageKeys } from 'common/enums';
 export const SideBarContent = () => {
   const NavList = [
     {
-      to: '/users',
+      to: '/admin/users',
       text: 'User',
       icon: TbAppsFilled,
     },
     {
-      to: '/templates',
+      to: '/admin/templates',
       text: 'Templates',
       icon: TbAppsFilled,
     },
     {
-      to: '/exams',
+      to: '/admin/exams',
       text: 'Exams',
       icon: TbAppsFilled,
     },
     {
-      to: '/blogs',
+      to: '/admin/blogs',
       text: 'Blogs',
+      icon: TbAppsFilled,
+    },
+    {
+      to: '/admin/scores',
+      text: 'Scores',
       icon: TbAppsFilled,
     },
   ];

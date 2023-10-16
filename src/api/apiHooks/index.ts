@@ -54,6 +54,25 @@ export const useDelete = (url: string) => {
   return useMutation(mutate);
 };
 
+export const useGetList = <T, D = object>(
+  key: QueryKey,
+  url: string,
+  params?: D,
+  options?: {
+    enabled: boolean;
+  },
+  config?: AxiosRequestConfig
+) => {
+  const axios = useAxios();
+
+  const getData = async () => {
+    const data: T = await axios.get(`${url}`, { params, ...config });
+    return data;
+  };
+
+  return useQuery(key, getData, options);
+};
+
 
 
 

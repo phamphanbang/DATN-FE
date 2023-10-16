@@ -7,7 +7,7 @@ import {
   Grid,
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import { useForm} from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { PasswordField } from 'common/components/PasswordField';
 import { TextField } from 'common/components/TextField';
 import LoginBackground from 'assets/images/Admin_login_background.jfif';
@@ -36,17 +36,17 @@ const AdminLogin = () => {
 
   const { mutateAsync: loginMutate, isLoading: isLoginLoading } = useLogin();
 
-  const { 
+  const {
     handleSubmit,
     register,
-    formState: {errors},
-  } = useForm<LoginParams>({defaultValues: initialLoginParams})
+    formState: { errors },
+  } = useForm<LoginParams>({ defaultValues: initialLoginParams })
 
   const onLogin = async ({
     email,
     password
   }: LoginParams) => {
-    const {token} = await loginMutate({
+    const { token } = await loginMutate({
       email: email.trim(),
       password: password.trim(),
     });
@@ -87,7 +87,7 @@ const AdminLogin = () => {
             Sign In
           </Heading>
           <form style={{ width: '100%' }}
-          onSubmit={handleSubmit(onLogin)}
+            onSubmit={handleSubmit(onLogin)}
           >
             <VStack spacing="14px">
               <TextField
@@ -95,10 +95,10 @@ const AdminLogin = () => {
                 placeholder="Email address"
                 color="white"
                 fontSize="sm"
-              error={errors.email?.message}
-              {...register('email', {
-                required: 'The Email address field is required!',
-              })}
+                error={errors.email?.message}
+                {...register('email', {
+                  required: 'The Email address field is required!',
+                })}
               />
               <PasswordField
                 h="50px"

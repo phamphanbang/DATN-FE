@@ -1,5 +1,6 @@
 // import { useRequestTemplates } from 'api/apiHooks/requestHooks';
 import Page from 'common/components/Page';
+import { MyUserTable } from './components/MyUserTable';
 // import { RequestTemplateTable } from './components/RequestTemplateTable';
 
 const Users = () => {
@@ -13,7 +14,7 @@ const Users = () => {
         </Page.HeaderLeft>
       </Page.Header>
       <Page.Body>
-        
+        <MyUserTable />
       </Page.Body>
     </Page>
   );
