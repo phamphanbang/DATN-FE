@@ -11,9 +11,14 @@ import { LocalStorageKeys } from "common/enums";
 
 const { VITE_API_BASE_URL } = import.meta.env;
 
+// interface ValidationError {
+//   type: string;
+//   message: string;
+// }
+
 const axios = Axios.create({
   baseURL: VITE_API_BASE_URL,
-  withCredentials:true,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   }
@@ -21,9 +26,9 @@ const axios = Axios.create({
 
 axios.interceptors.request.use((config) => {
   const accessToken: string | null = getItem(LocalStorageKeys.accessToken);
-  if(accessToken != null) {
+  if (accessToken != null) {
     const accessHeader = `Bearer ${accessToken}`;
-    if(config.headers != null) {
+    if (config.headers != null) {
       config.headers.Authorization = accessHeader;
     }
   }
@@ -43,7 +48,15 @@ axios.interceptors.response.use(
     if (isAxiosError(error)) {
       const { data } = (error.response as AxiosResponse) ?? {};
       const { message } = error;
-      const errorMessage = data?.message || message;
+      const errorMessage = message;
+      // if (Array.isArray(data)) {
+      //   errorMessage = data[0]?.message || message;
+      // } else {
+      //   console.log(A)
+      //   errorMessage = data?.message || message;
+      // }
+      console.log(Array.isArray(data));
+      
       toast({
         title: errorMessage,
         status: 'error',

@@ -30,5 +30,7 @@ export interface UserFilterParams {
 }
 
 export interface ICreateNewUserRequest {
-  input: object
+  // input: object
+  name: string;
+  role: string;
 }

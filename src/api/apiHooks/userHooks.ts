@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { UserFilterParams, LoginParams, LoginResult, UserRequestResult, User, ICreateNewUserRequest } from 'models/user';
+import { UserFilterParams, LoginParams, LoginResult, UserRequestResult, User } from 'models/user';
 import { useCreate, useGetList } from "api/apiHooks";
 import { QueryKeys } from 'common/constants';
+import { FormParams } from 'models/appConfig';
 
 export const useLogin = () => {
   return useCreate<LoginParams, LoginResult>('/admin/auth/login');
@@ -23,7 +24,7 @@ export const useGetUserDetail = (id: string) => {
 };
 
 export const useCreateNewUser = () => {
-  return useCreate<ICreateNewUserRequest, any>(
+  return useCreate<FormParams, any>(
     `/admin/users`
   )
 }

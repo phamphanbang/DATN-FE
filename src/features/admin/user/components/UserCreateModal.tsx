@@ -14,7 +14,7 @@ import {
   FormLabel,
   VStack
 } from '@chakra-ui/react';
-import { TextField } from "common/components/TextField";
+// import { TextField } from "common/components/TextField";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
@@ -22,9 +22,12 @@ import { ErrorDisplay } from 'common/components/ErrorDisplay';
 import { SearchableSelectField } from "common/components/SearchableSelectField";
 import { userRole } from "common/constants";
 import { useCreateNewUser } from 'api/apiHooks/userHooks';
-import { ICreateNewUserRequest } from 'models/user';
+// import { ICreateNewUserRequest } from 'models/user';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'common/components/StandaloneToast';
+import { ValidationError, ValidationErrorMessage } from 'models/appConfig';
+import { AxiosError } from 'axios';
+import { TextFieldInput } from 'common/components/Form/TextFieldInput';
 
 interface ICreateModalProps {
   isOpen: boolean;
@@ -41,13 +44,16 @@ const UserCreateForm = ({
   onClose
 }: ICreateModalProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [validationError, setValidationError] = useState<ValidationErrorMessage[]>([]);
   const [formParams, setFormParams] = useState<FormParams>({
     role: "user",
-    name: ""
+    name: "",
+    email: "",
+    password: ""
   });
   const { mutateAsync: createMutate } = useCreateNewUser();
   const queryClient = useQueryClient();
-  
+
   const {
     register,
     handleSubmit,
@@ -62,16 +68,23 @@ const UserCreateForm = ({
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    updatedFormParams[variable] = e.target.value;
+    const input = ['name','email','password'];
+    if (input.includes(variable)) {
+      updatedFormParams[variable] = e.target.value;
+    }
+
     setFormParams(updatedFormParams);
   };
 
   const handleSelectChangeValue = (
-    value: string, 
+    value: string,
     variable: string
-    ) => {
+  ) => {
     const updatedFormParams = { ...formParams };
-    updatedFormParams[variable] = value;
+    if (variable == "role") {
+      updatedFormParams[variable] = value;
+    }
+    // updatedFormParams[variable] = value;
     setFormParams(updatedFormParams);
   };
 
@@ -79,11 +92,18 @@ const UserCreateForm = ({
     console.log("set")
     setIsLoading(true);
 
-    const RequestFormparams : ICreateNewUserRequest = {
-      input: { ...formParams }
+    const RequestFormparams: FormParams = { ...formParams }
+    // console.log(RequestFormparams);
+    try {
+      await createMutate(RequestFormparams);
+    } catch (error) {
+      const err = error as AxiosError;
+      const validation = err?.response?.data as ValidationError;
+      setValidationError(validation.message);
+      setIsLoading(false);
+      return;
     }
-    console.log(RequestFormparams);
-    await createMutate(RequestFormparams);
+
     queryClient.clear();
     setIsLoading(false);
     toast({
@@ -92,6 +112,11 @@ const UserCreateForm = ({
     });
     onClose();
   };
+
+  // const getValidationMessage = (key: string) => {
+  //   const error = validationError.find(item => item.type === key);
+  //   if (error) return <ErrorDisplay message={error.message} />
+  // }
 
   return (
     <>
@@ -115,7 +140,7 @@ const UserCreateForm = ({
             >
               <VStack spacing="14px" alignItems="flex-start">
 
-                <FormControl key={'name'}>
+                {/* <FormControl key={'name'}>
                   <FormLabel fontSize={16} my={1} fontWeight="normal">
                     User Name
                     <FormHelperText my={1} style={{ color: 'red' }} as="span">
@@ -130,6 +155,41 @@ const UserCreateForm = ({
                     {...register('name', {
                       required: `User name is Required`,
                       onChange: (e) => handleChangeValue(e, 'name'),
+
+                    })}
+                  />
+                  {validationError && getValidationMessage("name")}
+                  <ErrorMessage
+                    errors={errors}
+                    name={"name"}
+                    render={({ message }) => <ErrorDisplay message={message} />}
+                  />
+                </FormControl> */}
+                <TextFieldInput 
+                  inputKey='name'
+                  title='User Name'
+                  placeholder='Enter user name'
+                  handleChangeValue={handleChangeValue}
+                  errors={errors}
+                  register={register}
+                  validationError={validationError}
+                />
+
+                {/* <FormControl key={'email'}>
+                  <FormLabel fontSize={16} my={1} fontWeight="normal">
+                    Email
+                    <FormHelperText my={1} style={{ color: 'red' }} as="span">
+                      {' '}
+                      *
+                    </FormHelperText>
+                  </FormLabel>
+                  <TextField
+                    h="40px"
+                    placeholder={"Enter user email"}
+                    fontSize="sm"
+                    {...register('email', {
+                      required: `User email is Required`,
+                      onChange: (e) => handleChangeValue(e, 'email'),
                     })}
                   />
                   <ErrorMessage
@@ -137,7 +197,49 @@ const UserCreateForm = ({
                     name={"name"}
                     render={({ message }) => <ErrorDisplay message={message} />}
                   />
-                </FormControl>
+                </FormControl> */}
+                <TextFieldInput 
+                  inputKey='email'
+                  title='User Email'
+                  placeholder='Enter user email'
+                  handleChangeValue={handleChangeValue}
+                  errors={errors}
+                  register={register}
+                  validationError={validationError}
+                />
+
+                {/* <FormControl key={'password'}>
+                  <FormLabel fontSize={16} my={1} fontWeight="normal">
+                    User Password
+                    <FormHelperText my={1} style={{ color: 'red' }} as="span">
+                      {' '}
+                      *
+                    </FormHelperText>
+                  </FormLabel>
+                  <TextField
+                    h="40px"
+                    placeholder={"Enter user password"}
+                    fontSize="sm"
+                    {...register('password', {
+                      required: `User password is Required`,
+                      onChange: (e) => handleChangeValue(e, 'password'),
+                    })}
+                  />
+                  <ErrorMessage
+                    errors={errors}
+                    name={"name"}
+                    render={({ message }) => <ErrorDisplay message={message} />}
+                  />
+                </FormControl> */}
+                <TextFieldInput 
+                  inputKey='password'
+                  title='User Password'
+                  placeholder='Enter user password'
+                  handleChangeValue={handleChangeValue}
+                  errors={errors}
+                  register={register}
+                  validationError={validationError}
+                />
 
                 <FormControl key={'role'}>
                   <FormLabel
@@ -162,7 +264,7 @@ const UserCreateForm = ({
 
                   <ErrorMessage
                     errors={errors}
-                    name={'role'}
+                    name={"role"}
                     render={({ message }) => <ErrorDisplay message={message} />}
                   />
                 </FormControl>
