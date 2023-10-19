@@ -29,8 +29,10 @@ export interface UserFilterParams {
   sorting: string;
 }
 
-export interface ICreateNewUserRequest {
-  // input: object
-  name: string;
+export interface IUserCreateRequest {
   role: string;
+  name: string;
+  email: string;
+  password: string;
+  avatar: File | null;
 }

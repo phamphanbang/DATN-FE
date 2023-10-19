@@ -1,34 +1,33 @@
 import { FormControl, FormHelperText, FormLabel } from "@chakra-ui/react";
-import { TextField } from "../TextField";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { ValidationErrorMessage } from "models/appConfig";
+import { Control, FieldErrors } from "react-hook-form";
+import { FormParams, ValidationErrorMessage } from "models/appConfig";
 import { ErrorDisplay } from "../ErrorDisplay";
 import { ErrorMessage } from "@hookform/error-message";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { SearchableSelectField } from "../SearchableSelectField";
+import { option } from "common/types";
 
-interface DynamicFormParams {
-  [key: string]: unknown
-} 
-interface ITextFieldInputProps {
-  register: UseFormRegister<DynamicFormParams>;
-  handleChangeValue: (e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
-    , key: string) => void;
+interface ISelectFieldInputProps {
+  handleSelectChangeValue: (value: string, key: string) => void;
   inputKey: string;
   validationError: ValidationErrorMessage[] | [];
-  placeholder: string;
   title: string;
-  errors: FieldErrors<DynamicFormParams>;
+  errors: FieldErrors<T>;
+  value: string;
+  selectOptions: option[];
+  control: Control;
 }
 
-export const TextFieldInput = ({
-  register,
-  handleChangeValue,
+export const SelectFieldInput = ({
+  handleSelectChangeValue,
   inputKey,
   validationError,
   errors,
   title,
-  placeholder
-}: ITextFieldInputProps) => {
+  value,
+  selectOptions,
+  control
+}: ISelectFieldInputProps) => {
   const [isValidationErrorDisplay, setIsValidationErrorDisplay] = useState<boolean>(true);
 
   useEffect(() => {
@@ -43,24 +42,24 @@ export const TextFieldInput = ({
 
   return (
     <FormControl key={inputKey}>
-      <FormLabel fontSize={16} my={1} fontWeight="normal">
+      <FormLabel
+        fontSize={16}
+        my={1}
+        fontWeight="normal"
+      >
         {title}
         <FormHelperText my={1} style={{ color: 'red' }} as="span">
           {' '}
           *
         </FormHelperText>
+
       </FormLabel>
-      <TextField
-        h="40px"
-        placeholder={placeholder}
-        fontSize="sm"
-        {...register(inputKey, {
-          required: `${title} is required`,
-          onChange: (e) => {
-            handleChangeValue(e, inputKey);
-            setIsValidationErrorDisplay(false);
-          },
-        })}
+      <SearchableSelectField
+        name={inputKey}
+        control={control}
+        options={selectOptions}
+        value={value}
+        handleChange={handleSelectChangeValue}
       />
       {isValidationErrorDisplay && getValidationMessage(inputKey)}
       <ErrorMessage

@@ -3,10 +3,10 @@ export interface AppConfig {
   sideBarWidth: number;
 }
 
-export type FormParams = Record<
-  string,
-  string
->;
+// export type FormParams = Record<
+//   string,
+//   string
+// >;
 
 export type ValidationErrorMessage = {
   type: string;

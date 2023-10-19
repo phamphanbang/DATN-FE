@@ -28,16 +28,33 @@ import { toast } from 'common/components/StandaloneToast';
 import { ValidationError, ValidationErrorMessage } from 'models/appConfig';
 import { AxiosError } from 'axios';
 import { TextFieldInput } from 'common/components/Form/TextFieldInput';
+import { SelectFieldInput } from 'common/components/Form/SelectFieldInput';
+import { FileField } from 'common/components/FileField';
 
 interface ICreateModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export type FormParams = Record<
-  string,
-  string
->;
+// export type FormParams = Record<
+//   string,
+//   string
+// >;
+export interface FormParams {
+  role: string;
+  name: string;
+  email: string;
+  password: string;
+  avatar: File | null;
+}
+
+// function getObjectProperty<T, K extends keyof T>(obj: T, key: K): T[K] | undefined {
+//   return obj[key];
+// }
+
+function setObjectProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]): T {
+  return { ...obj, [key]: value };
+}
 
 const UserCreateForm = ({
   isOpen,
@@ -49,7 +66,8 @@ const UserCreateForm = ({
     role: "user",
     name: "",
     email: "",
-    password: ""
+    password: "",
+    avatar: null
   });
   const { mutateAsync: createMutate } = useCreateNewUser();
   const queryClient = useQueryClient();
@@ -68,9 +86,10 @@ const UserCreateForm = ({
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    const input = ['name','email','password'];
+    const input = ['name', 'email', 'password'];
     if (input.includes(variable)) {
-      updatedFormParams[variable] = e.target.value;
+      // updatedFormParams[variable as keyof FormParams ] = e.target.value;
+      setObjectProperty(updatedFormParams,variable as keyof FormParams,e.target.value);
     }
 
     setFormParams(updatedFormParams);
@@ -165,7 +184,7 @@ const UserCreateForm = ({
                     render={({ message }) => <ErrorDisplay message={message} />}
                   />
                 </FormControl> */}
-                <TextFieldInput 
+                <TextFieldInput
                   inputKey='name'
                   title='User Name'
                   placeholder='Enter user name'
@@ -198,7 +217,7 @@ const UserCreateForm = ({
                     render={({ message }) => <ErrorDisplay message={message} />}
                   />
                 </FormControl> */}
-                <TextFieldInput 
+                <TextFieldInput
                   inputKey='email'
                   title='User Email'
                   placeholder='Enter user email'
@@ -231,7 +250,7 @@ const UserCreateForm = ({
                     render={({ message }) => <ErrorDisplay message={message} />}
                   />
                 </FormControl> */}
-                <TextFieldInput 
+                <TextFieldInput
                   inputKey='password'
                   title='User Password'
                   placeholder='Enter user password'
@@ -241,7 +260,7 @@ const UserCreateForm = ({
                   validationError={validationError}
                 />
 
-                <FormControl key={'role'}>
+                {/* <FormControl key={'role'}>
                   <FormLabel
                     fontSize={16}
                     my={1}
@@ -266,6 +285,36 @@ const UserCreateForm = ({
                     errors={errors}
                     name={"role"}
                     render={({ message }) => <ErrorDisplay message={message} />}
+                  />
+                </FormControl> */}
+                <SelectFieldInput
+                  inputKey='role'
+                  control={control}
+                  errors={errors}
+                  handleSelectChangeValue={handleSelectChangeValue}
+                  selectOptions={userRole}
+                  title='User Role'
+                  validationError={validationError}
+                  value={formParams['role'] as string}
+                />
+
+                <FormControl key={"avatar"}>
+                  <FormLabel
+                    fontSize={16}
+                    my={1}
+                    fontWeight="normal"
+                  >
+                    User Role
+                    <FormHelperText my={1} style={{ color: 'red' }} as="span">
+                      {' '}
+                      *
+                    </FormHelperText>
+
+                  </FormLabel>
+                  <FileField
+                    name='avatar'
+                    accept='image/*'
+                  // onChange={(e) => console.log(e.target.files[0])}
                   />
                 </FormControl>
 
