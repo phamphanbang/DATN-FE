@@ -20,9 +20,13 @@ export const useUpdate = <T, D, U>(
   config?: AxiosRequestConfig
 ) => {
   const axios = useAxios();
+  const requestBody = {
+    _method: "PUT",
+    ... body
+  }
 
   const mutate = async () => {
-    const data: U = await axios.put(`${url}/${params}`, body, config);
+    const data: U = await axios.post(`${url}/${params}`, requestBody, config);
     return data;
   };
 

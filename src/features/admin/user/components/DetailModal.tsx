@@ -9,11 +9,12 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-} from '@chakra-ui/react';
-import styles from './style.module.scss';
+  Image
+} from "@chakra-ui/react";
+import styles from "./style.module.scss";
 import { User } from "models/user";
-import { TextGroup } from 'common/components/TextGroup/TextGroup';
-
+import { TextGroup } from "common/components/TextGroup/TextGroup";
+import { getImage } from "utils";
 
 interface IDetailModalProps {
   isOpen: boolean;
@@ -24,9 +25,8 @@ interface IDetailModalProps {
 export const UserDetailModal = ({
   isOpen,
   onClose,
-  userDetail
+  userDetail,
 }: IDetailModalProps) => {
-
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} blockScrollOnMount={false}>
@@ -45,33 +45,20 @@ export const UserDetailModal = ({
           <ModalBody>
             <Divider mb={5}></Divider>
             <div className={styles.container}>
-              <TextGroup
-                label="User Name"
-                content={userDetail?.name}
-              />
-              <TextGroup
-                label="User Email"
-                content={userDetail?.name}
-              />
-              <TextGroup
-                label="User Name"
-                content={userDetail?.name}
-              />
-              <TextGroup
-                label="User Name"
-                content={userDetail?.name}
+              <TextGroup label="User Name" content={userDetail?.name} />
+              <TextGroup label="User Email" content={userDetail?.email} />
+              <TextGroup label="User Name" content={""} />
+              <Image
+                boxSize="200px"
+                src={getImage("users",userDetail?.avatar)}
+                alt="User Avatar"
+                my={"10px"}
+                borderRadius={'full'}
               />
             </div>
-            {/* <Divider mt={2} mb={5}></Divider>
-            <Text mb="15px" fontWeight={600} fontStyle="italic" color="primary">
-              Detail
-            </Text>
-            <div className={styles.container}>
-
-            </div> */}
           </ModalBody>
         </ModalContent>
       </Modal>
     </>
   );
-}
+};

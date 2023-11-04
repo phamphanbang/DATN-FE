@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { UserFilterParams, LoginParams, LoginResult, UserRequestResult, User } from 'models/user';
-import { useCreate, useGetList } from "api/apiHooks";
+import { UserFilterParams, LoginParams, LoginResult, UserRequestResult, User, IUserCreateRequest, IUserUpdateRequest } from 'models/user';
+import { useCreate, useDelete, useGetList, useUpdate } from "api/apiHooks";
 import { QueryKeys } from 'common/constants';
-import { FormParams } from 'models/appConfig';
+import { FormParams } from 'models/user';
 
 export const useLogin = () => {
   return useCreate<LoginParams, LoginResult>('/admin/auth/login');
@@ -27,4 +27,16 @@ export const useCreateNewUser = () => {
   return useCreate<FormParams, any>(
     `/admin/users`
   )
+}
+
+export const useDeleteUser = () => {
+  return useDelete(`/admin/users`);
+};
+
+export const useUpdateUser = (userId: string, user: IUserUpdateRequest) => {
+  return useUpdate<string, IUserUpdateRequest, User>(
+    `/admin/users`,
+    userId,
+    user, 
+  );
 }

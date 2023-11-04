@@ -1,18 +1,22 @@
 import { FormControl, FormHelperText, FormLabel } from "@chakra-ui/react";
 import { Control, FieldErrors } from "react-hook-form";
-import { FormParams, ValidationErrorMessage } from "models/appConfig";
+import { ValidationErrorMessage } from "models/appConfig";
 import { ErrorDisplay } from "../ErrorDisplay";
 import { ErrorMessage } from "@hookform/error-message";
 import { useEffect, useState } from "react";
 import { SearchableSelectField } from "../SearchableSelectField";
 import { option } from "common/types";
 
+export type FormParams = Record<
+  string,
+  string | File
+>;
 interface ISelectFieldInputProps {
   handleSelectChangeValue: (value: string, key: string) => void;
   inputKey: string;
   validationError: ValidationErrorMessage[] | [];
   title: string;
-  errors: FieldErrors<T>;
+  errors: FieldErrors<FormParams>;
   value: string;
   selectOptions: option[];
   control: Control;
@@ -60,6 +64,7 @@ export const SelectFieldInput = ({
         options={selectOptions}
         value={value}
         handleChange={handleSelectChangeValue}
+        
       />
       {isValidationErrorDisplay && getValidationMessage(inputKey)}
       <ErrorMessage

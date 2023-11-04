@@ -4,23 +4,22 @@ import {
   IconButton,
   MenuList,
   MenuItem,
-  Icon
-} from '@chakra-ui/react';
-import { RiSettings4Fill } from 'react-icons/ri';
-import { FaEye } from 'react-icons/fa';
+  Icon,
+} from "@chakra-ui/react";
+import { RiDeleteBin6Fill, RiSettings4Fill } from "react-icons/ri";
+import { FaEye, FaSave } from "react-icons/fa";
 
 interface RowActionProps {
   onViewDetails: () => void;
-  // onCancel: () => void;
-  // onDelete: () => void;
+  onUpdate: () => void;
+  onDelete: () => void;
 }
 
 export const RowAction = ({
-  // onCancel,
-  // onDelete,
+  onUpdate,
+  onDelete,
   onViewDetails,
 }: RowActionProps) => {
-
   return (
     <Menu>
       <MenuButton
@@ -30,23 +29,19 @@ export const RowAction = ({
         size="sm"
         icon={<Icon color="gray.500" fontSize="lg" as={RiSettings4Fill} />}
       />
-      <MenuList minW="100px" >
-        <MenuItem
-          display="flex"
-          gap="12px"
-          onClick={onViewDetails}
-        >
+      <MenuList minW="100px">
+        <MenuItem display="flex" gap="12px" onClick={onViewDetails}>
           <Icon color="gray.500" as={FaEye} />
           View
         </MenuItem>
-        {/* <MenuItem  display="flex" gap="12px" onClick={onDelete}>
+        <MenuItem  display="flex" gap="12px" onClick={onUpdate}>
+          <Icon color="gray.500" as={FaSave} />
+          Update
+        </MenuItem>
+        <MenuItem display="flex" gap="12px" onClick={onDelete}>
           <Icon color="gray.500" as={RiDeleteBin6Fill} />
           Delete
         </MenuItem>
-        <MenuItem  display="flex" gap="12px" onClick={onCancel}>
-          <Icon color="gray.500" as={MdCancel} />
-          Cancel
-        </MenuItem> */}
       </MenuList>
     </Menu>
   );

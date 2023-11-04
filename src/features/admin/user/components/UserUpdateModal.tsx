@@ -13,12 +13,12 @@ import {
   FormHelperText,
   FormLabel,
   VStack,
-  Image
+  Image,
 } from "@chakra-ui/react";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { userRole } from "common/constants";
-import { useCreateNewUser } from "api/apiHooks/userHooks";
+import { useUpdateUser } from "api/apiHooks/userHooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "common/components/StandaloneToast";
 import { ErrorResponse, ValidationErrorMessage } from "models/appConfig";
@@ -26,27 +26,34 @@ import { AxiosError } from "axios";
 import { TextFieldInput } from "common/components/Form/TextFieldInput";
 import { SelectFieldInput } from "common/components/Form/SelectFieldInput";
 import { FileField } from "common/components/FileField";
+import { IUserUpdateRequest } from "models/user";
+import { getImage } from "utils";
 
-interface ICreateModalProps {
+interface IUpdateModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialValues: IUserUpdateRequest;
+  userId: string;
 }
 
 export type FormParams = Record<string, string | File>;
 
-const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+const UserUpdateForm = ({
+  isOpen,
+  onClose,
+  initialValues,
+  userId,
+}: IUpdateModalProps) => {
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
   const [validationError, setValidationError] = useState<
     ValidationErrorMessage[]
   >([]);
-  const [formParams, setFormParams] = useState<FormParams>({
-    role: "user",
-    name: "",
-    email: "",
-    password: "",
-    avatar: "",
-  });
-  const { mutateAsync: createMutate } = useCreateNewUser();
+  const [formParams, setFormParams] =
+    useState<IUserUpdateRequest>(initialValues);
+  const { mutate, isLoading, isSuccess, isError, error, data } = useUpdateUser(
+    userId,
+    formParams
+  );
   const queryClient = useQueryClient();
 
   const {
@@ -63,10 +70,9 @@ const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    const input = ["name", "email", "password"];
-    if (input.includes(variable)) {
-      updatedFormParams[variable as keyof FormParams] = e.target.value;
-      // setObjectProperty(updatedFormParams,variable as keyof FormParams,e.target.value);
+    // const input = ["name", "email", "password"];
+    if (variable == "name" || variable == "email") {
+      updatedFormParams[variable] = e.target.value;
     }
 
     setFormParams(updatedFormParams);
@@ -77,7 +83,6 @@ const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
     if (variable == "role") {
       updatedFormParams[variable] = value;
     }
-    // updatedFormParams[variable] = value;
     setFormParams(updatedFormParams);
   };
 
@@ -86,41 +91,45 @@ const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    const input = ["avatar"];
+    // const input = ["avatar"];
     const file = e.target.files?.[0];
-    if (input.includes(variable)) {
-      updatedFormParams[variable as keyof FormParams] = file ?? "";
+    if (variable == "avatar") {
+      updatedFormParams[variable] = file ?? "";
     }
 
     setFormParams(updatedFormParams);
   };
 
   const onSubmit = async () => {
-    setIsLoading(true);
-    const RequestFormParams: FormParams = { ...formParams };
+    // setIsLoading(true);
+    // const RequestFormParams: FormParams = { ...formParams };
     try {
-      await createMutate(RequestFormParams);
+      await mutate();
     } catch (error) {
+      console.log(error);
       const err = error as AxiosError;
       const validation = err?.response?.data as ErrorResponse;
       setValidationError(validation.message as ValidationErrorMessage[]);
-      setIsLoading(false);
+      // setIsLoading(false);
+      return;
+    }
+
+    if (error) {
+      const err = error as AxiosError;
+      const validation = err?.response?.data as ErrorResponse;
+      setValidationError(validation.message as ValidationErrorMessage[]);
+      // setIsLoading(false);
       return;
     }
 
     queryClient.clear();
-    setIsLoading(false);
+    // setIsLoading(false);
     toast({
-      description: "Create Request Successfully",
+      description: "Update Request Successfully",
       status: "success",
     });
     onClose();
   };
-
-  // const getValidationMessage = (key: string) => {
-  //   const error = validationError.find(item => item.type === key);
-  //   if (error) return <ErrorDisplay message={error.message} />
-  // }
 
   return (
     <>
@@ -151,6 +160,7 @@ const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
                   errors={errors}
                   register={register}
                   validationError={validationError}
+                  defaultValue={formParams.name as string}
                 />
 
                 <TextFieldInput
@@ -161,9 +171,10 @@ const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
                   errors={errors}
                   register={register}
                   validationError={validationError}
+                  defaultValue={formParams.email as string}
                 />
 
-                <TextFieldInput
+                {/* <TextFieldInput
                   inputKey="password"
                   title="User Password"
                   placeholder="Enter user password"
@@ -171,7 +182,8 @@ const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
                   errors={errors}
                   register={register}
                   validationError={validationError}
-                />
+                  defaultValue={formParams.password as string}
+                /> */}
 
                 <SelectFieldInput
                   inputKey="role"
@@ -181,7 +193,7 @@ const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
                   selectOptions={userRole}
                   title="User Role"
                   validationError={validationError}
-                  value={formParams["role"] as string}
+                  value={formParams.role as string}
                 />
 
                 <FormControl key={"avatar"}>
@@ -192,21 +204,25 @@ const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
                       *
                     </FormHelperText>
                   </FormLabel>
-                  { formParams.avatar && 
-                    <Image 
-                      boxSize='200px' 
-                      src={URL.createObjectURL(formParams.avatar as File)} 
-                      alt='User Avatar' 
-                      mx={'auto'}
-                      my={'10px'}
+                  {formParams.avatar && (
+                    <Image
+                      boxSize="200px"
+                      src={
+                        typeof formParams.avatar === "string"
+                          ? getImage("users", formParams.avatar)
+                          : URL.createObjectURL(formParams.avatar as File)
+                      }
+                      alt="User Avatar"
+                      mx={"auto"}
+                      my={"10px"}
                       borderRadius={'full'}
                     />
-                  }
-                  
+                  )}
+
                   <FileField
                     name="avatar"
                     accept="image/*"
-                    onChange={(e) => handleFileChangeValue(e,"avatar")}
+                    onChange={(e) => handleFileChangeValue(e, "avatar")}
                   />
                 </FormControl>
 
@@ -218,7 +234,7 @@ const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
                   w="full"
                   colorScheme="gray"
                 >
-                  Save
+                  Update
                 </Button>
               </VStack>
             </form>
@@ -229,4 +245,4 @@ const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
   );
 };
 
-export default UserCreateForm;
+export default UserUpdateForm;

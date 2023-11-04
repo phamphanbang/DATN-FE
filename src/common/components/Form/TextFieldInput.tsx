@@ -6,18 +6,20 @@ import { ErrorDisplay } from "../ErrorDisplay";
 import { ErrorMessage } from "@hookform/error-message";
 import { ChangeEvent, useEffect, useState } from "react";
 
-interface DynamicFormParams {
-  [key: string]: unknown
-} 
+export type FormParams = Record<
+  string,
+  string | File
+>;
 interface ITextFieldInputProps {
-  register: UseFormRegister<DynamicFormParams>;
+  register: UseFormRegister<FormParams>;
   handleChangeValue: (e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
     , key: string) => void;
   inputKey: string;
   validationError: ValidationErrorMessage[] | [];
   placeholder: string;
   title: string;
-  errors: FieldErrors<DynamicFormParams>;
+  errors: FieldErrors<FormParams>;
+  defaultValue?: string;
 }
 
 export const TextFieldInput = ({
@@ -27,7 +29,8 @@ export const TextFieldInput = ({
   validationError,
   errors,
   title,
-  placeholder
+  placeholder,
+  defaultValue
 }: ITextFieldInputProps) => {
   const [isValidationErrorDisplay, setIsValidationErrorDisplay] = useState<boolean>(true);
 
@@ -54,6 +57,7 @@ export const TextFieldInput = ({
         h="40px"
         placeholder={placeholder}
         fontSize="sm"
+        defaultValue={defaultValue}
         {...register(inputKey, {
           required: `${title} is required`,
           onChange: (e) => {

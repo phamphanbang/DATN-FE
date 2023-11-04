@@ -34,5 +34,17 @@ export interface IUserCreateRequest {
   name: string;
   email: string;
   password: string;
-  avatar: File | null;
+  avatar: File | string;
 }
+
+export interface IUserUpdateRequest {
+  role: string;
+  name: string;
+  email: string;
+  avatar: File | string;
+}
+
+export type FormParams = Record<
+  string,
+  string | File
+>;

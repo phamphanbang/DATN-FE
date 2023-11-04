@@ -3,11 +3,12 @@ import Axios, {
   AxiosError,
   AxiosInstance,
   AxiosResponse,
-  isAxiosError
+  isAxiosError,
 } from "axios";
 import { toast } from "common/components/StandaloneToast";
 import { getItem } from "utils";
 import { LocalStorageKeys } from "common/enums";
+import { ErrorResponse } from "models/appConfig";
 
 const { VITE_API_BASE_URL } = import.meta.env;
 
@@ -20,8 +21,8 @@ const axios = Axios.create({
   baseURL: VITE_API_BASE_URL,
   withCredentials: true,
   headers: {
-    "Content-Type": "application/json",
-  }
+    "Content-Type": "multipart/form-data",
+  },
 });
 
 axios.interceptors.request.use((config) => {
@@ -33,7 +34,7 @@ axios.interceptors.request.use((config) => {
     }
   }
   return config;
-})
+});
 
 axios.interceptors.response.use(
   (response) => {
@@ -48,18 +49,17 @@ axios.interceptors.response.use(
     if (isAxiosError(error)) {
       const { data } = (error.response as AxiosResponse) ?? {};
       const { message } = error;
-      const errorMessage = message;
-      // if (Array.isArray(data)) {
-      //   errorMessage = data[0]?.message || message;
-      // } else {
-      //   console.log(A)
-      //   errorMessage = data?.message || message;
-      // }
-      console.log(Array.isArray(data));
-      
+      let errorMessage = message;
+      const responseData = data as ErrorResponse;
+      if (typeof responseData.message === "string") {
+        errorMessage = responseData.message ? responseData.message : message;
+      } else {
+        errorMessage = responseData.message[0].message ? responseData.message[0].message : message;
+      }
+
       toast({
         title: errorMessage,
-        status: 'error',
+        status: "error",
       });
     }
     return Promise.reject(error);
@@ -69,10 +69,10 @@ axios.interceptors.response.use(
 export const AxiosContext = createContext<AxiosInstance>(
   new Proxy(axios, {
     apply: () => {
-      throw new Error('You must wrap your component in an AxiosProvider');
+      throw new Error("You must wrap your component in an AxiosProvider");
     },
     get: () => {
-      throw new Error('You must wrap your component in an AxiosProvider');
+      throw new Error("You must wrap your component in an AxiosProvider");
     },
   })
 );
