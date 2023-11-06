@@ -9,6 +9,8 @@ import WrapperRouteComponent from 'routes/WrapperRoute';
 import Layout from 'common/components/Layout';
 import { Suspense } from 'react';
 import AdminNotFound from 'common/components/AdminNotFound';
+import Blogs from 'features/admin/blog/index';
+import CreateNewBlog from 'features/admin/blog/create';
 
 const routeList: RouteObject[] = [
   {
@@ -32,6 +34,22 @@ const routeList: RouteObject[] = [
         element: (
           <WrapperRouteComponent>
             <Users />
+          </WrapperRouteComponent>
+        ),
+      },
+      {
+        path: "blogs",
+        element: (
+          <WrapperRouteComponent>
+            <Blogs />
+          </WrapperRouteComponent>
+        ),
+      },
+      {
+        path: "blogs/create",
+        element: (
+          <WrapperRouteComponent>
+            <CreateNewBlog />
           </WrapperRouteComponent>
         ),
       },

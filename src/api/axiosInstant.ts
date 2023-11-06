@@ -12,11 +12,6 @@ import { ErrorResponse } from "models/appConfig";
 
 const { VITE_API_BASE_URL } = import.meta.env;
 
-// interface ValidationError {
-//   type: string;
-//   message: string;
-// }
-
 const axios = Axios.create({
   baseURL: VITE_API_BASE_URL,
   withCredentials: true,

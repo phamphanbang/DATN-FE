@@ -44,6 +44,10 @@ export interface IUserUpdateRequest {
   avatar: File | string;
 }
 
+export interface IUserResetPassword {
+  password: string;
+}
+
 export type FormParams = Record<
   string,
   string | File

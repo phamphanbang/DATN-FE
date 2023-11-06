@@ -8,9 +8,9 @@ import {
   InputRightElement,
   Spacer,
   Spinner,
+  Image,
 } from "@chakra-ui/react";
-import { useDeleteUser, useGetUserList } from "api/apiHooks/userHooks";
-import { IUserUpdateRequest, User, UserFilterParams } from "models/user";
+import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { EmptyWrapper } from "common/components/EmptyWrapper";
@@ -19,86 +19,49 @@ import { appConfigState } from "stores/appConfig";
 import { Table } from "common/components/Table/Table";
 import { PageSize } from "common/components/Table/PageSizeProps";
 import { ShowingItemText } from "common/components/Table/ShowItemText";
-import { QueryKeys, noOfRows, userRole } from "common/constants";
+import { QueryKeys, noOfRows } from "common/constants";
 import { Pagination } from "common/components/Pagination";
-import { UserDetailModal } from "./DetailModal";
 import { RowAction } from "./RowAction";
-import { SelectField } from "common/components/SelectField";
 import { TbSearch } from "react-icons/tb";
 import useDebounced from "hooks/useDebounced";
 import { FaPlus } from "react-icons/fa";
-import UserCreateForm from "./UserCreateModal";
 import { ModalConfirm } from "common/components/ModalConfirm";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "common/components/StandaloneToast";
-import UserUpdateForm from "./UserUpdateModal";
-import UserResetPasswordForm from "./UserResetPasswordModal";
+import { useDeleteBlog, useGetBlogList } from "api/apiHooks/blogHooks";
+import { TableFilterParams } from "models/app";
+import { Blog } from "models/blog";
+import { getImage } from "utils";
 
-const initialFilter: UserFilterParams = {
+const initialFilter: TableFilterParams = {
   maxResultCount: +noOfRows[0].value,
   skipCount: 0,
   sorting: "",
 };
 
-export const MyUserTable = () => {
+export const MyBlogTable = () => {
+  const navigate = useNavigate();
+
   const { sideBarWidth } = useRecoilValue(appConfigState);
-  const [filter, setFilter] = useState<UserFilterParams>(initialFilter);
-  const { data, isLoading } = useGetUserList(filter);
-  const { items: users = [], totalCount = 0 } = data ?? {};
+  const [filter, setFilter] = useState<TableFilterParams>(initialFilter);
+  const { data, isLoading } = useGetBlogList(filter);
+  const { items: blogs = [], totalCount = 0 } = data ?? {};
   const { skipCount, maxResultCount } = filter;
   const currentPage = (maxResultCount + skipCount) / maxResultCount;
 
   const [txtSearch, setTxtSearch] = useState<string>("");
   const txtSearchDebounced = useDebounced(txtSearch, 500);
 
-  const [userDetail, setUserDetail] = useState<User>();
-  const [isOpenDetails, setOpenDetails] = useState(false);
-
-  const [isOpenCreate, setIsOpenCreate] = useState(false);
-
-  const [isOpenResetPassword, setIsOpenResetPassword] = useState(false);
-
-  const [isOpenUpdate, setIsOpenUpdate] = useState(false);
-  const [userId, setUserId] = useState<string>("");
-  const [updateParams, setUpdateParams] = useState<IUserUpdateRequest>({
-    name: "",
-    avatar: "",
-    email: "",
-    role: "",
-  });
-
   const [requestId, setRequestId] = useState("");
-  const [actionType, setActionType] = useState("");
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const deleteRequestMutation = useDeleteUser();
+  const deleteRequestMutation = useDeleteBlog();
   const queryClient = useQueryClient();
 
-  const onActionViewDetails = (user: User) => () => {
-    setUserDetail(user);
-    setOpenDetails(true);
-  };
-
-  const onActionUpdate = (user: User) => () => {
-    setUserId(user.id);
-    setUpdateParams({
-      name: user.name,
-      avatar: user.avatar,
-      email: user.email,
-      role: user.role,
-    });
-    setIsOpenUpdate(true);
-  };
-
-  const onResetPassword = (user: User) => () => {
-    setUserId(user.id);
-    setIsOpenResetPassword(true);
-  };
-
-  const columnHelper = createColumnHelper<User>();
-  const userColumns = useMemo(
+  const columnHelper = createColumnHelper<Blog>();
+  const blogColumns = useMemo(
     () =>
       [
         columnHelper.accessor("id", {
@@ -113,17 +76,21 @@ export const MyUserTable = () => {
           enableSorting: false,
           cell: (info) => <Box>{info.getValue()}</Box>,
         }),
-        columnHelper.accessor("role", {
-          id: "role",
-          header: () => <Box>Role</Box>,
+        columnHelper.accessor("thumbnail", {
+          id: "thumbnail",
+          header: () => <Box>Thumbnail</Box>,
           enableSorting: false,
-          cell: (info) => <Box>{info.getValue()}</Box>,
-        }),
-        columnHelper.accessor("email", {
-          id: "email",
-          header: () => <Box>Email</Box>,
-          enableSorting: false,
-          cell: (info) => <Box>{info.getValue()}</Box>,
+          cell: (info) => (
+            <Box>
+              <Image
+                boxSize="50px"
+                src={getImage("blogs", info.getValue())}
+                alt="Blog Thumbnail"
+                mx={"auto"}
+                my={"10px"}
+              />
+            </Box>
+          ),
         }),
         columnHelper.display({
           id: "actions",
@@ -132,17 +99,14 @@ export const MyUserTable = () => {
           cell: (info) => (
             <Center onClick={(e) => e.stopPropagation()}>
               <RowAction
-                // onCancel={onAction(info.row.original.id, 'canceled')}
                 onDelete={onAction(info.row.original.id, "deleted")}
-                onViewDetails={onActionViewDetails(info.row.original)}
-                onUpdate={onActionUpdate(info.row.original)}
-                onResetPassword={onResetPassword(info.row.original)}
-                // onViewWorkflow={onActionViewWorkflow(info.row.original.id)}
+                onViewDetails={onActionViewDetails(info.row.original.id)}
+                onUpdate={onActionUpdate(info.row.original.id)}
               />
             </Center>
           ),
         }),
-      ] as ColumnDef<User>[],
+      ] as ColumnDef<Blog>[],
     [columnHelper]
   );
 
@@ -161,37 +125,27 @@ export const MyUserTable = () => {
     }));
   };
 
-  const userRoleOption = useMemo(() => {
-    const defaultOptions = {
-      value: "",
-      label: "All roles",
-    };
-
-    const options = userRole.map(({ value, label }) => ({
-      value: value,
-      label: label,
-    }));
-
-    return [defaultOptions, ...options];
+  const onFilterChange = useCallback((key: "search", value?: string) => {
+    setFilter((filter) => ({ ...filter, [key]: value, skipCount: 0 }));
   }, []);
-
-  const onFilterChange = useCallback(
-    (key: "role" | "search", value?: string) => {
-      setFilter((filter) => ({ ...filter, [key]: value, skipCount: 0 }));
-    },
-    []
-  );
 
   useEffect(() => {
     onFilterChange("search", txtSearchDebounced);
   }, [onFilterChange, txtSearchDebounced]);
 
-  const onAction = (requestId: string, type: "deleted" | "canceled") => () => {
+  const onAction = (requestId: string, type: "deleted") => () => {
     setRequestId(requestId);
-    setActionType(type);
-    setModalTitle(`Confirm ${type} user`);
-    setModalDescription(`User will be ${type}. Do you confirm that?`);
+    setModalTitle(`Confirm ${type} blog`);
+    setModalDescription(`Blog will be ${type}. Do you confirm that?`);
     setIsOpen(true);
+  };
+
+  const onActionUpdate = (requestId: string) => () => {
+    console.log(requestId);
+  };
+
+  const onActionViewDetails = (requestId: string) => () => {
+    console.log(requestId);
   };
 
   const handleConfirmation = async () => {
@@ -200,12 +154,11 @@ export const MyUserTable = () => {
 
     const mutation = deleteRequestMutation;
     const successMessage = "Deleted successfully!";
-    const errorMessage =
-      actionType === "deleted" ? "Delete failed!" : "Cancel failed!";
+    const errorMessage = "Delete failed!";
 
     try {
       await mutation.mutateAsync(requestId);
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ALL_USERS] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ALL_BLOGS] });
       toast({ title: successMessage, status: "success" });
     } catch (error) {
       toast({ title: errorMessage, status: "error" });
@@ -223,21 +176,13 @@ export const MyUserTable = () => {
           alignItems="flex-end"
           flexWrap="wrap"
         >
-          <Box w="220px">
-            <SelectField
-              size="sm"
-              rounded="md"
-              onChange={(e) => onFilterChange("role", e.target.value)}
-              options={userRoleOption}
-            />
-          </Box>
           <Box w={"300px"}>
             <InputGroup>
               <Input
                 autoFocus
                 value={txtSearch}
                 type="text"
-                placeholder="Enter user name or email"
+                placeholder="Enter blog name"
                 fontSize="14px"
                 onChange={(e) => setTxtSearch(e.target.value)}
               />
@@ -247,9 +192,9 @@ export const MyUserTable = () => {
             </InputGroup>
           </Box>
           <Box w={"200px"} marginLeft={"auto"}>
-            <Button w={"100%"} onClick={() => setIsOpenCreate(true)}>
+            <Button w={"100%"} onClick={() => navigate("/admin/blogs/create")}>
               <FaPlus />
-              <p style={{ marginLeft: "5px" }}>Create new user</p>
+              <p style={{ marginLeft: "5px" }}>Create new blog</p>
             </Button>
           </Box>
         </HStack>
@@ -259,24 +204,17 @@ export const MyUserTable = () => {
           </Center>
         ) : (
           <EmptyWrapper
-            isEmpty={!users.length}
+            isEmpty={!blogs.length}
             h="200px"
             fontSize="xs"
-            message={"No User found!"}
+            message={"No Blog found!"}
           >
             <Box
               p="20px 30px 0px 24px"
               overflowX="auto"
               w={{ base: `calc(100vw - ${sideBarWidth}px)`, lg: "auto" }}
             >
-              <Table
-                columns={userColumns}
-                data={users}
-                // sorting={sorting}
-                // onSortingChange={setSorting}
-                // onRowClick={onActionViewDetails}
-                onRowHover={true}
-              />
+              <Table columns={blogColumns} data={blogs} onRowHover={true} />
             </Box>
           </EmptyWrapper>
         )}
@@ -310,34 +248,6 @@ export const MyUserTable = () => {
         title={modalTitle}
         description={modalDescription}
       />
-      {userDetail && (
-        <UserDetailModal
-          isOpen={isOpenDetails}
-          onClose={() => setOpenDetails(false)}
-          userDetail={userDetail}
-        />
-      )}
-      {isOpenCreate && (
-        <UserCreateForm
-          isOpen={isOpenCreate}
-          onClose={() => setIsOpenCreate(false)}
-        />
-      )}
-      {isOpenUpdate && (
-        <UserUpdateForm
-          isOpen={isOpenUpdate}
-          onClose={() => setIsOpenUpdate(false)}
-          userId={userId}
-          initialValues={updateParams}
-        />
-      )}
-      {isOpenResetPassword && (
-        <UserResetPasswordForm
-          isOpen={isOpenResetPassword}
-          onClose={() => setIsOpenResetPassword(false)}
-          userId={userId}
-        />
-      )}
     </>
   );
 };

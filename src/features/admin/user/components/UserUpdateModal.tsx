@@ -44,13 +44,12 @@ const UserUpdateForm = ({
   initialValues,
   userId,
 }: IUpdateModalProps) => {
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
   const [validationError, setValidationError] = useState<
     ValidationErrorMessage[]
   >([]);
   const [formParams, setFormParams] =
     useState<IUserUpdateRequest>(initialValues);
-  const { mutate, isLoading, isSuccess, isError, error, data } = useUpdateUser(
+  const { mutateAsync: mutate, isLoading, error } = useUpdateUser(
     userId,
     formParams
   );
@@ -70,7 +69,6 @@ const UserUpdateForm = ({
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    // const input = ["name", "email", "password"];
     if (variable == "name" || variable == "email") {
       updatedFormParams[variable] = e.target.value;
     }
@@ -91,7 +89,6 @@ const UserUpdateForm = ({
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    // const input = ["avatar"];
     const file = e.target.files?.[0];
     if (variable == "avatar") {
       updatedFormParams[variable] = file ?? "";
@@ -101,8 +98,6 @@ const UserUpdateForm = ({
   };
 
   const onSubmit = async () => {
-    // setIsLoading(true);
-    // const RequestFormParams: FormParams = { ...formParams };
     try {
       await mutate();
     } catch (error) {
@@ -110,7 +105,6 @@ const UserUpdateForm = ({
       const err = error as AxiosError;
       const validation = err?.response?.data as ErrorResponse;
       setValidationError(validation.message as ValidationErrorMessage[]);
-      // setIsLoading(false);
       return;
     }
 
@@ -118,14 +112,12 @@ const UserUpdateForm = ({
       const err = error as AxiosError;
       const validation = err?.response?.data as ErrorResponse;
       setValidationError(validation.message as ValidationErrorMessage[]);
-      // setIsLoading(false);
       return;
     }
 
     queryClient.clear();
-    // setIsLoading(false);
     toast({
-      description: "Update Request Successfully",
+      description: "Update User Successfully",
       status: "success",
     });
     onClose();

@@ -2,7 +2,9 @@ import { option } from "./types";
 
 export const QueryKeys = {
   GET_ALL_USERS: 'getAllUsers',
-  GET_USER: 'getUser'
+  GET_USER: 'getUser',
+  GET_ALL_BLOGS: 'getAllBlogs',
+  GET_BLOG: 'getBlog'
 }
 
 export const userRole: option[] = [
