@@ -11,6 +11,7 @@ import { Suspense } from 'react';
 import AdminNotFound from 'common/components/AdminNotFound';
 import Blogs from 'features/admin/blog/index';
 import CreateNewBlog from 'features/admin/blog/create';
+import UpdateBlog from 'features/admin/blog/update';
 
 const routeList: RouteObject[] = [
   {
@@ -50,6 +51,14 @@ const routeList: RouteObject[] = [
         element: (
           <WrapperRouteComponent>
             <CreateNewBlog />
+          </WrapperRouteComponent>
+        ),
+      },
+      {
+        path: "blogs/update/:id",
+        element: (
+          <WrapperRouteComponent>
+            <UpdateBlog />
           </WrapperRouteComponent>
         ),
       },

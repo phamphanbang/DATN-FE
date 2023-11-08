@@ -7,19 +7,16 @@ import {
     Icon,
   } from "@chakra-ui/react";
   import { RiDeleteBin6Fill, RiSettings4Fill } from "react-icons/ri";
-  import { FaEye, FaSave } from "react-icons/fa";
-  import { MdLockReset } from "react-icons/md";
+  import { FaSave } from "react-icons/fa";
   
   interface RowActionProps {
-    onViewDetails: () => void;
     onUpdate: () => void;
     onDelete: () => void;
   }
   
   export const RowAction = ({
     onUpdate,
-    onDelete,
-    onViewDetails
+    onDelete
   }: RowActionProps) => {
     return (
       <Menu>
@@ -31,10 +28,6 @@ import {
           icon={<Icon color="gray.500" fontSize="lg" as={RiSettings4Fill} />}
         />
         <MenuList minW="100px">
-          <MenuItem display="flex" gap="12px" onClick={onViewDetails}>
-            <Icon color="gray.500" as={FaEye} />
-            View
-          </MenuItem>
           <MenuItem display="flex" gap="12px" onClick={onUpdate}>
             <Icon color="gray.500" as={FaSave} />
             Update

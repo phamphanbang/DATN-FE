@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { UserFilterParams, UserRequestResult, User, IUserUpdateRequest, IUserResetPassword } from 'models/user';
-import { useCreate, useDelete, useGetList, useUpdate } from "api/apiHooks";
+import { useCreate, useDelete, useGetList, useGetOne, useUpdate } from "api/apiHooks";
 import { QueryKeys } from 'common/constants';
 import { FormParams } from 'models/app';
 import { TableFilterParams } from 'models/app';
@@ -15,7 +14,7 @@ export const useGetBlogList = (filter: TableFilterParams) => {
 }
 
 export const useGetBlogDetail = (id: string) => {
-  return useGetList<Blog>(
+  return useGetOne<Blog>(
     [QueryKeys.GET_BLOG, id],
     `/admin/blogs/${id}`
   );

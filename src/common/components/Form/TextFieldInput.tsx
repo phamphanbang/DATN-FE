@@ -33,6 +33,7 @@ export const TextFieldInput = ({
   defaultValue
 }: ITextFieldInputProps) => {
   const [isValidationErrorDisplay, setIsValidationErrorDisplay] = useState<boolean>(true);
+  console.log(defaultValue)
 
   useEffect(() => {
     if (validationError) setIsValidationErrorDisplay(true);

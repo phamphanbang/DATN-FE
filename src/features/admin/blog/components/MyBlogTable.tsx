@@ -100,7 +100,6 @@ export const MyBlogTable = () => {
             <Center onClick={(e) => e.stopPropagation()}>
               <RowAction
                 onDelete={onAction(info.row.original.id, "deleted")}
-                onViewDetails={onActionViewDetails(info.row.original.id)}
                 onUpdate={onActionUpdate(info.row.original.id)}
               />
             </Center>
@@ -141,11 +140,7 @@ export const MyBlogTable = () => {
   };
 
   const onActionUpdate = (requestId: string) => () => {
-    console.log(requestId);
-  };
-
-  const onActionViewDetails = (requestId: string) => () => {
-    console.log(requestId);
+    navigate("/admin/blogs/update/" + requestId);
   };
 
   const handleConfirmation = async () => {
