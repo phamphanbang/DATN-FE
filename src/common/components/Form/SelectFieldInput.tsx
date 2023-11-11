@@ -40,6 +40,7 @@ export const SelectFieldInput = ({
   }, [validationError])
 
   const getValidationMessage = (key: string) => {
+    if(typeof validationError == "string") return;
     const error = validationError.find(item => item.type === key);
     if (error) return <ErrorDisplay message={error.message} />
   }

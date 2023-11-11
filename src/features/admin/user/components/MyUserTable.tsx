@@ -275,7 +275,7 @@ export const MyUserTable = () => {
                 // sorting={sorting}
                 // onSortingChange={setSorting}
                 // onRowClick={onActionViewDetails}
-                onRowHover={true}
+                onRowHover={false}
               />
             </Box>
           </EmptyWrapper>

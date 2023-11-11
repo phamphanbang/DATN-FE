@@ -12,6 +12,7 @@ import AdminNotFound from 'common/components/AdminNotFound';
 import Blogs from 'features/admin/blog/index';
 import CreateNewBlog from 'features/admin/blog/create';
 import UpdateBlog from 'features/admin/blog/update';
+import Scores from 'features/admin/score';
 
 const routeList: RouteObject[] = [
   {
@@ -43,6 +44,14 @@ const routeList: RouteObject[] = [
         element: (
           <WrapperRouteComponent>
             <Blogs />
+          </WrapperRouteComponent>
+        ),
+      },
+      {
+        path: "scores",
+        element: (
+          <WrapperRouteComponent>
+            <Scores />
           </WrapperRouteComponent>
         ),
       },

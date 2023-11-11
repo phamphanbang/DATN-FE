@@ -4,7 +4,9 @@ export const QueryKeys = {
   GET_ALL_USERS: 'getAllUsers',
   GET_USER: 'getUser',
   GET_ALL_BLOGS: 'getAllBlogs',
-  GET_BLOG: 'getBlog'
+  GET_BLOG: 'getBlog',
+  GET_ALL_SCORE: 'getAllScore',
+  GET_SCORE: 'getScore'
 }
 
 export const userRole: option[] = [
@@ -19,6 +21,17 @@ export const userRole: option[] = [
   {
     value: "user",
     label: "User",
+  }
+]
+
+export const scoreType: option[] = [
+  {
+    value: "reading",
+    label: "Reading"
+  },
+  {
+    value: "listening",
+    label: "Listening"
   }
 ]
 

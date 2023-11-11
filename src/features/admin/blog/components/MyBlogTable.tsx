@@ -92,6 +92,22 @@ export const MyBlogTable = () => {
             </Box>
           ),
         }),
+        columnHelper.accessor("panel", {
+          id: "panel",
+          header: () => <Box>Panel</Box>,
+          enableSorting: false,
+          cell: (info) => (
+            <Box>
+              <Image
+                boxSize="50px"
+                src={getImage("blogs", info.getValue())}
+                alt="Blog Panel"
+                mx={"auto"}
+                my={"10px"}
+              />
+            </Box>
+          ),
+        }),
         columnHelper.display({
           id: "actions",
           enableSorting: false,
@@ -209,7 +225,7 @@ export const MyBlogTable = () => {
               overflowX="auto"
               w={{ base: `calc(100vw - ${sideBarWidth}px)`, lg: "auto" }}
             >
-              <Table columns={blogColumns} data={blogs} onRowHover={true} />
+              <Table columns={blogColumns} data={blogs} onRowHover={false} />
             </Box>
           </EmptyWrapper>
         )}
