@@ -1,36 +1,30 @@
 // import { useState } from 'react';
-import {
-  Box,
-  Heading,
-  VStack,
-  Button,
-  Grid,
-} from '@chakra-ui/react';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { PasswordField } from 'common/components/PasswordField';
-import { TextField } from 'common/components/TextField';
-import LoginBackground from 'assets/images/Admin_login_background.jfif';
-import { useLogin } from 'api/apiHooks/userHooks';
-import { getItem, setItem } from 'utils';
-import { LocalStorageKeys } from 'common/enums';
-import { LoginParams } from 'models/user';
+import { Box, Heading, VStack, Button, Grid } from "@chakra-ui/react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { PasswordField } from "common/components/PasswordField";
+import { TextField } from "common/components/TextField";
+import LoginBackground from "assets/images/Admin_login_background.jfif";
+import { useLogin } from "api/apiHooks/userHooks";
+import { getItem, setItem } from "utils";
+import { LocalStorageKeys } from "common/enums";
+import { LoginParams } from "models/user";
 
 const initialLoginParams: LoginParams = {
-  email: '',
-  password: ''
+  email: "",
+  password: "",
 };
 
 const AdminLogin = () => {
   const redirectURL = getItem(LocalStorageKeys.prevURL)
     ? getItem(LocalStorageKeys.prevURL)
-    : '/admin/users';
+    : "/admin/users";
 
   useEffect(() => {
     const accessToken = getItem(LocalStorageKeys.accessToken);
 
     if (accessToken) {
-      window.location.href = '/admin/users';
+      window.location.href = "/admin/users";
     }
   }, []);
 
@@ -40,55 +34,64 @@ const AdminLogin = () => {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<LoginParams>({ defaultValues: initialLoginParams })
+  } = useForm<LoginParams>({ defaultValues: initialLoginParams });
 
-  const onLogin = async ({
-    email,
-    password
-  }: LoginParams) => {
-    const { token } = await loginMutate({
+  const onLogin = async ({ email, password }: LoginParams) => {
+    const { data } = await loginMutate({
       email: email.trim(),
       password: password.trim(),
     });
 
-    if (token) {
-      setItem(LocalStorageKeys.accessToken, token);
-      setItem(LocalStorageKeys.prevURL, '');
-      window.location.href = redirectURL ?? '/admin/users';
+    if (data?.token) {
+      setItem(LocalStorageKeys.accessToken, data.token);
+      setItem(LocalStorageKeys.prevURL, "");
+      window.location.href = redirectURL ?? "/admin/users";
     }
-  }
+  };
 
   return (
     <Grid
-      templateColumns={{ base: 'auto', xl: '780px 1fr' }}
+      templateColumns={{ base: "auto", xl: "780px 1fr" }}
       backgroundImage={`url(${LoginBackground})`}
       backgroundPosition="-10% 20%"
     >
       <VStack
-        p={{ base: '14px', md: '38px 44px' }}
+        p={{ base: "14px", md: "38px 44px" }}
         h="100vh"
         backgroundColor="dark"
         alignItems="left"
       >
         <Box width="full">
           {/* <Image h="36px" src={Logo} /> */}
-          <Heading as="h1" size="md" textAlign="left" w="full" fontWeight={700} color="white">
+          <Heading
+            as="h1"
+            size="md"
+            textAlign="left"
+            w="full"
+            fontWeight={700}
+            color="white"
+          >
             TOEICAMP
           </Heading>
         </Box>
         <VStack
           flex={1}
           mx="auto"
-          w={{ base: 'full', md: '380px' }}
+          w={{ base: "full", md: "380px" }}
           justifyContent="center"
           spacing="20px"
         >
-          <Heading as="h1" size="md" textAlign="left" w="full" fontWeight={700} color="white">
+          <Heading
+            as="h1"
+            size="md"
+            textAlign="left"
+            w="full"
+            fontWeight={700}
+            color="white"
+          >
             Sign In
           </Heading>
-          <form style={{ width: '100%' }}
-            onSubmit={handleSubmit(onLogin)}
-          >
+          <form style={{ width: "100%" }} onSubmit={handleSubmit(onLogin)}>
             <VStack spacing="14px">
               <TextField
                 h="50px"
@@ -96,8 +99,8 @@ const AdminLogin = () => {
                 color="white"
                 fontSize="sm"
                 error={errors.email?.message}
-                {...register('email', {
-                  required: 'The Email address field is required!',
+                {...register("email", {
+                  required: "The Email address field is required!",
                 })}
               />
               <PasswordField
@@ -105,16 +108,16 @@ const AdminLogin = () => {
                 placeholder="Password"
                 fontSize="sm"
                 error={errors.password?.message}
-                {...register('password', {
-                  required: 'The password field is required!',
+                {...register("password", {
+                  required: "The password field is required!",
                 })}
                 color="white"
                 iconsProps={{
-                  w: '18px',
-                  h: '18px',
+                  w: "18px",
+                  h: "18px",
                 }}
                 buttonProps={{
-                  mr: '10px',
+                  mr: "10px",
                 }}
               />
               <Button
@@ -133,6 +136,6 @@ const AdminLogin = () => {
       </VStack>
     </Grid>
   );
-}
+};
 
 export default AdminLogin;

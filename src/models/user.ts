@@ -11,9 +11,15 @@ export interface User {
   panel: string;
 }
 
-export interface LoginResult {
+export interface dataLogin {
   token: string;
   name: string;
+}
+
+export interface LoginResult {
+  data: dataLogin;
+  message: string;
+  status: string;
 }
 
 export interface ListResult<T> {
