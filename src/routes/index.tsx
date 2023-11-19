@@ -9,11 +9,12 @@ import Blogs from "features/admin/blog/index";
 import CreateNewBlog from "features/admin/blog/create";
 import UpdateBlog from "features/admin/blog/update";
 import Scores from "features/admin/score";
+import ClientHome from "features/client/home";
 
 const routeList: RouteObject[] = [
   {
     path: "/",
-    element: <Navigate to="admin/login" />,
+    element: <ClientHome />,
   },
   {
     path: "admin/login",
