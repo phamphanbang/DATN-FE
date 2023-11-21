@@ -16,14 +16,19 @@ import Scores from 'features/admin/score';
 import Template from 'features/admin/template';
 import CreateNewTemplate from 'features/admin/template/create';
 import UpdateTemplate from 'features/admin/template/update';
+import ClientHome from "features/client/home";
 
 const routeList: RouteObject[] = [
   {
-    path: "admin/login",
-    element: <AdminLogin />
+    path: "/",
+    element: <ClientHome />,
   },
   {
-    path: 'admin/',
+    path: "admin/login",
+    element: <AdminLogin />,
+  },
+  {
+    path: "admin/",
     element: (
       <WrapperRouteComponent auth={true}>
         <Layout />
@@ -99,7 +104,7 @@ const routeList: RouteObject[] = [
         ),
       },
       {
-        path: '*',
+        path: "*",
         element: (
           <Suspense>
             <WrapperRouteComponent>
@@ -108,9 +113,8 @@ const routeList: RouteObject[] = [
           </Suspense>
         ),
       },
-
-    ]
-  }
+    ],
+  },
 ];
 
 const Router = createBrowserRouter(routeList);
