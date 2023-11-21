@@ -6,13 +6,9 @@ import { ErrorMessage } from "@hookform/error-message";
 import { useEffect, useState } from "react";
 import { SearchableSelectField } from "../SearchableSelectField";
 import { option } from "common/types";
-
-export type FormParams = Record<
-  string,
-  string | File
->;
+import { FormParams } from "models/app";
 interface ISelectFieldInputProps {
-  handleSelectChangeValue: (value: string, key: string) => void;
+  handleSelectChangeValue: (value: string , key: string) => void;
   inputKey: string;
   validationError: ValidationErrorMessage[] | [];
   title: string;
@@ -20,6 +16,7 @@ interface ISelectFieldInputProps {
   value: string;
   selectOptions: option[];
   control: Control;
+  isDisabled?: boolean;
 }
 
 export const SelectFieldInput = ({
@@ -30,7 +27,8 @@ export const SelectFieldInput = ({
   title,
   value,
   selectOptions,
-  control
+  control,
+  isDisabled
 }: ISelectFieldInputProps) => {
   const [isValidationErrorDisplay, setIsValidationErrorDisplay] = useState<boolean>(true);
 
@@ -65,7 +63,7 @@ export const SelectFieldInput = ({
         options={selectOptions}
         value={value}
         handleChange={handleSelectChangeValue}
-        
+        isDisabled={isDisabled ? true : false}
       />
       {isValidationErrorDisplay && getValidationMessage(inputKey)}
       <ErrorMessage

@@ -24,8 +24,7 @@ import { ErrorDisplay } from "common/components/ErrorDisplay";
 import { ErrorMessage } from "@hookform/error-message";
 import { getImage } from "utils";
 import { IBlogUpdateRequest } from "models/blog";
-
-export type FormParams = Record<string, string | File>;
+import { FormParams } from "models/app";
 
 interface IBlogUpdateForm {
   blogId: string;

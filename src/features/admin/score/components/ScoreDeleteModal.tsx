@@ -21,13 +21,13 @@ import { AxiosError } from "axios";
 import { TextFieldInput } from "common/components/Form/TextFieldInput";
 import { SelectFieldInput } from "common/components/Form/SelectFieldInput";
 import { useDeleteScore } from "api/apiHooks/scoreHooks";
+import { FormParams } from "models/app";
 
 interface ICreateModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export type FormParams = Record<string, string | File>;
 
 const ScoreDeleteForm = ({ isOpen, onClose }: ICreateModalProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);

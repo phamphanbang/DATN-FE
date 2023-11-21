@@ -2,7 +2,8 @@
 import { UserFilterParams, LoginParams, LoginResult, UserRequestResult, User, IUserUpdateRequest, IUserResetPassword } from 'models/user';
 import { useCreate, useDelete, useGetList, useUpdate } from "api/apiHooks";
 import { QueryKeys } from 'common/constants';
-import { FormParams } from 'models/user';
+import { FormParams } from 'models/app';
+
 
 export const useLogin = () => {
   return useCreate<LoginParams, LoginResult>('/admin/auth/login');

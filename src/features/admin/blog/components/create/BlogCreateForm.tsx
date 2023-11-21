@@ -22,8 +22,7 @@ import { useNavigate } from "react-router-dom";
 import useDebounced from "hooks/useDebounced";
 import { ErrorDisplay } from "common/components/ErrorDisplay";
 import { ErrorMessage } from "@hookform/error-message";
-
-export type FormParams = Record<string, string | File>;
+import { FormParams } from "models/app";
 
 const BlogCreateForm = () => {
   const navigate = useNavigate();

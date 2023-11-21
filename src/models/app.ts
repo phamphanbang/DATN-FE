@@ -1,3 +1,5 @@
+import { ITemplatePartCreateRequest } from "./template";
+
 export interface ListResult<T> {
   totalCount: number;
   items: T[];
@@ -11,5 +13,5 @@ export interface TableFilterParams {
 
 export type FormParams = Record<
   string,
-  string | File
+  string | number | File | ITemplatePartCreateRequest[]
 >;

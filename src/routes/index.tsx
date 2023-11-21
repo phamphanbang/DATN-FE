@@ -13,6 +13,9 @@ import Blogs from 'features/admin/blog/index';
 import CreateNewBlog from 'features/admin/blog/create';
 import UpdateBlog from 'features/admin/blog/update';
 import Scores from 'features/admin/score';
+import Template from 'features/admin/template';
+import CreateNewTemplate from 'features/admin/template/create';
+import UpdateTemplate from 'features/admin/template/update';
 
 const routeList: RouteObject[] = [
   {
@@ -44,6 +47,30 @@ const routeList: RouteObject[] = [
         element: (
           <WrapperRouteComponent>
             <Blogs />
+          </WrapperRouteComponent>
+        ),
+      },
+      {
+        path: "templates",
+        element: (
+          <WrapperRouteComponent>
+            <Template />
+          </WrapperRouteComponent>
+        ),
+      },
+      {
+        path: "templates/create",
+        element: (
+          <WrapperRouteComponent>
+            <CreateNewTemplate />
+          </WrapperRouteComponent>
+        ),
+      },
+      {
+        path: "templates/update/:id",
+        element: (
+          <WrapperRouteComponent>
+            <UpdateTemplate />
           </WrapperRouteComponent>
         ),
       },

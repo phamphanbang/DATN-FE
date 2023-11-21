@@ -1,10 +1,10 @@
 import { FormControl, FormHelperText, FormLabel } from "@chakra-ui/react";
-import { TextField } from "../TextField";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { ValidationErrorMessage } from "models/appConfig";
 import { ErrorDisplay } from "../ErrorDisplay";
 import { ErrorMessage } from "@hookform/error-message";
 import { ChangeEvent, useEffect, useState } from "react";
+import { TextAreaField } from "../TextAreaField";
 import { FormParams } from "models/app";
 
 interface ITextFieldInputProps {
@@ -22,7 +22,7 @@ interface ITextFieldInputProps {
   isDisabled?: boolean;
 }
 
-export const TextFieldInput = ({
+export const TextAreaFieldInput = ({
   register,
   handleChangeValue,
   inputKey,
@@ -56,11 +56,10 @@ export const TextFieldInput = ({
           *
         </FormHelperText>
       </FormLabel>
-      <TextField
+      <TextAreaField
         h="40px"
         placeholder={placeholder}
         fontSize="sm"
-        isDisabled={isDisabled ? true : false}
         defaultValue={defaultValue}
         {...register(inputKey, {
           required: `${title} is required`,
@@ -69,9 +68,10 @@ export const TextFieldInput = ({
             setIsValidationErrorDisplay(false);
           },
         })}
+        isDisabled={isDisabled ? true : false}
       />
       {isValidationErrorDisplay && getValidationMessage(inputKey)}
-      {errors  ? (
+      {errors ? (
         <ErrorMessage
           errors={errors}
           name={inputKey}

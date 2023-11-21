@@ -28,6 +28,7 @@ import { SelectFieldInput } from "common/components/Form/SelectFieldInput";
 import { FileField } from "common/components/FileField";
 import { IUserUpdateRequest } from "models/user";
 import { getImage } from "utils";
+import { FormParams } from "models/app";
 
 interface IUpdateModalProps {
   isOpen: boolean;
@@ -35,8 +36,6 @@ interface IUpdateModalProps {
   initialValues: IUserUpdateRequest;
   userId: string;
 }
-
-export type FormParams = Record<string, string | File>;
 
 const UserUpdateForm = ({
   isOpen,

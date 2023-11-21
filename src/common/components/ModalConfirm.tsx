@@ -15,6 +15,7 @@ export interface ModalConfirmProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  isDisableConfirm?: boolean;
 }
 
 export const ModalConfirm = ({
@@ -23,6 +24,7 @@ export const ModalConfirm = ({
   isOpen,
   onClose,
   onConfirm,
+  isDisableConfirm
 }: ModalConfirmProps) => {
   return (
     <Modal
@@ -42,7 +44,7 @@ export const ModalConfirm = ({
           <Button colorScheme="gray" color="gray" mr={3} onClick={onClose}>
             Cancel
           </Button>
-          <Button backgroundColor="primary" color="white" onClick={onConfirm}>
+          <Button backgroundColor="primary" color="white" onClick={onConfirm} display={isDisableConfirm ? "none" : "block"}>
             Yes
           </Button>
         </ModalFooter>

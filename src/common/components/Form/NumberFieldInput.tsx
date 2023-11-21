@@ -1,28 +1,33 @@
 import { FormControl, FormHelperText, FormLabel } from "@chakra-ui/react";
-import { TextField } from "../TextField";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { FieldErrors, UseFormRegister, Controller } from "react-hook-form";
 import { ValidationErrorMessage } from "models/appConfig";
 import { ErrorDisplay } from "../ErrorDisplay";
 import { ErrorMessage } from "@hookform/error-message";
 import { ChangeEvent, useEffect, useState } from "react";
+import { NumberField } from "../NumberField";
 import { FormParams } from "models/app";
 
 interface ITextFieldInputProps {
   register: UseFormRegister<FormParams>;
   handleChangeValue: (
-    e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>,
-    key: string
+    valueAsString: string,
+    key: string,
+    index: number
   ) => void;
   inputKey: string;
   validationError: ValidationErrorMessage[] | [];
   placeholder: string;
   title: string;
   errors?: FieldErrors<FormParams>;
-  defaultValue?: string;
+  defaultValue?: string | number;
+  min?: number;
+  max?: number;
+  index?: number;
+  value: number | string;
   isDisabled?: boolean;
 }
 
-export const TextFieldInput = ({
+export const NumberFieldInput = ({
   register,
   handleChangeValue,
   inputKey,
@@ -31,6 +36,10 @@ export const TextFieldInput = ({
   title,
   placeholder,
   defaultValue,
+  min,
+  max,
+  index,
+  value,
   isDisabled
 }: ITextFieldInputProps) => {
   const [isValidationErrorDisplay, setIsValidationErrorDisplay] =
@@ -47,6 +56,8 @@ export const TextFieldInput = ({
     if (error) return <ErrorDisplay message={error.message} />;
   };
 
+  const inputIndex = index ? index : 0;
+
   return (
     <FormControl key={inputKey}>
       <FormLabel fontSize={16} my={1} fontWeight="normal">
@@ -56,28 +67,56 @@ export const TextFieldInput = ({
           *
         </FormHelperText>
       </FormLabel>
-      <TextField
+      <NumberField
         h="40px"
         placeholder={placeholder}
         fontSize="sm"
-        isDisabled={isDisabled ? true : false}
         defaultValue={defaultValue}
         {...register(inputKey, {
           required: `${title} is required`,
-          onChange: (e) => {
-            handleChangeValue(e, inputKey);
-            setIsValidationErrorDisplay(false);
-          },
         })}
+        onChange={(valueAsString: string, valueAsNumber: number) => {
+          handleChangeValue(valueAsString, inputKey, inputIndex);
+          setIsValidationErrorDisplay(false);
+        }}
+        value={value === "0" ? "" : value}
+        isDisabled={isDisabled ? true : false}
+        min={min}
+        max={max}
       />
+      {/* <Controller
+        name={inputKey}
+        defaultValue={defaultValue}
+        control={control}
+        render={({ field }) => (
+          <NumberField
+            {...field}
+            h="40px"
+            placeholder={placeholder}
+            fontSize="sm"
+            {...register(inputKey, {
+              required: `${title} is required`,
+            })}
+            onChange={(valueAsString: string, valueAsNumber: number) => {
+              handleChangeValue(valueAsString, inputKey, inputIndex);
+              setIsValidationErrorDisplay(false);
+            }}
+            min={min}
+            max={max}
+          />
+        )}
+      /> */}
+
       {isValidationErrorDisplay && getValidationMessage(inputKey)}
-      {errors  ? (
+      {errors && isValidationErrorDisplay ? (
         <ErrorMessage
           errors={errors}
           name={inputKey}
           render={({ message }) => <ErrorDisplay message={message} />}
         />
-      ) : ""}
+      ) : (
+        ""
+      )}
     </FormControl>
   );
 };

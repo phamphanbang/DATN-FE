@@ -46,13 +46,14 @@ const AdminLogin = () => {
     email,
     password
   }: LoginParams) => {
-    const { token } = await loginMutate({
+    const { token, name } = await loginMutate({
       email: email.trim(),
       password: password.trim(),
     });
 
     if (token) {
       setItem(LocalStorageKeys.accessToken, token);
+      setItem(LocalStorageKeys.name, name);
       setItem(LocalStorageKeys.prevURL, '');
       window.location.href = redirectURL ?? '/admin/users';
     }

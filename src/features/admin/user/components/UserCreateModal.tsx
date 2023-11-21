@@ -26,13 +26,11 @@ import { AxiosError } from "axios";
 import { TextFieldInput } from "common/components/Form/TextFieldInput";
 import { SelectFieldInput } from "common/components/Form/SelectFieldInput";
 import { FileField } from "common/components/FileField";
-
+import { FormParams } from "models/app";
 interface ICreateModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-export type FormParams = Record<string, string | File>;
 
 const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);

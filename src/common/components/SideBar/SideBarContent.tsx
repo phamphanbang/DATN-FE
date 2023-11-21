@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSetAppConfig } from 'stores/appConfig';
 import { removeItem } from 'utils';
 import { LocalStorageKeys } from 'common/enums';
+import { getItem } from 'utils';
 
 export const SideBarContent = () => {
   const NavList = [
@@ -62,7 +63,7 @@ export const SideBarContent = () => {
   };
 
   return (
-    <VStack bg="dark" color="white" h="100vh" alignItems="stretch" spacing={0}>
+    <VStack bg="dark" color="white" h="100vh" alignItems="stretch" spacing={0} w={"175px"}>
       <HStack
         cursor="pointer"
         alignItems="center"
@@ -72,7 +73,7 @@ export const SideBarContent = () => {
         onClick={onNavigate('/')}
       >
         {/* <Image h="40px" src={Logo} /> */}
-        <Heading fontSize="18px">TOEICAMP</Heading>
+        <Heading fontSize="18px" m={"auto"}>TOEICAMP</Heading>
       </HStack>
       <VStack
         p="12px"
@@ -91,9 +92,9 @@ export const SideBarContent = () => {
         ))}
       </VStack>
       <HStack borderTopColor="gray.200" px="12px" py="16px" spacing="12px">
-        <Text fontSize="sm" fontWeight={600} noOfLines={1}>
+        <Text fontSize="sm" fontWeight={600} noOfLines={1} overflow={"hidden"} textOverflow={"ellipsis"}>
           {/* {user.email} */}
-          PlaceHolder
+          {getItem(LocalStorageKeys.name)}
         </Text>
         <Menu autoSelect={false} placement="top-end" >
           <MenuButton

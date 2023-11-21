@@ -6,7 +6,9 @@ export const QueryKeys = {
   GET_ALL_BLOGS: 'getAllBlogs',
   GET_BLOG: 'getBlog',
   GET_ALL_SCORE: 'getAllScore',
-  GET_SCORE: 'getScore'
+  GET_SCORE: 'getScore',
+  GET_ALL_TEMPLATE: 'getAllTemplate',
+  GET_TEMPLATE: 'getTemplate'
 }
 
 export const userRole: option[] = [
@@ -32,6 +34,50 @@ export const scoreType: option[] = [
   {
     value: "listening",
     label: "Listening"
+  }
+]
+
+export const templateStatus: option[] = [
+  {
+    value: "active",
+    label: "Active"
+  },
+  {
+    value: "disable",
+    label: "Disable"
+  }
+]
+
+export const partType: option[] = [
+  {
+    value: "reading",
+    label: "Reading"
+  },
+  {
+    value: "listening",
+    label: "Listening"
+  }
+]
+
+export const hasGroupQuestionType : option[] = [
+  {
+    value: "true",
+    label: "True"
+  },
+  {
+    value: "false",
+    label: "False"
+  }
+]
+
+export const numOfAnswers : option[] = [
+  {
+    value: "3",
+    label: "3"
+  },
+  {
+    value: "4",
+    label: "4"
   }
 ]
 

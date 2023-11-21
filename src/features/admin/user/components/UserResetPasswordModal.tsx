@@ -20,7 +20,7 @@ import { ErrorResponse, ValidationErrorMessage } from "models/appConfig";
 import { AxiosError } from "axios";
 import { TextFieldInput } from "common/components/Form/TextFieldInput";
 import { IUserResetPassword } from "models/user";
-
+import { FormParams } from "models/app";
 interface IResetPasswordProps {
   isOpen: boolean;
   onClose: () => void;
@@ -30,8 +30,6 @@ interface IResetPasswordProps {
 const initalValue: IUserResetPassword = {
   password: "",
 };
-
-export type FormParams = Record<string, string | File>;
 
 const UserResetPasswordForm = ({
   isOpen,
