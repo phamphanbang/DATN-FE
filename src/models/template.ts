@@ -1,3 +1,4 @@
+import { option } from "common/types";
 import { ListResult } from "./app";
 
 export interface TemplatePart {
@@ -31,6 +32,15 @@ export interface ITemplatePartCreateRequest {
   has_group_question: string;
 }
 
+export interface ITemplatePartUpdateRequest {
+  id: string;
+  order_in_test: number;
+  num_of_questions: string;
+  num_of_answers: string;
+  part_type: string;
+  has_group_question: string;
+}
+
 export interface ITemplateCreateRequest {
   name: string;
   description: string;
@@ -50,7 +60,10 @@ export interface ITemplateUpdateRequest {
   total_questions: number;
   total_score: number;
   status: string;
-  parts: ITemplatePartCreateRequest[]
+  parts: ITemplatePartUpdateRequest[]
 }
 
 export type TemplateRequestResult = ListResult<Template>;
+
+
+export type TemplateOptionResult = ListResult<option>;

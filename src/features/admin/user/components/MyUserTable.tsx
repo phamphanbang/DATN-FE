@@ -12,7 +12,7 @@ import {
 import { useDeleteUser, useGetUserList } from "api/apiHooks/userHooks";
 import { IUserUpdateRequest, User, UserFilterParams } from "models/user";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { ColumnDef, createColumnHelper, SortingState } from "@tanstack/react-table";
 import { EmptyWrapper } from "common/components/EmptyWrapper";
 import { useRecoilValue } from "recoil";
 import { appConfigState } from "stores/appConfig";
@@ -37,12 +37,20 @@ import UserResetPasswordForm from "./UserResetPasswordModal";
 const initialFilter: UserFilterParams = {
   maxResultCount: +noOfRows[0].value,
   skipCount: 0,
-  sorting: "",
+  sorting: ['id', 'asc'].join(' '),
 };
+
+const initialSorting: SortingState = [
+  {
+    id: "id",
+    desc: false,
+  },
+];
 
 export const MyUserTable = () => {
   const { sideBarWidth } = useRecoilValue(appConfigState);
   const [filter, setFilter] = useState<UserFilterParams>(initialFilter);
+  const [sorting, setSorting] = useState<SortingState>(initialSorting);
   const { data, isLoading } = useGetUserList(filter);
   const { items: users = [], totalCount = 0 } = data ?? {};
   const { skipCount, maxResultCount } = filter;
@@ -104,7 +112,7 @@ export const MyUserTable = () => {
         columnHelper.accessor("id", {
           id: "id",
           header: () => <Box>ID</Box>,
-          enableSorting: false,
+          enableSorting: true,
           cell: (info) => <Box>{info.getValue()}</Box>,
         }),
         columnHelper.accessor("name", {
@@ -145,6 +153,17 @@ export const MyUserTable = () => {
       ] as ColumnDef<User>[],
     [columnHelper]
   );
+
+  useEffect(() => {
+    const { id, desc } = sorting?.[0] ?? {};
+    const sort = `${id} ${desc ? 'desc' : 'asc'}`;
+
+    setFilter((filter) => ({
+      ...filter,
+      sorting: sort,
+      skipCount: 0,
+    }));
+  }, [sorting]);
 
   const onPageChange = (page: number) => {
     setFilter((filter) => ({
@@ -272,8 +291,8 @@ export const MyUserTable = () => {
               <Table
                 columns={userColumns}
                 data={users}
-                // sorting={sorting}
-                // onSortingChange={setSorting}
+                sorting={sorting}
+                onSortingChange={setSorting}
                 // onRowClick={onActionViewDetails}
                 onRowHover={false}
               />

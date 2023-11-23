@@ -1,7 +1,7 @@
 import { Spinner } from '@chakra-ui/react';
 import { InputWrapperProps } from 'common/components/InputWrapper';
 import { option } from 'common/types';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import Select from 'react-select';
 

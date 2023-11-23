@@ -8,7 +8,9 @@ export const QueryKeys = {
   GET_ALL_SCORE: 'getAllScore',
   GET_SCORE: 'getScore',
   GET_ALL_TEMPLATE: 'getAllTemplate',
-  GET_TEMPLATE: 'getTemplate'
+  GET_TEMPLATE: 'getTemplate',
+  GET_ALL_EXAMS: 'getAllExams',
+  GET_ALL_TEMPLATE_WITHOUT_PART: 'getALlTemplateWithoutPart'
 }
 
 export const userRole: option[] = [
@@ -98,4 +100,8 @@ export const noOfRows: option[] = [
     value: 100,
     label: 100,
   },
+  {
+    value: 999,
+    label: 999
+  }
 ];

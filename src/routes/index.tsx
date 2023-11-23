@@ -17,6 +17,7 @@ import Template from 'features/admin/template';
 import CreateNewTemplate from 'features/admin/template/create';
 import UpdateTemplate from 'features/admin/template/update';
 import ClientHome from "features/client/home";
+import Exam from 'features/admin/exam';
 
 const routeList: RouteObject[] = [
   {
@@ -52,6 +53,14 @@ const routeList: RouteObject[] = [
         element: (
           <WrapperRouteComponent>
             <Blogs />
+          </WrapperRouteComponent>
+        ),
+      },
+      {
+        path: "exams",
+        element: (
+          <WrapperRouteComponent>
+            <Exam />
           </WrapperRouteComponent>
         ),
       },

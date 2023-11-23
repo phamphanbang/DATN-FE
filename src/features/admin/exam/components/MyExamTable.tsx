@@ -8,7 +8,6 @@ import {
   InputRightElement,
   Spacer,
   Spinner,
-  Image,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -32,10 +31,12 @@ import { FaPlus } from "react-icons/fa";
 import { ModalConfirm } from "common/components/ModalConfirm";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "common/components/StandaloneToast";
-import { useDeleteBlog, useGetBlogList } from "api/apiHooks/blogHooks";
 import { TableFilterParams } from "models/app";
-import { Blog } from "models/blog";
-import { getImage } from "utils";
+import { useDeleteTemplate } from "api/apiHooks/templateHook";
+import { useGetExamList } from "api/apiHooks/examHook";
+import { Exam } from "models/exam";
+import { capitalizeFirstLetter } from "utils";
+import ExamCreateModal from "./ExamCreateModal";
 
 const initialFilter: TableFilterParams = {
   maxResultCount: +noOfRows[0].value,
@@ -50,14 +51,14 @@ const initialSorting: SortingState = [
   },
 ];
 
-export const MyBlogTable = () => {
+export const MyExamTable = () => {
   const navigate = useNavigate();
 
   const { sideBarWidth } = useRecoilValue(appConfigState);
   const [filter, setFilter] = useState<TableFilterParams>(initialFilter);
   const [sorting, setSorting] = useState<SortingState>(initialSorting);
-  const { data, isLoading } = useGetBlogList(filter);
-  const { items: blogs = [], totalCount = 0 } = data ?? {};
+  const { data, isLoading } = useGetExamList(filter);
+  const { items: exam = [], totalCount = 0 } = data ?? {};
   const { skipCount, maxResultCount } = filter;
   const currentPage = (maxResultCount + skipCount) / maxResultCount;
 
@@ -69,11 +70,14 @@ export const MyBlogTable = () => {
   const [modalDescription, setModalDescription] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const deleteRequestMutation = useDeleteBlog();
+  const [isDeleteable, setIsDeleteable] = useState(true);
+  const [isOpenCreate, setIsOpenCreate] = useState(false);
+
+  const deleteRequestMutation = useDeleteTemplate();
   const queryClient = useQueryClient();
 
-  const columnHelper = createColumnHelper<Blog>();
-  const blogColumns = useMemo(
+  const columnHelper = createColumnHelper<Exam>();
+  const examColumns = useMemo(
     () =>
       [
         columnHelper.accessor("id", {
@@ -88,37 +92,29 @@ export const MyBlogTable = () => {
           enableSorting: false,
           cell: (info) => <Box>{info.getValue()}</Box>,
         }),
-        columnHelper.accessor("thumbnail", {
-          id: "thumbnail",
-          header: () => <Box>Thumbnail</Box>,
+        columnHelper.accessor("template.name", {
+          id: "template.name",
+          header: () => <Box>Template name</Box>,
           enableSorting: false,
-          cell: (info) => (
-            <Box>
-              <Image
-                boxSize="50px"
-                src={getImage("blogs", info.getValue())}
-                alt="Blog Thumbnail"
-                mx={"auto"}
-                my={"10px"}
-              />
-            </Box>
-          ),
+          cell: (info) => <Box>{info.getValue()}</Box>,
         }),
-        columnHelper.accessor("panel", {
-          id: "panel",
-          header: () => <Box>Panel</Box>,
+        columnHelper.accessor("status", {
+          id: "status",
+          header: () => <Box>Status</Box>,
           enableSorting: false,
-          cell: (info) => (
-            <Box>
-              <Image
-                boxSize="50px"
-                src={getImage("blogs", info.getValue())}
-                alt="Blog Panel"
-                mx={"auto"}
-                my={"10px"}
-              />
-            </Box>
-          ),
+          cell: (info) => <Box>{capitalizeFirstLetter(info.getValue())}</Box>,
+        }),
+        columnHelper.accessor("total_views", {
+          id: "total_views",
+          header: () => <Box>Total views</Box>,
+          enableSorting: false,
+          cell: (info) => <Box>{info.getValue()}</Box>,
+        }),
+        columnHelper.accessor("comments_count", {
+          id: "comments_count",
+          header: () => <Box>Total Comments</Box>,
+          enableSorting: false,
+          cell: (info) => <Box>{info.getValue()}</Box>,
         }),
         columnHelper.display({
           id: "actions",
@@ -133,7 +129,7 @@ export const MyBlogTable = () => {
             </Center>
           ),
         }),
-      ] as ColumnDef<Blog>[],
+      ] as ColumnDef<Exam>[],
     [columnHelper]
   );
 
@@ -173,13 +169,15 @@ export const MyBlogTable = () => {
 
   const onAction = (requestId: string, type: "deleted") => () => {
     setRequestId(requestId);
-    setModalTitle(`Confirm ${type} blog`);
-    setModalDescription(`Blog will be ${type}. Do you confirm that?`);
+    setModalTitle(`Confirm ${type} Template`);
+    setModalDescription(
+      `Template will be ${type} along with all its exams. Do you confirm that?`
+    );
     setIsOpen(true);
   };
 
   const onActionUpdate = (requestId: string) => () => {
-    navigate("/admin/blogs/update/" + requestId);
+    navigate("/admin/templates/update/" + requestId);
   };
 
   const handleConfirmation = async () => {
@@ -192,7 +190,7 @@ export const MyBlogTable = () => {
 
     try {
       await mutation.mutateAsync(requestId);
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ALL_BLOGS] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ALL_TEMPLATE] });
       toast({ title: successMessage, status: "success" });
     } catch (error) {
       toast({ title: errorMessage, status: "error" });
@@ -216,7 +214,7 @@ export const MyBlogTable = () => {
                 autoFocus
                 value={txtSearch}
                 type="text"
-                placeholder="Enter blog name"
+                placeholder="Enter template name"
                 fontSize="14px"
                 onChange={(e) => setTxtSearch(e.target.value)}
               />
@@ -225,10 +223,10 @@ export const MyBlogTable = () => {
               </InputRightElement>
             </InputGroup>
           </Box>
-          <Box w={"200px"} marginLeft={"auto"}>
-            <Button w={"100%"} onClick={() => navigate("/admin/blogs/create")}>
+          <Box w={"240px"} marginLeft={"auto"}>
+            <Button w={"100%"} onClick={() => setIsOpenCreate(true)}>
               <FaPlus />
-              <p style={{ marginLeft: "5px" }}>Create new blog</p>
+              <p style={{ marginLeft: "5px" }}>Create new exam</p>
             </Button>
           </Box>
         </HStack>
@@ -238,10 +236,10 @@ export const MyBlogTable = () => {
           </Center>
         ) : (
           <EmptyWrapper
-            isEmpty={!blogs.length}
+            isEmpty={!exam.length}
             h="200px"
             fontSize="xs"
-            message={"No Blog found!"}
+            message={"No Exam found!"}
           >
             <Box
               p="20px 30px 0px 24px"
@@ -249,8 +247,8 @@ export const MyBlogTable = () => {
               w={{ base: `calc(100vw - ${sideBarWidth}px)`, lg: "auto" }}
             >
               <Table
-                columns={blogColumns}
-                data={blogs}
+                columns={examColumns}
+                data={exam}
                 sorting={sorting}
                 onSortingChange={setSorting}
                 onRowHover={false}
@@ -288,6 +286,12 @@ export const MyBlogTable = () => {
         title={modalTitle}
         description={modalDescription}
       />
+      {isOpenCreate && (
+        <ExamCreateModal
+          isOpen={isOpenCreate}
+          onClose={() => setIsOpenCreate(false)}
+        />
+      )}
     </>
   );
 };

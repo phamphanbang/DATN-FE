@@ -100,7 +100,6 @@ const UserUpdateForm = ({
     try {
       await mutate();
     } catch (error) {
-      console.log(error);
       const err = error as AxiosError;
       const validation = err?.response?.data as ErrorResponse;
       setValidationError(validation.message as ValidationErrorMessage[]);

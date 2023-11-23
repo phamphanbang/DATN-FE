@@ -70,7 +70,7 @@ export const SideBarContent = () => {
         py="20px"
         px="16px"
         spacing="12px"
-        onClick={onNavigate('/')}
+        onClick={onNavigate('/admin/users')}
       >
         {/* <Image h="40px" src={Logo} /> */}
         <Heading fontSize="18px" m={"auto"}>TOEICAMP</Heading>

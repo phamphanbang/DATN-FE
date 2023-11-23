@@ -146,7 +146,6 @@ const TemplateCreateForm = () => {
   const removePart = (deleteIndex: number) => {
     const deleteTemplateParts = [...templateParts];
     deleteTemplateParts.forEach((item, index) => {
-      console.log("unregister");
       unregister(`num_of_questions_${index}`);
     });
     deleteTemplateParts.splice(deleteIndex, 1);
@@ -156,7 +155,6 @@ const TemplateCreateForm = () => {
         order_in_test: index + 1,
       };
     });
-    console.log(newTemplateParts);
     setTemplateParts(newTemplateParts);
   };
 

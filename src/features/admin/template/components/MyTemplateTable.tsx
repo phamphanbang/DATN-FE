@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { ColumnDef, createColumnHelper, SortingState } from "@tanstack/react-table";
 import { EmptyWrapper } from "common/components/EmptyWrapper";
 import { useRecoilValue } from "recoil";
 import { appConfigState } from "stores/appConfig";
@@ -30,18 +30,27 @@ import { toast } from "common/components/StandaloneToast";
 import { TableFilterParams } from "models/app";
 import { useDeleteTemplate, useGetTemplateList } from "api/apiHooks/templateHook";
 import { Template } from "models/template";
+import { capitalizeFirstLetter } from "utils";
 
 const initialFilter: TableFilterParams = {
   maxResultCount: +noOfRows[0].value,
   skipCount: 0,
-  sorting: "",
+  sorting: ['id', 'asc'].join(' ')
 };
+
+const initialSorting: SortingState = [
+  {
+    id: "id",
+    desc: false,
+  },
+];
 
 export const MyTemplateTable = () => {
   const navigate = useNavigate();
 
   const { sideBarWidth } = useRecoilValue(appConfigState);
   const [filter, setFilter] = useState<TableFilterParams>(initialFilter);
+  const [sorting, setSorting] = useState<SortingState>(initialSorting);
   const { data, isLoading } = useGetTemplateList(filter);
   const { items: blogs = [], totalCount = 0 } = data ?? {};
   const { skipCount, maxResultCount } = filter;
@@ -67,7 +76,7 @@ export const MyTemplateTable = () => {
         columnHelper.accessor("id", {
           id: "id",
           header: () => <Box>ID</Box>,
-          enableSorting: false,
+          enableSorting: true,
           cell: (info) => <Box>{info.getValue()}</Box>,
         }),
         columnHelper.accessor("name", {
@@ -81,6 +90,12 @@ export const MyTemplateTable = () => {
           header: () => <Box>Duration</Box>,
           enableSorting: false,
           cell: (info) => <Box>{info.getValue()}</Box>,
+        }),
+        columnHelper.accessor("status", {
+          id: "status",
+          header: () => <Box>Status</Box>,
+          enableSorting: false,
+          cell: (info) => <Box>{capitalizeFirstLetter(info.getValue())}</Box>,
         }),
         columnHelper.accessor("total_parts", {
           id: "total_parts",
@@ -116,6 +131,17 @@ export const MyTemplateTable = () => {
       ] as ColumnDef<Template>[],
     [columnHelper]
   );
+
+  useEffect(() => {
+    const { id, desc } = sorting?.[0] ?? {};
+    const sort = `${id} ${desc ? 'desc' : 'asc'}`;
+
+    setFilter((filter) => ({
+      ...filter,
+      sorting: sort,
+      skipCount: 0,
+    }));
+  }, [sorting]);
 
   const onPageChange = (page: number) => {
     setFilter((filter) => ({
@@ -217,7 +243,12 @@ export const MyTemplateTable = () => {
               overflowX="auto"
               w={{ base: `calc(100vw - ${sideBarWidth}px)`, lg: "auto" }}
             >
-              <Table columns={templateColumns} data={blogs} onRowHover={false} />
+              <Table 
+                columns={templateColumns} 
+                data={blogs}
+                sorting={sorting}
+                onSortingChange={setSorting} 
+                onRowHover={false} />
             </Box>
           </EmptyWrapper>
         )}

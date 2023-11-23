@@ -36,6 +36,7 @@ import {
 import { FormParams } from "models/app";
 import {
   ITemplatePartCreateRequest,
+  ITemplatePartUpdateRequest,
   ITemplateUpdateRequest,
   TemplatePart,
 } from "models/template";
@@ -66,7 +67,7 @@ const TemplateUpdateForm = ({ templateId }: ITemplateUpdateForm) => {
   });
 
   const [templateParts, setTemplateParts] = useState<
-    ITemplatePartCreateRequest[]
+    ITemplatePartUpdateRequest[]
   >([]);
   const [isAddable, setIsAddable] = useState<boolean>(true);
   const [isDeleteable, setIsDeleteable] = useState<boolean>(false);
@@ -101,8 +102,8 @@ const TemplateUpdateForm = ({ templateId }: ITemplateUpdateForm) => {
       data?.exams_count && data?.exams_count > 0 ? true : false;
     setIsDisabled(isFormUpdateable);
     const newTemplateParts = data?.parts.map((item, index) => {
-      console.log(item);
       return {
+        id: item.id,
         order_in_test: item.order_in_test,
         num_of_questions: item.num_of_questions.toString(),
         num_of_answers: item.num_of_answers.toString(),
@@ -111,8 +112,7 @@ const TemplateUpdateForm = ({ templateId }: ITemplateUpdateForm) => {
           item.has_group_question.toString() === "1" ? "true" : "false",
       };
     });
-    console.log(newTemplateParts);
-    setTemplateParts(newTemplateParts as ITemplatePartCreateRequest[]);
+    setTemplateParts(newTemplateParts as ITemplatePartUpdateRequest[]);
     setValue("name", data?.name as string);
     setValue("description", data?.description as string);
     setValue("total_questions", data?.total_questions as number);
@@ -185,6 +185,7 @@ const TemplateUpdateForm = ({ templateId }: ITemplateUpdateForm) => {
   const addPart = () => {
     const order_in_test = templateParts.length;
     const defaultPart = {
+      id: "",
       order_in_test: order_in_test + 1,
       num_of_questions: "0",
       num_of_answers: "3",
@@ -194,12 +195,12 @@ const TemplateUpdateForm = ({ templateId }: ITemplateUpdateForm) => {
     const newTemplateParts = [...templateParts];
     newTemplateParts.push(defaultPart);
     setTemplateParts(newTemplateParts);
+    setTabIndex(newTemplateParts.length - 1);
   };
 
   const removePart = (deleteIndex: number) => {
     const deleteTemplateParts = [...templateParts];
     deleteTemplateParts.forEach((item, index) => {
-      console.log("unregister");
       unregister(`num_of_questions_${index}`);
     });
     deleteTemplateParts.splice(deleteIndex, 1);
@@ -209,8 +210,12 @@ const TemplateUpdateForm = ({ templateId }: ITemplateUpdateForm) => {
         order_in_test: index + 1,
       };
     });
-    console.log(newTemplateParts);
     setTemplateParts(newTemplateParts);
+    const index =
+      tabIndex > newTemplateParts.length
+        ? newTemplateParts.length
+        : tabIndex - 1;
+    setTabIndex(index < 0 ? 0 : index);
   };
 
   useEffect(() => {
@@ -337,15 +342,21 @@ const TemplateUpdateForm = ({ templateId }: ITemplateUpdateForm) => {
             p={"10px"}
             border={`1px solid ${theme.colors.borderColor}`}
           >
-            <FormLabel
-              fontSize={15}
-              my={3}
-              fontWeight="medium"
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
+            <Box 
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
             >
-              Template Part
+              <FormLabel
+                fontSize={15}
+                my={3}
+                fontWeight="medium"
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                Template Part
+              </FormLabel>
               <Box>
                 <Button
                   type="button"
@@ -371,11 +382,14 @@ const TemplateUpdateForm = ({ templateId }: ITemplateUpdateForm) => {
                   Remove part
                 </Button>
               </Box>
-            </FormLabel>
+            </Box>
+
             <Tabs
               variant="soft-rounded"
               colorScheme="green"
+              // defaultIndex={1}
               onChange={(index) => setTabIndex(index)}
+              index={tabIndex}
             >
               <TabList>
                 {templateParts &&

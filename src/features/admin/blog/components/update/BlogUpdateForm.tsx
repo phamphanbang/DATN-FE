@@ -91,7 +91,6 @@ const BlogUpdateForm = ({ blogId }: IBlogUpdateForm) => {
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    console.log("begin",updatedFormParams)
     const file = e.target.files?.[0] ?? "";
     if (variable === "panel") {
       updatedFormParams.panel = file;
