@@ -52,6 +52,7 @@ export const NumberFieldInput = ({
 
   const getValidationMessage = (key: string) => {
     if (typeof validationError == "string") return;
+    // console.log(validationError);
     const error = validationError.find((item) => item.type === key);
     if (error) return <ErrorDisplay message={error.message} />;
   };
@@ -79,33 +80,11 @@ export const NumberFieldInput = ({
           handleChangeValue(valueAsString, inputKey, inputIndex);
           setIsValidationErrorDisplay(false);
         }}
-        value={value === "0" ? "" : value}
+        value={(value === "0" || value === "" || value === 0 || isNaN(value as number))  ? "" : value}
         isDisabled={isDisabled ? true : false}
-        min={min}
+        min={min ?? 0}
         max={max}
       />
-      {/* <Controller
-        name={inputKey}
-        defaultValue={defaultValue}
-        control={control}
-        render={({ field }) => (
-          <NumberField
-            {...field}
-            h="40px"
-            placeholder={placeholder}
-            fontSize="sm"
-            {...register(inputKey, {
-              required: `${title} is required`,
-            })}
-            onChange={(valueAsString: string, valueAsNumber: number) => {
-              handleChangeValue(valueAsString, inputKey, inputIndex);
-              setIsValidationErrorDisplay(false);
-            }}
-            min={min}
-            max={max}
-          />
-        )}
-      /> */}
 
       {isValidationErrorDisplay && getValidationMessage(inputKey)}
       {errors && isValidationErrorDisplay ? (

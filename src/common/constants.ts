@@ -10,7 +10,8 @@ export const QueryKeys = {
   GET_ALL_TEMPLATE: 'getAllTemplate',
   GET_TEMPLATE: 'getTemplate',
   GET_ALL_EXAMS: 'getAllExams',
-  GET_ALL_TEMPLATE_WITHOUT_PART: 'getALlTemplateWithoutPart'
+  GET_ALL_TEMPLATE_WITHOUT_PART: 'getALlTemplateWithoutPart',
+  GET_EXAM: 'getExam'
 }
 
 export const userRole: option[] = [
@@ -47,6 +48,21 @@ export const templateStatus: option[] = [
   {
     value: "disable",
     label: "Disable"
+  }
+]
+
+export const examStatus: option[] = [
+  {
+    value: "active",
+    label: "Active"
+  },
+  {
+    value: "disable",
+    label: "Disable"
+  },
+  {
+    value: 'draft',
+    label: 'Draft'
   }
 ]
 

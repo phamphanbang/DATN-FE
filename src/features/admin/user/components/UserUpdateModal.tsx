@@ -14,6 +14,7 @@ import {
   FormLabel,
   VStack,
   Image,
+  Box,
 } from "@chakra-ui/react";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -46,12 +47,14 @@ const UserUpdateForm = ({
   const [validationError, setValidationError] = useState<
     ValidationErrorMessage[]
   >([]);
+  const [style, setStyle] = useState({ display: "none" });
   const [formParams, setFormParams] =
     useState<IUserUpdateRequest>(initialValues);
-  const { mutateAsync: mutate, isLoading, error } = useUpdateUser(
-    userId,
-    formParams
-  );
+  const {
+    mutateAsync: mutate,
+    isLoading,
+    error,
+  } = useUpdateUser(userId, formParams);
   const queryClient = useQueryClient();
 
   const {
@@ -95,6 +98,12 @@ const UserUpdateForm = ({
 
     setFormParams(updatedFormParams);
   };
+
+  const deleteAvatar = () => {
+    const updatedFormParams = { ...formParams };
+    updatedFormParams['avatar'] = "";
+    setFormParams(updatedFormParams);
+  }
 
   const onSubmit = async () => {
     try {
@@ -164,17 +173,6 @@ const UserUpdateForm = ({
                   defaultValue={formParams.email as string}
                 />
 
-                {/* <TextFieldInput
-                  inputKey="password"
-                  title="User Password"
-                  placeholder="Enter user password"
-                  handleChangeValue={handleChangeValue}
-                  errors={errors}
-                  register={register}
-                  validationError={validationError}
-                  defaultValue={formParams.password as string}
-                /> */}
-
                 <SelectFieldInput
                   inputKey="role"
                   control={control}
@@ -195,18 +193,49 @@ const UserUpdateForm = ({
                     </FormHelperText>
                   </FormLabel>
                   {formParams.avatar && (
-                    <Image
-                      boxSize="200px"
-                      src={
-                        typeof formParams.avatar === "string"
-                          ? getImage("users", formParams.avatar)
-                          : URL.createObjectURL(formParams.avatar as File)
-                      }
-                      alt="User Avatar"
-                      mx={"auto"}
-                      my={"10px"}
-                      borderRadius={'full'}
-                    />
+                    <Box
+                      position={"relative"}
+                      onMouseEnter={() => {
+                        setStyle({ display: "flex" });
+                      }}
+                      onMouseLeave={() => {
+                        setStyle({ display: "none" });
+                      }}
+                    >
+                      <Image
+                        boxSize="200px"
+                        src={
+                          typeof formParams.avatar === "string"
+                            ? getImage("users", formParams.avatar)
+                            : URL.createObjectURL(formParams.avatar as File)
+                        }
+                        alt="User Avatar"
+                        mx={"auto"}
+                        my={"10px"}
+                        borderRadius={"full"}
+                      />
+                      <Box
+                        w={"100%"}
+                        h={"100%"}
+                        position={"absolute"}
+                        top={"0"}
+                        left={"0"}
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                        backgroundColor={"#c5bfbf73"}
+                        style={style}
+                      >
+                        <Button
+                          mt="14px"
+                          h="50px"
+                          colorScheme="gray"
+                          onClick={() => deleteAvatar()}
+                        >
+                          Delete Avatar
+                        </Button>
+                      </Box>
+                    </Box>
                   )}
 
                   <FileField

@@ -21,8 +21,10 @@ import { useGetAllTemplateList } from "api/apiHooks/templateHook";
 import { option } from "common/types";
 import { SearchableSelectField } from "common/components/SearchableSelectField";
 import { useNavigate } from "react-router-dom";
+import { NumberFieldInput } from "common/components/Form/NumberFieldInput";
 interface ICreateModalProps {
   isOpen: boolean;
+  addGroup: (num_of_groups: number, num_of_questions: number) => void;
   onClose: () => void;
 }
 
@@ -32,31 +34,21 @@ const initialFilter: TableFilterParams = {
   sorting: "",
 };
 
-const ExamCreateModal = ({ isOpen, onClose }: ICreateModalProps) => {
+const CreateGroupModal = ({ isOpen, onClose, addGroup }: ICreateModalProps) => {
   const [validationError, setValidationError] = useState<
     ValidationErrorMessage[]
   >([]);
   const navigate = useNavigate();
   const { data, isLoading } = useGetAllTemplateList();
   const [formParams, setFormParams] = useState<FormParams>({
-    template_id: "",
+    num_of_groups: 1,
+    num_of_questions: 2,
   });
   useEffect(() => {
     setFormParams({
-      template_id: data?.items[0].value as string
-    })
-  },[data])
-
-  const getOptions = () => {
-    return data?.items?.map((option: option) => ({
-      value: option?.value,
-      label: option?.label,
-    }));
-  };
-
-  const defaultValue = () => {
-    return formParams['template_id'] ?? data?.items[0].value;
-  }
+      template_id: data?.items[0].value as string,
+    });
+  }, [data]);
 
   const {
     register,
@@ -67,17 +59,18 @@ const ExamCreateModal = ({ isOpen, onClose }: ICreateModalProps) => {
     criteriaMode: "all",
   });
 
-  const handleSelectChangeValue = (value: string, variable: string) => {
+  const handleChangeNumberValue = (e: string, variable: string) => {
     const updatedFormParams = { ...formParams };
-    if (variable == "template_id") {
-      updatedFormParams[variable] = value;
+    const input = ["num_of_groups", "num_of_questions"];
+    if (input.includes(variable)) {
+      updatedFormParams[variable as keyof FormParams] = parseInt(e);
     }
-    // updatedFormParams[variable] = value;
     setFormParams(updatedFormParams);
   };
 
   const onSubmit = async () => {
-    navigate('/admin/exams/create/' + formParams['template_id']);
+    addGroup(formParams["num_of_groups"] as number, formParams["num_of_questions"] as number);
+    onClose();
   };
 
   return (
@@ -89,7 +82,7 @@ const ExamCreateModal = ({ isOpen, onClose }: ICreateModalProps) => {
             <HStack>
               <Heading ml={1} w="550px">
                 <Text fontSize={18} fontWeight={400} mt={1.5}>
-                  Select exam template to generate create form
+                  Create group questions
                 </Text>
               </Heading>
             </HStack>
@@ -101,15 +94,26 @@ const ExamCreateModal = ({ isOpen, onClose }: ICreateModalProps) => {
               onSubmit={handleSubmit(onSubmit)}
             >
               <VStack spacing="14px" alignItems="flex-start">
-                <SelectFieldInput
-                  inputKey="template_id"
-                  control={control}
+                <NumberFieldInput
+                  inputKey={`num_of_groups`}
+                  title="Number of groups"
+                  placeholder="Enter number of groups"
+                  handleChangeValue={handleChangeNumberValue}
+                  register={register}
                   errors={errors}
-                  handleSelectChangeValue={handleSelectChangeValue}
-                  selectOptions={getOptions() ?? [{ value: "", label: "" }]}
-                  title="Select your exam template"
                   validationError={validationError}
-                  value={defaultValue() as string}
+                  value={formParams["num_of_groups"] as number}
+                />
+
+                <NumberFieldInput
+                  inputKey={`num_of_questions`}
+                  title="Number of questions"
+                  placeholder="Enter number of questions"
+                  handleChangeValue={handleChangeNumberValue}
+                  register={register}
+                  errors={errors}
+                  validationError={validationError}
+                  value={formParams["num_of_questions"] as number}
                 />
 
                 <Button
@@ -120,7 +124,7 @@ const ExamCreateModal = ({ isOpen, onClose }: ICreateModalProps) => {
                   w="full"
                   colorScheme="gray"
                 >
-                  Generate create form
+                  Create
                 </Button>
               </VStack>
             </form>
@@ -131,4 +135,4 @@ const ExamCreateModal = ({ isOpen, onClose }: ICreateModalProps) => {
   );
 };
 
-export default ExamCreateModal;
+export default CreateGroupModal;

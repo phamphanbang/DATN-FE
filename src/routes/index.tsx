@@ -18,6 +18,8 @@ import CreateNewTemplate from 'features/admin/template/create';
 import UpdateTemplate from 'features/admin/template/update';
 import ClientHome from "features/client/home";
 import Exam from 'features/admin/exam';
+import CreateNewExam from 'features/admin/exam/create';
+import UpdateExam from 'features/admin/exam/update';
 
 const routeList: RouteObject[] = [
   {
@@ -61,6 +63,22 @@ const routeList: RouteObject[] = [
         element: (
           <WrapperRouteComponent>
             <Exam />
+          </WrapperRouteComponent>
+        ),
+      },
+      {
+        path: "exams/create/:id",
+        element: (
+          <WrapperRouteComponent>
+            <CreateNewExam />
+          </WrapperRouteComponent>
+        ),
+      },
+      {
+        path: "exams/update/:id",
+        element: (
+          <WrapperRouteComponent>
+            <UpdateExam />
           </WrapperRouteComponent>
         ),
       },

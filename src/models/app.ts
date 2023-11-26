@@ -1,3 +1,4 @@
+import { ICreateExamPartRequest } from "./exam";
 import { ITemplatePartCreateRequest } from "./template";
 
 export interface ListResult<T> {
@@ -13,5 +14,5 @@ export interface TableFilterParams {
 
 export type FormParams = Record<
   string,
-  string | number | File | ITemplatePartCreateRequest[]
+  string | number | File | ITemplatePartCreateRequest[] | ICreateExamPartRequest[]
 >;

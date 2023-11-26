@@ -33,7 +33,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "common/components/StandaloneToast";
 import { TableFilterParams } from "models/app";
 import { useDeleteTemplate } from "api/apiHooks/templateHook";
-import { useGetExamList } from "api/apiHooks/examHook";
+import { useGetExamList, useDeleteExams } from "api/apiHooks/examHook";
 import { Exam } from "models/exam";
 import { capitalizeFirstLetter } from "utils";
 import ExamCreateModal from "./ExamCreateModal";
@@ -73,7 +73,7 @@ export const MyExamTable = () => {
   const [isDeleteable, setIsDeleteable] = useState(true);
   const [isOpenCreate, setIsOpenCreate] = useState(false);
 
-  const deleteRequestMutation = useDeleteTemplate();
+  const deleteRequestMutation = useDeleteExams();
   const queryClient = useQueryClient();
 
   const columnHelper = createColumnHelper<Exam>();
@@ -170,27 +170,23 @@ export const MyExamTable = () => {
   const onAction = (requestId: string, type: "deleted") => () => {
     setRequestId(requestId);
     setModalTitle(`Confirm ${type} Template`);
-    setModalDescription(
-      `Template will be ${type} along with all its exams. Do you confirm that?`
-    );
+    setModalDescription(`Exams will be ${type}. Do you confirm that?`);
     setIsOpen(true);
   };
 
   const onActionUpdate = (requestId: string) => () => {
-    navigate("/admin/templates/update/" + requestId);
+    navigate("/admin/exams/update/" + requestId);
   };
 
   const handleConfirmation = async () => {
     setIsOpen(false);
     if (requestId.length === 0) return;
-
     const mutation = deleteRequestMutation;
     const successMessage = "Deleted successfully!";
     const errorMessage = "Delete failed!";
-
     try {
       await mutation.mutateAsync(requestId);
-      queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ALL_TEMPLATE] });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ALL_EXAMS] });
       toast({ title: successMessage, status: "success" });
     } catch (error) {
       toast({ title: errorMessage, status: "error" });

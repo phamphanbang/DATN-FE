@@ -94,7 +94,7 @@ const TemplateCreateForm = () => {
 
   const handleChangeNumberValue = (e: string, variable: string) => {
     const updatedFormParams = { ...formParams };
-    const input = ["total_parts", "total_questions", "total_score","duration"];
+    const input = ["total_parts", "total_questions", "total_score", "duration"];
     if (input.includes(variable)) {
       updatedFormParams[variable as keyof FormParams] = e;
     }
@@ -215,7 +215,6 @@ const TemplateCreateForm = () => {
             errors={errors}
             register={register}
             validationError={validationError}
-            
           />
 
           <TextAreaFieldInput
@@ -277,15 +276,21 @@ const TemplateCreateForm = () => {
             p={"10px"}
             border={`1px solid ${theme.colors.borderColor}`}
           >
-            <FormLabel
-              fontSize={15}
-              my={3}
-              fontWeight="medium"
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
+            <Box
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
             >
-              Template Part
+              <FormLabel
+                fontSize={15}
+                my={3}
+                fontWeight="medium"
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                Template Part
+              </FormLabel>
               <Box>
                 <Button
                   type="button"
@@ -311,7 +316,7 @@ const TemplateCreateForm = () => {
                   Remove part
                 </Button>
               </Box>
-            </FormLabel>
+            </Box>
             <Tabs
               variant="soft-rounded"
               colorScheme="green"
