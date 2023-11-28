@@ -15,50 +15,56 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateQuestion } from "api/apiHooks/examHook";
 import { AxiosError } from "axios";
+import AudioFieldInput from "common/components/Form/AudioFieldInput";
+import ImageFieldInput from "common/components/Form/ImageFieldInput";
 import { SelectFieldInput } from "common/components/Form/SelectFieldInput";
 import { TextFieldInput } from "common/components/Form/TextFieldInput";
 import { toast } from "common/components/StandaloneToast";
 import { option } from "common/types";
 import { FormParams } from "models/app";
 import { ErrorResponse, ValidationErrorMessage } from "models/appConfig";
-import { ExamAnswer, ExamQuestion } from "models/exam";
+import { ExamAnswer, ExamQuestion, IUpdateQuestion } from "models/exam";
 import { ChangeEvent, useState } from "react";
 import { FieldErrors, UseFormRegister, useForm } from "react-hook-form";
 import theme from "themes/theme";
 
 interface IQuestionModal {
-  question: ExamQuestion
+  question: ExamQuestion;
   isOpen: boolean;
   onClose: () => void;
+  examId: string;
 }
 
 const QuestionUpdateModal = ({
   isOpen,
   onClose,
-  question
+  question,
+  examId,
 }: IQuestionModal) => {
   const [validationError, setValidationError] = useState<
     ValidationErrorMessage[]
   >([]);
   const queryClient = useQueryClient();
   const rightDefaultOption = () => {
-    let is_right = ""
+    let is_right = "";
     question.answers.forEach((answer) => {
-      if(answer.is_right) {
+      if (answer.is_right) {
         is_right = answer.id;
       }
-    })
+    });
     return is_right;
-  }
+  };
   const [formParams, setFormParams] = useState<FormParams>({
     question: question?.question as string,
     answer_1: question.answers[0].answer as string,
     answer_2: question.answers[1].answer as string,
     answer_3: question.answers[2].answer as string,
     answer_4: question.answers[3].answer as string,
-    is_right: rightDefaultOption()
+    is_right: rightDefaultOption(),
+    attachment: question.attachment ?? ("" as string),
+    audio: question.audio
   });
-  const [request,setRequest] = useState<ExamQuestion>();
+  const [request, setRequest] = useState<IUpdateQuestion>();
   const {
     register,
     handleSubmit,
@@ -68,19 +74,19 @@ const QuestionUpdateModal = ({
     criteriaMode: "all",
   });
 
-  const { mutateAsync: mutate, isLoading, error } = useUpdateQuestion(
-    question.id,
-    request as ExamQuestion
-  );
+  const {
+    mutateAsync: mutate,
+    isLoading,
+    error,
+  } = useUpdateQuestion(question.id, request as IUpdateQuestion);
 
   const handleChangeValue = (
     e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>,
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    const input = ["question", "answer_1", "answer_2", "answer_3","answer_4"];
+    const input = ["question", "answer_1", "answer_2", "answer_3", "answer_4"];
     if (input.includes(variable)) {
-      
       updatedFormParams[variable as keyof FormParams] = e.target.value;
     }
 
@@ -88,16 +94,42 @@ const QuestionUpdateModal = ({
   };
 
   const rightAnswerOption = () => {
-    const option : option[] = question.answers.map((answer) => {
+    const option: option[] = question.answers.map((answer) => {
       return {
-        value : answer.id,
-        label : answer.order_in_question.toString()
-      }
-    })
+        value: answer.id,
+        label: answer.order_in_question.toString(),
+      };
+    });
     return option;
-  }
+  };
 
-  
+  const handleFileChangeValue = (
+    e: ChangeEvent<HTMLInputElement>,
+    variable: string
+  ) => {
+    const updatedFormParams = { ...formParams };
+    const file = e.target.files?.[0];
+    if (variable == "attachment") {
+      updatedFormParams[variable] = file ?? "";
+    }
+    if (variable == "audio") {
+      updatedFormParams[variable] = file ?? "";
+    }
+
+    setFormParams(updatedFormParams);
+  };
+
+  const deleteAttachment = () => {
+    const updatedFormParams = { ...formParams };
+    updatedFormParams["attachment"] = "";
+    setFormParams(updatedFormParams);
+  };
+
+  const deleteAudio = () => {
+    const updatedFormParams = { ...formParams };
+    updatedFormParams['audio'] = "";
+    setFormParams(updatedFormParams);
+  }
 
   const handleSelectChangeValue = (value: string, variable: string) => {
     const updatedFormParams = { ...formParams };
@@ -109,22 +141,27 @@ const QuestionUpdateModal = ({
   };
 
   const onSubmit = async () => {
-    const updateAnswers : ExamAnswer[] = question.answers.map((item) => {
-      const is_right = item.id == formParams['is_right'] ? true : false;
-      let answer = formParams['answer_' + item.order_in_question.toString()] as string;
+    const updateAnswers: ExamAnswer[] = question.answers.map((item) => {
+      const is_right = item.id == formParams["is_right"] ? true : false;
+      let answer = formParams[
+        "answer_" + item.order_in_question.toString()
+      ] as string;
       return {
         ...item,
         answer: answer,
         is_right: is_right,
         // order_in_question: item.order_in_question,
         // question_id: item.question_id
-      }
-    })
-    const updateQuestion : ExamQuestion = {
+      };
+    });
+    const updateQuestion: IUpdateQuestion = {
       ...question,
-      question: formParams['question'] as string,
-      answers: updateAnswers
-    }
+      question: formParams["question"] as string,
+      attachment: formParams["attachment"] as string | File,
+      answers: updateAnswers,
+      exam_id: examId,
+      audio: formParams["audio"] as string | File,
+    };
     setRequest(updateQuestion);
     try {
       await mutate();
@@ -149,7 +186,7 @@ const QuestionUpdateModal = ({
     });
     onClose();
   };
-  
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -171,6 +208,28 @@ const QuestionUpdateModal = ({
               onSubmit={handleSubmit(onSubmit)}
             >
               <VStack spacing="14px" alignItems="flex-start">
+                <ImageFieldInput
+                  inputKey="attachment"
+                  title="Attachment"
+                  image={formParams["attachment"] as string | File}
+                  imagePrefix={"exams/" + examId}
+                  imageIfNull="defaultAvatar.png"
+                  isShowDefault={false}
+                  deleteImage={deleteAttachment}
+                  handleFileChangeValue={handleFileChangeValue}
+                  imageBorderRadius="none"
+                  imageW="300px"
+                  imageH="200px"
+                />
+
+                <AudioFieldInput
+                  inputKey="audio"
+                  audioPrefix={"exams/" + examId}
+                  title="Audio"
+                  audio={question.audio}
+                  deleteAudio={deleteAudio}
+                  handleFileChangeValue={handleFileChangeValue}
+                />
                 <TextFieldInput
                   inputKey={`question`}
                   title="Question"
@@ -242,10 +301,12 @@ const QuestionUpdateModal = ({
                   control={control}
                   errors={errors}
                   handleSelectChangeValue={handleSelectChangeValue}
-                  selectOptions={rightAnswerOption() ?? [{ value: "", label: "" }]}
+                  selectOptions={
+                    rightAnswerOption() ?? [{ value: "", label: "" }]
+                  }
                   title="Select right answer"
                   validationError={validationError}
-                  value={formParams['is_right'] as string}
+                  value={formParams["is_right"] as string}
                 />
 
                 <Button

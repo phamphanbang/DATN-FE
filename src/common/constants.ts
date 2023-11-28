@@ -77,6 +77,11 @@ export const partType: option[] = [
   }
 ]
 
+export const partTypeValue = {
+  READING: 'reading',
+  LISTENING: 'listening'
+}
+
 export const hasGroupQuestionType : option[] = [
   {
     value: "true",

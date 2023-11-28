@@ -39,6 +39,8 @@ import QuestionDetail from "./component/QuestionDetail";
 import GroupDetail from "./component/GroupDetail";
 import QuestionUpdateModal from "./QuestionUpdateModal";
 import GroupUpdateModal from "./GroupUpdateModal";
+import AudioFieldInput from "common/components/Form/AudioFieldInput";
+import { FileField } from "common/components/FileField";
 
 interface IExamUpdateForm {
   examId: string;
@@ -51,8 +53,9 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
     ValidationErrorMessage[]
   >([]);
   const [formParams, setFormParams] = useState<FormParams>({
-    name: exam?.name as string,
-    status: exam?.status as string
+    name: "",
+    status: "",
+    audio: ""
   });
   const queryClient = useQueryClient();
   const [tabIndex, setTabIndex] = useState<number>(0);
@@ -68,6 +71,11 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
   useEffect(() => {
     const index = parseInt(getItem("exam_part_index") ?? "0");
     const question = getItem("exam_scroll_to") ?? "";
+    setFormParams({
+      name: exam?.name as string,
+      status: exam?.status as string,
+      audio: exam?.audio ?? "" as string
+    })
     setTabIndex(index);
     if (question) {
       const el = document.querySelector("#" + question);
@@ -119,6 +127,25 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
     setFormParams(updatedFormParams);
   };
 
+  const handleFileChangeValue = (
+    e: ChangeEvent<HTMLInputElement>,
+    variable: string
+  ) => {
+    const updatedFormParams = { ...formParams };
+    const file = e.target.files?.[0];
+    if (variable == "audio") {
+      updatedFormParams[variable] = file ?? "";
+    }
+
+    setFormParams(updatedFormParams);
+  };
+
+  const deleteAudio = () => {
+    const updatedFormParams = { ...formParams };
+    updatedFormParams['audio'] = "";
+    setFormParams(updatedFormParams);
+  }
+
   const openQuestionUpdate = (question: ExamQuestion) => {
     setItem("exam_part_index", tabIndex.toString());
     setItem("exam_scroll_to", `question_${question.id}`);
@@ -136,7 +163,8 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
   const onSubmit = async () => {
     const updateExam: IUpdateExam = {
       name: formParams["name"] as string,
-      status: formParams['status'] as string
+      status: formParams["status"] as string,
+      audio: formParams["audio"] as string | File
     };
     setRequest(updateExam);
     try {
@@ -194,7 +222,16 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
               selectOptions={examStatus ?? [{ value: "", label: "" }]}
               title="Select your exam status"
               validationError={validationError}
-              value={exam?.status as string}
+              value={formParams['status'] as string}
+            />
+
+            <AudioFieldInput 
+              inputKey="audio"
+              audioPrefix={'exams/'+examId}
+              title="Audio"
+              audio={exam.audio}
+              deleteAudio={deleteAudio}
+              handleFileChangeValue={handleFileChangeValue}
             />
 
             <Button
@@ -240,32 +277,12 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
                       <Accordion allowToggle>
                         {item.questions?.map((question) => {
                           return (
-                            // <AccordionItem>
-                            //   <h2>
-                            //     <AccordionButton>
-                            //       <Box as="span" flex="1" textAlign="left">
-                            //         Question <b>{question.order_in_test}</b>
-                            //       </Box>
-                            //       <AccordionIcon />
-                            //     </AccordionButton>
-                            //   </h2>
-                            //   <AccordionPanel
-                            //     pb={4}
-                            //     display={"flex"}
-                            //     flexDirection={"column"}
-                            //     alignItems={"flex-end"}
-                            //     w={'100%'}
-                            //   >
-                            //     <Box>
-                            //       <Box></Box>
-                            //     </Box>
-                            //   </AccordionPanel>
-                            // </AccordionItem>
                             <QuestionDetail
                               onOpenQuestionUpdate={openQuestionUpdate}
                               question={question}
                               id={`question_${question.id}`}
                               itemRef={`question_${question.id}`}
+                              examId={examId}
                             />
                           );
                         })}
@@ -312,6 +329,8 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
                             onOpenGroupUpdate={openGroupUpdate}
                             id={`group_${group.id}`}
                             group={group}
+                            examId={examId}
+                            partType={item.part_type}
                           />
                         );
                       })}
@@ -328,6 +347,7 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
           isOpen={isOpenQuestionUpdate}
           question={questionUpdate as ExamQuestion}
           onClose={() => setIsOpenQuestionUpdate(false)}
+          examId={examId}
         />
       )}
       {isOpenGroupUpdate && (
@@ -335,6 +355,7 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
           isOpen={isOpenGroupUpdate}
           group={groupUpdate as ExamGroup}
           onClose={() => setIsOpenGroupUpdate(false)}
+          examId={examId}
         />
       )}
     </>

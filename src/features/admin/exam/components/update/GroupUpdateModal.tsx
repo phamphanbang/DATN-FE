@@ -20,6 +20,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateGroup } from "api/apiHooks/examHook";
 import { AxiosError } from "axios";
 import { ErrorDisplay } from "common/components/ErrorDisplay";
+import AudioFieldInput from "common/components/Form/AudioFieldInput";
+import ImageFieldInput from "common/components/Form/ImageFieldInput";
 import { SelectFieldInput } from "common/components/Form/SelectFieldInput";
 import { TextFieldInput } from "common/components/Form/TextFieldInput";
 import { toast } from "common/components/StandaloneToast";
@@ -27,22 +29,25 @@ import TinyMCE from "common/components/TinyMCE/TinyMCE";
 import { FormParams } from "models/app";
 import { ErrorResponse, ValidationErrorMessage } from "models/appConfig";
 import { ExamGroup, IUpdateGroup } from "models/exam";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface IGroupModal {
   group: ExamGroup;
   isOpen: boolean;
   onClose: () => void;
+  examId: string;
 }
 
-const GroupUpdateModal = ({ isOpen, onClose, group }: IGroupModal) => {
+const GroupUpdateModal = ({ isOpen, onClose, group, examId }: IGroupModal) => {
   const [validationError, setValidationError] = useState<
     ValidationErrorMessage[]
   >([]);
   const queryClient = useQueryClient();
   const [formParams, setFormParams] = useState<FormParams>({
     question: group?.question as string,
+    attachment: group.attachment ?? "" as string,
+    audio: group.audio ?? "" as string
   });
   const [request, setRequest] = useState<IUpdateGroup>();
   const {
@@ -60,9 +65,40 @@ const GroupUpdateModal = ({ isOpen, onClose, group }: IGroupModal) => {
     error,
   } = useUpdateGroup(group.id, request as IUpdateGroup);
 
+  const handleFileChangeValue = (
+    e: ChangeEvent<HTMLInputElement>,
+    variable: string
+  ) => {
+    const updatedFormParams = { ...formParams };
+    const file = e.target.files?.[0];
+    if (variable == "attachment") {
+      updatedFormParams[variable] = file ?? "";
+    }
+    if (variable == "audio") {
+      updatedFormParams[variable] = file ?? "";
+    }
+
+    setFormParams(updatedFormParams);
+  };
+
+  const deleteAttachment = () => {
+    const updatedFormParams = { ...formParams };
+    updatedFormParams["attachment"] = "";
+    setFormParams(updatedFormParams);
+  };
+
+  const deleteAudio = () => {
+    const updatedFormParams = { ...formParams };
+    updatedFormParams['audio'] = "";
+    setFormParams(updatedFormParams);
+  }
+
   const onSubmit = async () => {
     const updateGroup: IUpdateGroup = {
       question: formParams["question"] as string,
+      attachment: formParams["attachment"] as string | File,
+      audio: formParams["audio"] as string | File,
+      exam_id: examId
     };
     setRequest(updateGroup);
     try {
@@ -116,6 +152,30 @@ const GroupUpdateModal = ({ isOpen, onClose, group }: IGroupModal) => {
               onSubmit={handleSubmit(onSubmit)}
             >
               <VStack spacing="14px" alignItems="flex-start">
+
+              <ImageFieldInput
+                  inputKey="attachment"
+                  title="Attachment"
+                  image={formParams["attachment"] as string | File}
+                  imagePrefix={"exams/" + examId}
+                  imageIfNull="defaultAvatar.png"
+                  isShowDefault={false}
+                  deleteImage={deleteAttachment}
+                  handleFileChangeValue={handleFileChangeValue}
+                  imageBorderRadius="none"
+                  imageW="300px"
+                  imageH="200px"
+                />
+
+                <AudioFieldInput
+                  inputKey="audio"
+                  audioPrefix={"exams/" + examId}
+                  title="Audio"
+                  audio={group.audio}
+                  deleteAudio={deleteAudio}
+                  handleFileChangeValue={handleFileChangeValue}
+                />
+
                 <FormControl key={"question"}>
                   <FormLabel fontSize={16} my={1} fontWeight="normal">
                     Question

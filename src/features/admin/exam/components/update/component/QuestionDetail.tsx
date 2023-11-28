@@ -6,10 +6,11 @@ import theme from "themes/theme";
 
 interface IQuestion extends BoxProps {
   question: ExamQuestion;
+  examId: string;
   onOpenQuestionUpdate: (question:ExamQuestion) => void;
 }
 
-const QuestionDetail = ({ question, onOpenQuestionUpdate, ...inputProps }: IQuestion) => {
+const QuestionDetail = ({ question, onOpenQuestionUpdate,examId, ...inputProps }: IQuestion) => {
   const [style, setStyle] = useState({ display: "none" });
   return (
     <Box
@@ -29,7 +30,7 @@ const QuestionDetail = ({ question, onOpenQuestionUpdate, ...inputProps }: IQues
         boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)"
       }}
     >
-      <Question question={question} />
+      <Question question={question} examId={examId} />
       <Button
         w="fit-content"
         colorScheme="gray"

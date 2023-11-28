@@ -3,7 +3,7 @@ import { useCreate, useDelete, useGetList, useGetOne, useUpdate } from "api/apiH
 import { QueryKeys } from 'common/constants';
 import { FormParams } from 'models/app';
 import { TableFilterParams } from 'models/app';
-import { ExamAdminDetail, ExamQuestion, ExamRequestResult, ICreateExamRequest, IUpdateExam, IUpdateGroup } from "models/exam";
+import { ExamAdminDetail, ExamQuestion, ExamRequestResult, ICreateExamRequest, IUpdateExam, IUpdateGroup, IUpdateQuestion } from "models/exam";
 
 export const useGetExamList = (filter: TableFilterParams) => {
   return useGetList<ExamRequestResult>(
@@ -30,8 +30,8 @@ export const useGetExamDetail = (id: string) => {
   );
 };
 
-export const useUpdateQuestion = (questionId: string, question: ExamQuestion) => {
-  return useUpdate<string, ExamQuestion, ExamQuestion>(
+export const useUpdateQuestion = (questionId: string, question: IUpdateQuestion) => {
+  return useUpdate<string, IUpdateQuestion, IUpdateQuestion>(
     `/admin/exams/questions`,
     questionId,
     question, 

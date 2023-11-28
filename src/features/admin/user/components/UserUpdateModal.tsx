@@ -30,6 +30,7 @@ import { FileField } from "common/components/FileField";
 import { IUserUpdateRequest } from "models/user";
 import { getImage } from "utils";
 import { FormParams } from "models/app";
+import ImageFieldInput from "common/components/Form/ImageFieldInput";
 
 interface IUpdateModalProps {
   isOpen: boolean;
@@ -184,66 +185,15 @@ const UserUpdateForm = ({
                   value={formParams.role as string}
                 />
 
-                <FormControl key={"avatar"}>
-                  <FormLabel fontSize={16} my={1} fontWeight="normal">
-                    Avatar
-                    <FormHelperText my={1} style={{ color: "red" }} as="span">
-                      {" "}
-                      *
-                    </FormHelperText>
-                  </FormLabel>
-                  {formParams.avatar && (
-                    <Box
-                      position={"relative"}
-                      onMouseEnter={() => {
-                        setStyle({ display: "flex" });
-                      }}
-                      onMouseLeave={() => {
-                        setStyle({ display: "none" });
-                      }}
-                    >
-                      <Image
-                        boxSize="200px"
-                        src={
-                          typeof formParams.avatar === "string"
-                            ? getImage("users", formParams.avatar)
-                            : URL.createObjectURL(formParams.avatar as File)
-                        }
-                        alt="User Avatar"
-                        mx={"auto"}
-                        my={"10px"}
-                        borderRadius={"full"}
-                      />
-                      <Box
-                        w={"100%"}
-                        h={"100%"}
-                        position={"absolute"}
-                        top={"0"}
-                        left={"0"}
-                        display={"flex"}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                        backgroundColor={"#c5bfbf73"}
-                        style={style}
-                      >
-                        <Button
-                          mt="14px"
-                          h="50px"
-                          colorScheme="gray"
-                          onClick={() => deleteAvatar()}
-                        >
-                          Delete Avatar
-                        </Button>
-                      </Box>
-                    </Box>
-                  )}
-
-                  <FileField
-                    name="avatar"
-                    accept="image/*"
-                    onChange={(e) => handleFileChangeValue(e, "avatar")}
-                  />
-                </FormControl>
+                <ImageFieldInput 
+                  inputKey="avatar"
+                  title="Avatar"
+                  image={formParams.avatar}
+                  imagePrefix="users"
+                  imageIfNull="defaultAvatar.png"
+                  deleteImage={deleteAvatar}
+                  handleFileChangeValue={handleFileChangeValue}
+                />
 
                 <Button
                   mt="14px"

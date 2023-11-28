@@ -1,5 +1,5 @@
 import { getItem,setItem,removeItem,clearStorage } from "./localStorage";
-import { getImage } from "./image";
+import { getImage, getAudio } from "./file";
 import { splitEvenly } from "./array";
 import { capitalizeFirstLetter } from "./string";
 
@@ -9,6 +9,7 @@ export {
   removeItem,
   clearStorage,
   getImage,
+  getAudio,
   splitEvenly,
-  capitalizeFirstLetter
+  capitalizeFirstLetter,
 };

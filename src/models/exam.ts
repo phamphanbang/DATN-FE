@@ -95,11 +95,23 @@ export interface IRenderPart {
 
 export interface IUpdateGroup {
   question: string;
+  attachment: string | File;
+  audio: string | File;
+  exam_id: string;
 }
 
 export interface IUpdateExam {
   name: string;
   status: string;
+  audio: string | File;
+}
+
+export interface IUpdateQuestion {
+  exam_id: string;
+  question: string;
+  attachment: string | File;
+  audio: string | File;
+  answers: ExamAnswer[]
 }
 
 export type ExamRequestResult = ListResult<Exam>;
