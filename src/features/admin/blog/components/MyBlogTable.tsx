@@ -96,7 +96,7 @@ export const MyBlogTable = () => {
             <Box>
               <Image
                 boxSize="50px"
-                src={getImage("blogs", info.getValue())}
+                src={getImage("blogs/" + info.row.original.id, info.getValue())}
                 alt="Blog Thumbnail"
                 mx={"auto"}
                 my={"10px"}
@@ -112,7 +112,7 @@ export const MyBlogTable = () => {
             <Box>
               <Image
                 boxSize="50px"
-                src={getImage("blogs", info.getValue())}
+                src={getImage("blogs" + info.row.original.id, info.getValue())}
                 alt="Blog Panel"
                 mx={"auto"}
                 my={"10px"}

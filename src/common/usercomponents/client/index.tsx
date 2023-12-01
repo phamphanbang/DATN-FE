@@ -9,7 +9,7 @@ interface PageProps extends BoxProps {
 }
 
 const ClientPage = ({ children, ...props }: PageProps) => {
-  return <Box {...props}>{children}</Box>;
+  return <Box minH={'100vh'} {...props}>{children}</Box>;
 };
 
 ClientPage.Header = PageHeader;

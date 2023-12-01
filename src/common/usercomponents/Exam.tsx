@@ -52,15 +52,6 @@ const Exam = () => {
             <Text as="span">4 phần thi | 40 câu hỏi</Text>
           </Box>
         </VStack>
-
-        <Flex alignItems="start" flexWrap="wrap" gap="5px">
-          <Tag borderRadius="10px" background="blue.50" textColor="blue.300">
-            #IELTS Academic
-          </Tag>
-          <Tag borderRadius="10px" background="blue.50" textColor="blue.300">
-            #Listening
-          </Tag>
-        </Flex>
       </VStack>
 
       <Box
@@ -68,18 +59,18 @@ const Exam = () => {
         alignItems="start"
         display="flex"
         w="100%"
-        border="1px solid #63B3ED"
+        border="1px solid #2a4365"
       >
         <Link
           href="#"
           px="12px"
           py="6px"
           w="100%"
-          textColor="blue.300"
+          textColor="blue.600"
           fontWeight="700"
           _hover={{
             textDecoration: "none",
-            background: "blue.500",
+            background: "blue.800",
             textColor: "white",
           }}
           textAlign="center"

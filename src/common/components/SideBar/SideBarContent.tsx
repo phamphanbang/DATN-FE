@@ -58,6 +58,9 @@ export const SideBarContent = () => {
   const onNavigate = (to: string, logout?: boolean) => () => {
     if (logout) {
       removeItem(LocalStorageKeys.accessToken);
+      removeItem(LocalStorageKeys.name);
+      removeItem(LocalStorageKeys.isAdmin);
+      removeItem(LocalStorageKeys.avatar);
     }
     navigate(to);
   };

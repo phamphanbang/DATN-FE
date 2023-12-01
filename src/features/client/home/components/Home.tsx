@@ -8,11 +8,11 @@ import {
 } from "@chakra-ui/react";
 import banner from "assets/images/banner.webp";
 import testBanner from "assets/images/test_trinh_do.webp";
-import Exam from "common/components/Exam";
+import Exam from "common/usercomponents/Exam";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import Course from "common/components/Course";
+import Course from "common/usercomponents/Course";
 
 const Home = () => {
   const settingsCarousel = {
@@ -21,13 +21,14 @@ const Home = () => {
     speed: 500,
     slidesToShow: 3, // Number of items to show in one slide
     slidesToScroll: 1,
+    arrows: false
   };
 
   return (
     <VStack>
-      <Box w="100vw">
+      <Box w="100%">
         <Link href="#" w="100%">
-          <Image src={banner} alt="banner" w="100%" />
+          <Image src={banner} alt="banner" w="100%"  fit='contain'/>
         </Link>
       </Box>
 
@@ -36,7 +37,7 @@ const Home = () => {
           Khoá học online nổi bật
         </Box>
         <ChakraProvider>
-          <Box maxW="1440px" m="0 auto">
+          <Box maxW="100vw" w={'100%'} >
             <Slider {...settingsCarousel}>
               <Course />
               <Course />
@@ -76,6 +77,8 @@ const Home = () => {
           </VStack>
         </VStack>
       </Box>
+
+
     </VStack>
   );
 };

@@ -133,7 +133,7 @@ const BlogUpdateForm = ({ blogId }: IBlogUpdateForm) => {
   };
 
   const renderImage = (image: string | File) => {
-    if((typeof image) === "string") return getImage("blogs",image as string);
+    if((typeof image) === "string") return getImage("blogs/" + blogId ,image as string);
     return URL.createObjectURL(image as File)
   }
 

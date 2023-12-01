@@ -21,9 +21,9 @@ const AdminLogin = () => {
     : "/admin/users";
 
   useEffect(() => {
-    const accessToken = getItem(LocalStorageKeys.accessToken);
-
-    if (accessToken) {
+    const accessToken: string | null = getItem(LocalStorageKeys.accessToken);
+    const isAdmin = getItem(LocalStorageKeys.isAdmin) === 'true' ? true : false;
+    if (accessToken && isAdmin) {
       window.location.href = "/admin/users";
     }
   }, []);
@@ -40,15 +40,18 @@ const AdminLogin = () => {
     email,
     password
   }: LoginParams) => {
-    const { token, name } = await loginMutate({
+    const { data } = await loginMutate({
       email: email.trim(),
       password: password.trim(),
     });
 
-    if (token) {
-      setItem(LocalStorageKeys.accessToken, token);
-      setItem(LocalStorageKeys.name, name);
+    if (data?.token) {
+      setItem(LocalStorageKeys.accessToken, data.token);
+      setItem(LocalStorageKeys.name, data.name);
+      setItem(LocalStorageKeys.isAdmin, data.isAdmin);
+      setItem(LocalStorageKeys.avatar, data.avatar);
       setItem(LocalStorageKeys.prevURL, '');
+      setItem(LocalStorageKeys.id, data.id);
       window.location.href = redirectURL ?? '/admin/users';
     }
   };

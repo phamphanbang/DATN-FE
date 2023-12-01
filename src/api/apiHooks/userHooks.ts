@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { UserFilterParams, LoginParams, LoginResult, UserRequestResult, User, IUserUpdateRequest, IUserResetPassword } from 'models/user';
+import { UserFilterParams, LoginParams, LoginResult, UserRequestResult, User, IUserUpdateRequest, IUserResetPassword, RegisterParams } from 'models/user';
 import { useCreate, useDelete, useGetList, useUpdate } from "api/apiHooks";
 import { QueryKeys } from 'common/constants';
 import { FormParams } from 'models/app';
@@ -49,3 +49,13 @@ export const useResetPassword = (userId: string, password: IUserResetPassword) =
     password, 
   );
 }
+
+
+//user
+export const useUserLogin = () => {
+  return useCreate<LoginParams, LoginResult>('/auth/login');
+};
+
+export const useUserRegister = () => {
+  return useCreate<RegisterParams, LoginResult>('/auth/register');
+};

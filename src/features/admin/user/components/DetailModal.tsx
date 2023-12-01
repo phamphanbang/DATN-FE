@@ -9,7 +9,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  Image
+  Image,
 } from "@chakra-ui/react";
 import styles from "./style.module.scss";
 import { User } from "models/user";
@@ -50,10 +50,10 @@ export const UserDetailModal = ({
               <TextGroup label="User Name" content={""} />
               <Image
                 boxSize="200px"
-                src={getImage("users",userDetail?.avatar)}
+                src={getImage("users/" + userDetail.id, userDetail?.avatar)}
                 alt="User Avatar"
                 my={"10px"}
-                borderRadius={'full'}
+                borderRadius={"full"}
               />
             </div>
           </ModalBody>

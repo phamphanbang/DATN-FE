@@ -1,7 +1,17 @@
+import { ValidationErrorMessage } from "./appConfig";
+
 export interface LoginParams {
   email: string;
   password: string;
 }
+
+export interface RegisterParams {
+  email: string;
+  password: string;
+  name: string;
+  confirm_password: string;
+}
+
 export interface User {
   id: string;
   name: string;
@@ -14,11 +24,14 @@ export interface User {
 export interface dataLogin {
   token: string;
   name: string;
+  isAdmin: string;
+  avatar: string;
+  id: string;
 }
 
 export interface LoginResult {
-  data: dataLogin;
-  message: string;
+  data?: dataLogin;
+  message: string | ValidationErrorMessage[];
   status: string;
 }
 

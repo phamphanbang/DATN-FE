@@ -20,11 +20,38 @@ import ClientHome from "features/client/home";
 import Exam from 'features/admin/exam';
 import CreateNewExam from 'features/admin/exam/create';
 import UpdateExam from 'features/admin/exam/update';
+import ClientLogin from 'features/client/login';
+import ClientRegister from 'features/client/register';
+import UserNotFound from 'features/client/notFound/UserNotFound';
+import UserLayout from 'common/usercomponents/Layout/Layout';
 
 const routeList: RouteObject[] = [
   {
     path: "/",
-    element: <ClientHome />,
+    element: <UserLayout/>,
+    children: [
+      {
+        // path: "/",
+        index: true,
+        element: <ClientHome />,
+      },
+      {
+        path: "/login",
+        element: <ClientLogin />,
+      },
+      {
+        path: "/register",
+        element: <ClientRegister />,
+      },
+      {
+        path: "*",
+        element: (
+          <Suspense>
+            <UserNotFound />
+          </Suspense>
+        ),
+      },
+    ]
   },
   {
     path: "admin/login",
