@@ -11,10 +11,29 @@ export const QueryKeys = {
   GET_TEMPLATE: 'getTemplate',
   GET_ALL_EXAMS: 'getAllExams',
   GET_ALL_TEMPLATE_WITHOUT_PART: 'getALlTemplateWithoutPart',
-  GET_EXAM: 'getExam'
+  GET_EXAM: 'getExam',
+  USER_GET_ALL_EXAMS: 'userGetAllExams',
+  USER_GET_HOME: 'userGetHome',
+  USER_GET_EXAM: 'userGetExam',
+  USER_GET_HISTORY_DETAIL: 'userGetHistoryDetail'
 }
 
 export const userRole: option[] = [
+  {
+    value: "superadmin",
+    label: "Super Admin"
+  },
+  {
+    value: "admin",
+    label: "Admin"
+  },
+  {
+    value: "user",
+    label: "User",
+  }
+]
+
+export const createUserRole: option[] = [
   {
     value: "superadmin",
     label: "Super Admin"

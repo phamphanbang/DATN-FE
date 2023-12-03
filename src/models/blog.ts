@@ -18,8 +18,8 @@ export interface IBlogCreateRequest {
 }
 
 export interface IBlogUpdateRequest {
-    name: string;
-    post: string;
-    panel: File | string;
-    thumbnail: File | string;
-  }
+  name: string;
+  post: string;
+  panel: File | string;
+  thumbnail: File | string;
+}

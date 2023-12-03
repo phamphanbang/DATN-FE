@@ -13,6 +13,25 @@ export const useCreate = <T, U>(url: string, config?: AxiosRequestConfig) => {
   return useMutation(mutate);
 };
 
+export const usePostWithBody = <T, D, U>(
+  url: string,
+  params?: T,
+  body?: D,
+  config?: AxiosRequestConfig
+) => {
+  const axios = useAxios();
+  const requestBody = {
+    ... body
+  }
+
+  const mutate = async () => {
+    const data: U = await axios.post(`${url}`, requestBody, config);
+    return data;
+  };
+
+  return useMutation(mutate);
+};
+
 export const useUpdate = <T, D, U>(
   url: string,
   params?: T,

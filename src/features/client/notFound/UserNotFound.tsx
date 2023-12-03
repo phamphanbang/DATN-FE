@@ -1,35 +1,26 @@
-import { Box, Flex, Link } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { NavLink } from "common/usercomponents/NavLink";
-import ClientPage from "common/usercomponents/client";
 import theme from "themes/theme";
 
 const UserNotFound = () => {
   return (
-    // <ClientPage>
-    //   <ClientPage.Header />
-
-    //   <ClientPage.Body>
-    //     <h1>Trang web mà bạn truy cập hiện tại không khả dụng</h1>
-    //   </ClientPage.Body>
-
-    //   <ClientPage.PageFooter />
-    // </ClientPage>
-    <Flex justifyContent={'center'} alignItems={'center'} h={'100%'}>
-      <Box 
-        padding={'30px 50px'}
+    <Flex
+      justifyContent={"center"}
+      alignItems={"center"}
+      h={"100%"}
+      my={"30px"}
+    >
+      <Box
+        padding={"30px 50px"}
         border={`1px solid ${theme.colors.borderColor}`}
         borderRadius={"10px"}
-        >
-        <h1>Không tìm thấy trang</h1>
-        <h1>Xin lỗi chúng tôi không tìm thấy trang web bạn muốn tới..</h1>
-        {/* <Link
-          href="/"
-          _hover={{ color: "blue.800" }}
-          color="blue.600"
-          textDecoration={"none"}
-        >
-          Quay về trang chủ
-        </Link> */}
+      >
+        <Box fontSize={"30px"} fontWeight={"700"} p={"8px"}>
+          Không tìm thấy trang
+        </Box>
+        <Box p={"8px"}>
+          Xin lỗi chúng tôi không tìm thấy trang web bạn muốn tới..
+        </Box>
         <NavLink to="/" text="Quay về trang chủ" />
       </Box>
     </Flex>

@@ -1,6 +1,6 @@
 import { Box, Button, FormControl, VStack } from "@chakra-ui/react";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+// import "slick-carousel/slick/slick.css";
+// import "slick-carousel/slick/slick-theme.css";
 import { PasswordField } from "common/components/PasswordField";
 import { TextField } from "common/components/TextField";
 import { useLogin, useUserRegister } from "api/apiHooks/userHooks";

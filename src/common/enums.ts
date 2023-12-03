@@ -8,4 +8,5 @@ export enum LocalStorageKeys {
   isAdmin = 'isAdmin',
   avatar = 'avatar',
   id = 'id',
+  notFoundUrl = 'notFoundUrl'
 }

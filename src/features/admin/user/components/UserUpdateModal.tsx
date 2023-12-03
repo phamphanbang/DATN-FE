@@ -9,16 +9,11 @@ import {
   ModalOverlay,
   Text,
   Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
   VStack,
-  Image,
-  Box,
 } from "@chakra-ui/react";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
-import { userRole } from "common/constants";
+import { createUserRole } from "common/constants";
 import { useUpdateUser } from "api/apiHooks/userHooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "common/components/StandaloneToast";
@@ -26,11 +21,11 @@ import { ErrorResponse, ValidationErrorMessage } from "models/appConfig";
 import { AxiosError } from "axios";
 import { TextFieldInput } from "common/components/Form/TextFieldInput";
 import { SelectFieldInput } from "common/components/Form/SelectFieldInput";
-import { FileField } from "common/components/FileField";
 import { IUserUpdateRequest } from "models/user";
-import { getImage } from "utils";
 import { FormParams } from "models/app";
 import ImageFieldInput from "common/components/Form/ImageFieldInput";
+import { getItem, setItem } from "utils";
+import { LocalStorageKeys } from "common/enums";
 
 interface IUpdateModalProps {
   isOpen: boolean;
@@ -102,13 +97,19 @@ const UserUpdateForm = ({
 
   const deleteAvatar = () => {
     const updatedFormParams = { ...formParams };
-    updatedFormParams['avatar'] = "";
+    updatedFormParams["avatar"] = "";
     setFormParams(updatedFormParams);
-  }
+  };
 
   const onSubmit = async () => {
+    if(formParams.role === "superadmin") {
+      formParams.role = "";
+    }
     try {
-      await mutate();
+      const data = await mutate();
+      if(getItem(LocalStorageKeys.id) === userId) {
+        setItem(LocalStorageKeys.avatar,data.avatar);
+      }
     } catch (error) {
       const err = error as AxiosError;
       const validation = err?.response?.data as ErrorResponse;
@@ -174,22 +175,26 @@ const UserUpdateForm = ({
                   defaultValue={formParams.email as string}
                 />
 
-                <SelectFieldInput
-                  inputKey="role"
-                  control={control}
-                  errors={errors}
-                  handleSelectChangeValue={handleSelectChangeValue}
-                  selectOptions={userRole}
-                  title="User Role"
-                  validationError={validationError}
-                  value={formParams.role as string}
-                />
+                {(formParams.role === "superadmin" || formParams.role === "") ? (
+                  ""
+                ) : (
+                  <SelectFieldInput
+                    inputKey="role"
+                    control={control}
+                    errors={errors}
+                    handleSelectChangeValue={handleSelectChangeValue}
+                    selectOptions={createUserRole}
+                    title="User Role"
+                    validationError={validationError}
+                    value={formParams.role as string}
+                  />
+                )}
 
-                <ImageFieldInput 
+                <ImageFieldInput
                   inputKey="avatar"
                   title="Avatar"
                   image={formParams.avatar}
-                  imagePrefix="users"
+                  imagePrefix={'users/'+userId}
                   imageIfNull="defaultAvatar.png"
                   deleteImage={deleteAvatar}
                   handleFileChangeValue={handleFileChangeValue}

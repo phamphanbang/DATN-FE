@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCreate, useDelete, useGetList, useGetOne, useUpdate } from "api/apiHooks";
+import { useCreate, useDelete, useGetList, useGetOne, usePostWithBody, useUpdate } from "api/apiHooks";
 import { QueryKeys } from 'common/constants';
-import { FormParams } from 'models/app';
 import { TableFilterParams } from 'models/app';
-import { ExamAdminDetail, ExamQuestion, ExamRequestResult, ICreateExamRequest, IUpdateExam, IUpdateGroup, IUpdateQuestion } from "models/exam";
+import { ExamAdminDetail, ExamHistoryDetail, ExamRequestResult, ICreateExamRequest, IExamRequest, IExamResponse, IUpdateExam, IUpdateGroup, IUpdateQuestion, IUserExamDetail, IUserExamForTest, IUserGetExamRequest } from "models/exam";
 
 export const useGetExamList = (filter: TableFilterParams) => {
   return useGetList<ExamRequestResult>(
@@ -52,4 +51,48 @@ export const useUpdateExam = (examId: string, exam: IUpdateExam) => {
     examId,
     exam, 
   );
+}
+
+export const useUserGetExamList = (filter: TableFilterParams) => {
+  return useGetList<ExamRequestResult>(
+    [QueryKeys.USER_GET_ALL_EXAMS, filter],
+    '/exams',
+    filter
+  );
+}
+
+export const useGetUserExamDetail = (id: string) => {
+  return useGetOne<IUserExamDetail>(
+    [QueryKeys.USER_GET_EXAM, id],
+    `/exams/${id}`
+  );
+};
+
+export const useGetUserExamForTest = (id: string) => {
+  return useGetOne<IUserExamDetail>(
+    [QueryKeys.USER_GET_EXAM, id],
+    `/exams/${id}`
+  );
+};
+
+export const useUserGetExamForTest = (id:string) => {
+  return useCreate<IUserGetExamRequest, IUserExamForTest>(
+    `/exams/` + id + '/getExamForTest'
+  )
+}
+
+export const useUserSubmitExam = (id: string,exam:IExamRequest) => {
+  return usePostWithBody<string,IExamRequest, IExamResponse>(
+    `/exams/` + id + '/submit',
+    id,
+    exam
+  )
+}
+
+export const useGetHistoryDetail = (exam_id: string,history_id: string) => {
+  console.log(exam_id,history_id)
+  return useGetOne<ExamHistoryDetail>(
+    [QueryKeys.USER_GET_HISTORY_DETAIL, history_id],
+    `/exams/${exam_id}/history/${history_id}`
+  )
 }

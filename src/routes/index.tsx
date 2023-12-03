@@ -24,6 +24,10 @@ import ClientLogin from 'features/client/login';
 import ClientRegister from 'features/client/register';
 import UserNotFound from 'features/client/notFound/UserNotFound';
 import UserLayout from 'common/usercomponents/Layout/Layout';
+import ExamIndexPage from 'features/client/exam';
+import ExamDetailPage from 'features/client/exam/detail';
+import ExamStartPage from 'features/client/exam/start';
+import HistoryDetailPage from 'features/client/exam/history';
 
 const routeList: RouteObject[] = [
   {
@@ -36,12 +40,36 @@ const routeList: RouteObject[] = [
         element: <ClientHome />,
       },
       {
-        path: "/login",
+        path: "login",
         element: <ClientLogin />,
       },
       {
-        path: "/register",
+        path: "register",
         element: <ClientRegister />,
+      },
+      {
+        path: "exams",
+        element: <ExamIndexPage />,
+      },
+      {
+        path: "exams/:id/start",
+        element: <ExamStartPage />,
+      },
+      {
+        path: "exams/:exam_id/history/:history_id",
+        element: <HistoryDetailPage />,
+      },
+      {
+        path: "exams/:id",
+        element: <ExamDetailPage />,
+      },
+      {
+        path: "notFound",
+        element: (
+          <Suspense>
+            <UserNotFound />
+          </Suspense>
+        ),
       },
       {
         path: "*",

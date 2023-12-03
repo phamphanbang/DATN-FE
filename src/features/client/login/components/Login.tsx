@@ -5,8 +5,8 @@ import {
   Link,
   VStack,
 } from "@chakra-ui/react";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+// import "slick-carousel/slick/slick.css";
+// import "slick-carousel/slick/slick-theme.css";
 import { PasswordField } from "common/components/PasswordField";
 import { TextField } from "common/components/TextField";
 import { useUserLogin } from "api/apiHooks/userHooks";
@@ -94,8 +94,9 @@ const Login = () => {
         alignItems={"flex-start"}
         spacing="20px"
         p={"24px"}
-        border={`1px solid ${theme.colors.borderColor}`}
-        borderRadius={"10px"}
+        backgroundColor={"white"}
+        borderRadius={'10px'}
+        borderBottom={`1px solid ${theme.colors.borderColor}`}
       >
         <p>
           Đăng nhập ngay để bắt đầu trải nghiệm học tiếng Anh và luyện thi

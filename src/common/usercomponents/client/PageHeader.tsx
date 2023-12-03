@@ -25,9 +25,7 @@ export const PageHeader = () => {
   const isUnauthorized = accessToken === null;
 
   const onNavigate = (to: string, logout?: boolean) => () => {
-    console.log("aa");
     if (logout) {
-      console.log("???");
       removeItem(LocalStorageKeys.accessToken);
       removeItem(LocalStorageKeys.name);
       removeItem(LocalStorageKeys.isAdmin);
@@ -64,9 +62,9 @@ export const PageHeader = () => {
             to="/login"
             text="Đăng nhập"
             color="white"
+            _hover={{ background: "blue.800", textDecoration: "none" }}
             background="blue.600"
             borderRadius="20px"
-            _hover={{ textDecoration: "none", background: "blue.800" }}
           />
         ) : (
           <Menu>

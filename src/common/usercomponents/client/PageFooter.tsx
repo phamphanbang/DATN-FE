@@ -13,10 +13,17 @@ import LogoWeb from "assets/images/logo_full_sm.webp";
 import TwitterIcon from "assets/twitter-154-svgrepo-com.svg";
 import InstagramIcon from "assets/insta-svgrepo-com.svg";
 import LinkedinIcon from "assets/linkedin-svgrepo-com.svg";
+import theme from "themes/theme";
 
 export const PageFooter = () => {
   return (
-    <VStack px="24px" py="20px" gap="5px">
+    <VStack
+      px="24px"
+      py="20px"
+      gap="5px"
+      pt={"30px"}
+      borderTop={`1px solid ${theme.colors.borderColor}`}
+    >
       <HStack
         alignItems="start"
         display="flex"

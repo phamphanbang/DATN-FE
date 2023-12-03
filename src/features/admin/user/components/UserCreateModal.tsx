@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
-import { userRole } from "common/constants";
+import { createUserRole } from "common/constants";
 import { useCreateNewUser } from "api/apiHooks/userHooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "common/components/StandaloneToast";
@@ -176,7 +176,7 @@ const UserCreateForm = ({ isOpen, onClose }: ICreateModalProps) => {
                   control={control}
                   errors={errors}
                   handleSelectChangeValue={handleSelectChangeValue}
-                  selectOptions={userRole}
+                  selectOptions={createUserRole}
                   title="User Role"
                   validationError={validationError}
                   value={formParams["role"] as string}
