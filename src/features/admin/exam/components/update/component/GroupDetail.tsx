@@ -1,6 +1,4 @@
 import { Box, BoxProps, Button, Image } from "@chakra-ui/react";
-import Group from "common/components/Exam/Display/Group";
-import Question from "common/components/Exam/Display/Question";
 import { ExamGroup, ExamQuestion } from "models/exam";
 import parse from "html-react-parser";
 import { useState } from "react";
@@ -8,6 +6,7 @@ import QuestionDetail from "./QuestionDetail";
 import theme from "themes/theme";
 import { getImage, getAudio } from "utils";
 import { partTypeValue } from "common/constants";
+import "./groupQuestion.css";
 
 interface IGroup extends BoxProps {
   group: ExamGroup;
@@ -79,7 +78,7 @@ const GroupDetail = ({
               }}
             ></audio>
           )}
-          <Box>{parse(group.question ?? "")}</Box>
+          <Box className="groupQuestion">{parse(group.question ?? "")}</Box>
           {group.attachment && (
             <Box>
               <Image

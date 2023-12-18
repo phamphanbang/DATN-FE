@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import SideBar from "./components/SideBar";
+import SideBar from "../../../common/usercomponents/SideBar";
 import ExamStart from "./components/start";
 import { useParams } from "react-router-dom";
 

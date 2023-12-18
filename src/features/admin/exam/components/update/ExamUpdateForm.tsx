@@ -27,20 +27,17 @@ import { TextFieldInput } from "common/components/Form/TextFieldInput";
 import styles from "./style.module.scss";
 import { useNavigate } from "react-router-dom";
 import { FormParams } from "models/app";
-import { ITemplatePartCreateRequest } from "models/template";
-import { FaMinus, FaPlus } from "react-icons/fa";
-import theme from "themes/theme";
 import { getItem, setItem } from "utils";
 import { ExamGroup, ExamQuestion, IUpdateExam } from "models/exam";
 import { useGetExamDetail, useUpdateExam } from "api/apiHooks/examHook";
 import { SelectFieldInput } from "common/components/Form/SelectFieldInput";
-import { examStatus } from "common/constants";
+import { examStatus, examType } from "common/constants";
 import QuestionDetail from "./component/QuestionDetail";
 import GroupDetail from "./component/GroupDetail";
 import QuestionUpdateModal from "./QuestionUpdateModal";
 import GroupUpdateModal from "./GroupUpdateModal";
-import AudioFieldInput from "common/components/Form/AudioFieldInput";
-import { FileField } from "common/components/FileField";
+import { uploadFile } from "api/apiHooks/S3Hook";
+import AudioFieldInputS3 from "common/components/Form/AudioFieldInputS3";
 
 interface IExamUpdateForm {
   examId: string;
@@ -55,10 +52,12 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
   const [formParams, setFormParams] = useState<FormParams>({
     name: "",
     status: "",
-    audio: ""
+    audio: "",
+    type: "",
   });
   const queryClient = useQueryClient();
   const [tabIndex, setTabIndex] = useState<number>(0);
+  const [isS3Upload, setIsS3Upload] = useState<boolean>(false);
 
   const [isOpenQuestionUpdate, setIsOpenQuestionUpdate] = useState(false);
   const [questionUpdate, setQuestionUpdate] = useState<ExamQuestion>();
@@ -74,8 +73,9 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
     setFormParams({
       name: exam?.name as string,
       status: exam?.status as string,
-      audio: exam?.audio ?? "" as string
-    })
+      type: exam?.type as string,
+      audio: exam?.audio ?? ("" as string),
+    });
     setTabIndex(index);
     if (question) {
       const el = document.querySelector("#" + question);
@@ -104,6 +104,8 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
     mutateAsync: mutate,
     isLoading,
     error,
+    data,
+
   } = useUpdateExam(examId, request as IUpdateExam);
 
   const handleChangeValue = (
@@ -121,7 +123,7 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
 
   const handleSelectChangeValue = (value: string, variable: string) => {
     const updatedFormParams = { ...formParams };
-    if (variable == "status") {
+    if (variable == "status" || variable == "type") {
       updatedFormParams[variable] = value;
     }
     setFormParams(updatedFormParams);
@@ -142,9 +144,9 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
 
   const deleteAudio = () => {
     const updatedFormParams = { ...formParams };
-    updatedFormParams['audio'] = "";
+    updatedFormParams["audio"] = "";
     setFormParams(updatedFormParams);
-  }
+  };
 
   const openQuestionUpdate = (question: ExamQuestion) => {
     setItem("exam_part_index", tabIndex.toString());
@@ -160,16 +162,36 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
     setIsOpenGroupUpdate(true);
   };
 
+  const updateFileToS3 = async () => {
+    const isFile = typeof formParams["audio"] !== "string";
+    if (isFile) {
+      setIsS3Upload(true);
+      const audioUrl = await uploadFile(
+        formParams["audio"] as File,
+        "exam_" + examId + "_audio"
+      );
+      return audioUrl;
+    }
+    return formParams["audio"] as string;
+  };
+
   const onSubmit = async () => {
-    const updateExam: IUpdateExam = {
-      name: formParams["name"] as string,
-      status: formParams["status"] as string,
-      audio: formParams["audio"] as string | File
-    };
-    setRequest(updateExam);
     try {
-      await mutate();
+      const url = await updateFileToS3();
+      console.log("url", url);
+      setIsS3Upload(false);
+      const updateExam: IUpdateExam = {
+        name: formParams["name"] as string,
+        status: formParams["status"] as string,
+        type: formParams["type"] as string,
+        audio: url as string,
+      };
+      console.log(updateExam);
+      await setRequest(updateExam);
+      console.log(data);
+      await mutate(updateExam);
     } catch (error) {
+      setIsS3Upload(false);
       const err = error as AxiosError;
       const validation = err?.response?.data as ErrorResponse;
       setValidationError(validation.message as ValidationErrorMessage[]);
@@ -189,6 +211,10 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
       status: "success",
     });
   };
+
+  const partType = () => {
+    return exam?.parts[tabIndex].part_type;
+  }
 
   return (
     <>
@@ -222,14 +248,34 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
               selectOptions={examStatus ?? [{ value: "", label: "" }]}
               title="Select your exam status"
               validationError={validationError}
-              value={formParams['status'] as string}
+              value={formParams["status"] as string}
             />
 
-            <AudioFieldInput 
+            <SelectFieldInput
+              inputKey="type"
+              control={control}
+              errors={errors}
+              handleSelectChangeValue={handleSelectChangeValue}
+              selectOptions={examType ?? [{ value: "", label: "" }]}
+              title="Select your exam type"
+              validationError={validationError}
+              value={formParams["type"] as string}
+            />
+
+            {/* <AudioFieldInput
               inputKey="audio"
-              audioPrefix={'exams/'+examId}
+              audioPrefix={"exams/" + examId}
               title="Audio"
-              audio={exam.audio}
+              audio={formParams["audio"] as string}
+              deleteAudio={deleteAudio}
+              handleFileChangeValue={handleFileChangeValue}
+            /> */}
+
+            <AudioFieldInputS3
+              inputKey="audio"
+              audioPrefix={"exams/" + examId}
+              title="Audio"
+              audio={formParams["audio"] as string}
               deleteAudio={deleteAudio}
               handleFileChangeValue={handleFileChangeValue}
             />
@@ -238,7 +284,7 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
               mt="14px"
               h="50px"
               type="submit"
-              isLoading={isLoading}
+              isLoading={isLoading || isS3Upload}
               w="full"
               colorScheme="gray"
             >
@@ -290,38 +336,6 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
                     </TabPanel>
                   ) : (
                     <TabPanel>
-                      {/* <Accordion allowToggle>
-                        {item.groups?.map((groupItem) => {
-                          return (
-                            <AccordionItem>
-                              <h2>
-                                <AccordionButton>
-                                  <Box as="span" flex="1" textAlign="left">
-                                    Question <b>{groupItem.from_question}</b> to
-                                    Question <b>{groupItem.to_question}</b>
-                                  </Box>
-                                  <AccordionIcon />
-                                </AccordionButton>
-                              </h2>
-                              <AccordionPanel
-                                pb={4}
-                                display={"flex"}
-                                flexDirection={"column"}
-                                alignItems={"flex-end"}
-                              >
-                                <Group
-                                  group={groupItem}
-                                  handleChangeValue={handleChangeValue}
-                                  handleEditorChange={handleEditorChange}
-                                  register={register}
-                                  validationError={validationError}
-                                  errors={errors}
-                                />
-                              </AccordionPanel>
-                            </AccordionItem>
-                          );
-                        })}
-                      </Accordion> */}
                       {item.groups?.map((group) => {
                         return (
                           <GroupDetail
@@ -348,6 +362,7 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
           question={questionUpdate as ExamQuestion}
           onClose={() => setIsOpenQuestionUpdate(false)}
           examId={examId}
+          partType={partType() ?? "listening"}
         />
       )}
       {isOpenGroupUpdate && (
@@ -356,6 +371,7 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
           group={groupUpdate as ExamGroup}
           onClose={() => setIsOpenGroupUpdate(false)}
           examId={examId}
+          partType={partType() ?? "listening"}
         />
       )}
     </>

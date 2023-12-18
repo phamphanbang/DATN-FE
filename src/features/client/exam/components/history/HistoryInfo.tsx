@@ -15,18 +15,17 @@ interface IHistoryInfo {
 }
 
 const HistoryInfo = ({ history }: IHistoryInfo) => {
-
   return (
-    <Flex my={'20px'}>
+    <Flex my={"20px"}>
       <Flex
         backgroundColor={"#f5f5f5"}
         flexDirection={"column"}
         border={"1px solid #d5d5d5"}
         borderRadius={"10px"}
-        w={"20%"}
+        w={"30%"}
       >
         <Flex
-          justifyContent={"space-between"}
+          justifyContent={"flex-start"}
           alignItems={"flex-start"}
           gap={"10px"}
           p={"10px"}
@@ -35,12 +34,12 @@ const HistoryInfo = ({ history }: IHistoryInfo) => {
             <TiTick />
           </Box>
           <Box w={"125px"}>Kết quả làm bài</Box>
-          <Box textAlign={"end"} fontWeight={"500"}>
-            {history.right_questions} / {history.total_questions}
+          <Box textAlign={"end"} fontWeight={"500"} marginLeft={"auto"}>
+            {history.right_questions + " / " + history.total_questions}
           </Box>
         </Flex>
         <Flex
-          justifyContent={"space-between"}
+          justifyContent={"flex-start"}
           alignItems={"flex-start"}
           gap={"10px"}
           p={"10px"}
@@ -49,7 +48,12 @@ const HistoryInfo = ({ history }: IHistoryInfo) => {
             <BiBullseye />
           </Box>
           <Box w={"125px"}>Độ chính xác</Box>
-          <Box textAlign={"end"} fontWeight={"500"} w={"30%"}>
+          <Box
+            textAlign={"end"}
+            fontWeight={"500"}
+            w={"30%"}
+            marginLeft={"auto"}
+          >
             {(
               (history.right_questions / history.total_questions) *
               100
@@ -57,7 +61,7 @@ const HistoryInfo = ({ history }: IHistoryInfo) => {
           </Box>
         </Flex>
         <Flex
-          justifyContent={"space-between"}
+          justifyContent={"flex-start"}
           alignItems={"flex-start"}
           gap={"10px"}
           p={"10px"}
@@ -66,8 +70,8 @@ const HistoryInfo = ({ history }: IHistoryInfo) => {
             <FaRegClock />
           </Box>
           <Box w={"125px"}>Thời gian hoàn thành</Box>
-          <Box textAlign={"end"} fontWeight={"500"}>
-            {history.right_questions} / {history.total_questions}
+          <Box textAlign={"end"} fontWeight={"500"} marginLeft={"auto"}>
+            {history.duration}
           </Box>
         </Flex>
       </Flex>

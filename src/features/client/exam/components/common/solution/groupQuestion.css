@@ -1,0 +1,12 @@
+.groupQuestion td {
+    border: 1px solid #e0e0e0;
+    padding: 5px;
+}
+
+.groupQuestion p {
+    margin-bottom: 5px;
+}
+
+.groupQuestion table {
+    margin-bottom: 10px;
+}

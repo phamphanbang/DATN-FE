@@ -55,7 +55,7 @@ const BlogCreateForm = () => {
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    const input = ["name"];
+    const input = ["name", "description"];
     if (input.includes(variable)) {
       updatedFormParams[variable as keyof FormParams] = e.target.value;
     }
@@ -68,7 +68,7 @@ const BlogCreateForm = () => {
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    const input = ["thumbnail", "panel"];
+    const input = ["thumbnail"];
     const file = e.target.files?.[0];
     if (input.includes(variable)) {
       updatedFormParams[variable as keyof FormParams] = file ?? "";
@@ -120,6 +120,16 @@ const BlogCreateForm = () => {
             validationError={validationError}
           />
 
+          <TextFieldInput
+            inputKey="description"
+            title="Blog Description"
+            placeholder="Enter blog description"
+            handleChangeValue={handleChangeValue}
+            errors={errors}
+            register={register}
+            validationError={validationError}
+          />
+
           <FormControl key={"thumbnail"}>
             <FormLabel fontSize={16} my={1} fontWeight="normal">
               Thumbnail
@@ -130,7 +140,9 @@ const BlogCreateForm = () => {
             </FormLabel>
             {formParams.thumbnail && (
               <Image
-                boxSize="100px"
+                // boxSize="100px"
+                w={"300px"}
+                h={"200px"}
                 src={URL.createObjectURL(formParams.thumbnail as File)}
                 alt="Blog thumbnail"
                 mx={"auto"}
@@ -144,7 +156,7 @@ const BlogCreateForm = () => {
             />
           </FormControl>
 
-          <FormControl key={"panel"}>
+          {/* <FormControl key={"panel"}>
             <FormLabel fontSize={16} my={1} fontWeight="normal">
               Panel
               <FormHelperText my={1} style={{ color: "red" }} as="span">
@@ -154,7 +166,8 @@ const BlogCreateForm = () => {
             </FormLabel>
             {formParams.panel && (
               <Image
-                boxSize="100px"
+                w={"300px"}
+                h={"200px"}
                 src={URL.createObjectURL(formParams.panel as File)}
                 alt="Blog Panel"
                 mx={"auto"}
@@ -166,7 +179,7 @@ const BlogCreateForm = () => {
               accept="image/*"
               onChange={(e) => handleFileChangeValue(e, "panel")}
             />
-          </FormControl>
+          </FormControl> */}
 
           <FormControl key={"post"}>
             <FormLabel fontSize={16} my={1} fontWeight="normal">

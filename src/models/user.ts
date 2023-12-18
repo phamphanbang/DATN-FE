@@ -18,7 +18,6 @@ export interface User {
   email: string;
   role: string;
   avatar: string;
-  panel: string;
 }
 
 export interface dataLogin {
@@ -63,7 +62,17 @@ export interface IUserUpdateRequest {
   avatar: File | string;
 }
 
+export interface IUserUpdateInfoRequest {
+  name: string;
+  email: string;
+  avatar: File | string;
+}
+
 export interface IUserResetPassword {
   password: string;
 }
 
+export interface IUserResetInfoPassword {
+  password: string;
+  confirm_password: string;
+}

@@ -400,6 +400,7 @@ const TemplateUpdateForm = ({ templateId }: ITemplateUpdateForm) => {
               <TabPanels>
                 {templateParts &&
                   templateParts.map((item, index) => {
+                    setValue(`num_of_questions_${index}`,item["num_of_questions"])
                     return (
                       <TabPanel>
                         <NumberFieldInput

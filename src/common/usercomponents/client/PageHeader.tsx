@@ -10,19 +10,41 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import LogoWeb from "assets/images/logo_full_sm.webp";
+import LogoWeb from "assets/images/logo_full_sm.png";
 import { NavLink } from "../NavLink";
 import { getImage, getItem, removeItem } from "utils";
 import { LocalStorageKeys } from "common/enums";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink as NavLinkComponent } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const PageHeader = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const accessToken: string | null = getItem(LocalStorageKeys.accessToken);
   const avatar: string | null = getItem(LocalStorageKeys.avatar);
   const userId: string | null = getItem(LocalStorageKeys.id);
   const userName: string | null = getItem(LocalStorageKeys.name);
   const isUnauthorized = accessToken === null;
+
+  const [avatarLink, setAvatarLink] = useState<string>(
+    getImage("users/" + userId, avatar + "?x=" + Math.random() as string)
+  );
+
+  useEffect(() => {
+    const onStorage = () => {
+      console.log('trigger')
+      const next = getItem(LocalStorageKeys.avatar) + "?x=" + Math.random();
+      setAvatarLink(getImage("users/" + userId, next as string));
+    };
+
+    window.addEventListener("storage", onStorage);
+
+    return () => {
+      window.removeEventListener("storage", onStorage);
+    };
+  }, [avatar]);
 
   const onNavigate = (to: string, logout?: boolean) => () => {
     if (logout) {
@@ -31,8 +53,9 @@ export const PageHeader = () => {
       removeItem(LocalStorageKeys.isAdmin);
       removeItem(LocalStorageKeys.avatar);
       removeItem(LocalStorageKeys.id);
-      navigate(to);
     }
+    queryClient.clear();
+    navigate(to);
   };
   return (
     <HStack
@@ -49,11 +72,17 @@ export const PageHeader = () => {
       zIndex="10"
     >
       <Flex>
-        <Link href="/">
+        <Link as={NavLinkComponent} to={"/"}>
           <Image src={LogoWeb} alt="logo" h="30px" />
         </Link>
       </Flex>
-      <Flex gap="10px" fontWeight="600" fontSize="14px" alignItems="center">
+      <Flex
+        gap="10px"
+        fontWeight="600"
+        fontSize="14px"
+        fontFamily={"montserrat"}
+        alignItems="center"
+      >
         <NavLink color="blue.400" to="/" text="Trang chủ" />
         <NavLink color="blue.400" to="/exams" text="Đề thi online" />
         <NavLink color="blue.400" to="/blogs" text="Blog" />
@@ -71,14 +100,16 @@ export const PageHeader = () => {
             <MenuButton>
               <Image
                 boxSize="30px"
-                src={getImage("users/" + userId, avatar as string)}
+                src={avatarLink}
                 alt="User Avatar"
                 mx={"auto"}
                 borderRadius={"full"}
               />
             </MenuButton>
             <MenuList>
-              <MenuItem>Download</MenuItem>
+              <MenuItem onClick={onNavigate("/my_account", false)}>
+                Thông tin cá nhân
+              </MenuItem>
               <MenuItem onClick={onNavigate("/", true)}>Đăng xuất</MenuItem>
             </MenuList>
           </Menu>

@@ -22,7 +22,7 @@ import { appConfigState } from "stores/appConfig";
 import { Table } from "common/components/Table/Table";
 import { PageSize } from "common/components/Table/PageSizeProps";
 import { ShowingItemText } from "common/components/Table/ShowItemText";
-import { QueryKeys, noOfRows } from "common/constants";
+import { QueryKeys, examType, noOfRows } from "common/constants";
 import { Pagination } from "common/components/Pagination";
 import { RowAction } from "./RowAction";
 import { TbSearch } from "react-icons/tb";
@@ -32,11 +32,12 @@ import { ModalConfirm } from "common/components/ModalConfirm";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "common/components/StandaloneToast";
 import { TableFilterParams } from "models/app";
-import { useDeleteTemplate } from "api/apiHooks/templateHook";
+import { useDeleteTemplate, useGetAllTemplateList } from "api/apiHooks/templateHook";
 import { useGetExamList, useDeleteExams } from "api/apiHooks/examHook";
 import { Exam } from "models/exam";
 import { capitalizeFirstLetter } from "utils";
 import ExamCreateModal from "./ExamCreateModal";
+import { SelectField } from "common/components/SelectField";
 
 const initialFilter: TableFilterParams = {
   maxResultCount: +noOfRows[0].value,
@@ -62,6 +63,9 @@ export const MyExamTable = () => {
   const { skipCount, maxResultCount } = filter;
   const currentPage = (maxResultCount + skipCount) / maxResultCount;
 
+  const { data: templateData } = useGetAllTemplateList();
+  const { items: templates = [] } = templateData ?? {};
+
   const [txtSearch, setTxtSearch] = useState<string>("");
   const txtSearchDebounced = useDebounced(txtSearch, 500);
 
@@ -72,6 +76,7 @@ export const MyExamTable = () => {
 
   const [isDeleteable, setIsDeleteable] = useState(true);
   const [isOpenCreate, setIsOpenCreate] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
 
   const deleteRequestMutation = useDeleteExams();
   const queryClient = useQueryClient();
@@ -104,15 +109,15 @@ export const MyExamTable = () => {
           enableSorting: false,
           cell: (info) => <Box>{capitalizeFirstLetter(info.getValue())}</Box>,
         }),
+        columnHelper.accessor("type", {
+          id: "type",
+          header: () => <Box>Type</Box>,
+          enableSorting: false,
+          cell: (info) => <Box>{capitalizeFirstLetter(info.getValue())}</Box>,
+        }),
         columnHelper.accessor("total_views", {
           id: "total_views",
           header: () => <Box>Total views</Box>,
-          enableSorting: false,
-          cell: (info) => <Box>{info.getValue()}</Box>,
-        }),
-        columnHelper.accessor("comments_count", {
-          id: "comments_count",
-          header: () => <Box>Total Comments</Box>,
           enableSorting: false,
           cell: (info) => <Box>{info.getValue()}</Box>,
         }),
@@ -159,7 +164,7 @@ export const MyExamTable = () => {
     }));
   };
 
-  const onFilterChange = useCallback((key: "search", value?: string) => {
+  const onFilterChange = useCallback((key: string, value?: string) => {
     setFilter((filter) => ({ ...filter, [key]: value, skipCount: 0 }));
   }, []);
 
@@ -178,8 +183,32 @@ export const MyExamTable = () => {
     navigate("/admin/exams/update/" + requestId);
   };
 
+  const examTypeOptions = useMemo(() => {
+    const defaultOptions = {
+      value: "",
+      label: "All Type",
+    };
+
+    const options = examType.map(({ value, label }) => ({
+      value: value,
+      label: label,
+    }));
+
+    return [defaultOptions, ...options];
+  }, []);
+
+  const examTemplateOptions = useMemo(() => {
+    const defaultOptions = {
+      value: "",
+      label: "All Template",
+    };
+
+    return [defaultOptions, ...templates];
+  }, [templates]);
+
   const handleConfirmation = async () => {
-    setIsOpen(false);
+    // setIsOpen(false);
+    setIsDeleteLoading(true);
     if (requestId.length === 0) return;
     const mutation = deleteRequestMutation;
     const successMessage = "Deleted successfully!";
@@ -191,6 +220,8 @@ export const MyExamTable = () => {
     } catch (error) {
       toast({ title: errorMessage, status: "error" });
     }
+    setIsDeleteLoading(false);
+    setIsOpen(false);
   };
 
   return (
@@ -218,6 +249,22 @@ export const MyExamTable = () => {
                 <TbSearch />
               </InputRightElement>
             </InputGroup>
+          </Box>
+          <Box w="220px">
+            <SelectField
+              size="sm"
+              rounded="md"
+              onChange={(e) => onFilterChange("type", e.target.value)}
+              options={examTypeOptions}
+            />
+          </Box>
+          <Box w="220px">
+            <SelectField
+              size="sm"
+              rounded="md"
+              onChange={(e) => onFilterChange("template_id", e.target.value)}
+              options={examTemplateOptions}
+            />
           </Box>
           <Box w={"240px"} marginLeft={"auto"}>
             <Button w={"100%"} onClick={() => setIsOpenCreate(true)}>
@@ -280,6 +327,7 @@ export const MyExamTable = () => {
         onClose={() => setIsOpen(false)}
         onConfirm={handleConfirmation}
         title={modalTitle}
+        isLoading={isDeleteLoading}
         description={modalDescription}
       />
       {isOpenCreate && (

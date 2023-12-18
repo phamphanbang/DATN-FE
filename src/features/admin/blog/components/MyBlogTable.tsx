@@ -104,22 +104,22 @@ export const MyBlogTable = () => {
             </Box>
           ),
         }),
-        columnHelper.accessor("panel", {
-          id: "panel",
-          header: () => <Box>Panel</Box>,
-          enableSorting: false,
-          cell: (info) => (
-            <Box>
-              <Image
-                boxSize="50px"
-                src={getImage("blogs" + info.row.original.id, info.getValue())}
-                alt="Blog Panel"
-                mx={"auto"}
-                my={"10px"}
-              />
-            </Box>
-          ),
-        }),
+        // columnHelper.accessor("panel", {
+        //   id: "panel",
+        //   header: () => <Box>Panel</Box>,
+        //   enableSorting: false,
+        //   cell: (info) => (
+        //     <Box>
+        //       <Image
+        //         boxSize="50px"
+        //         src={getImage("blogs" + info.row.original.id, info.getValue())}
+        //         alt="Blog Panel"
+        //         mx={"auto"}
+        //         my={"10px"}
+        //       />
+        //     </Box>
+        //   ),
+        // }),
         columnHelper.display({
           id: "actions",
           enableSorting: false,

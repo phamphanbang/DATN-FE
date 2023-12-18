@@ -1,15 +1,32 @@
 import { Flex, Skeleton, Text, Button } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { ModalConfirm } from "common/components/ModalConfirm";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface IExamTitle {
   isLoaded: boolean;
   title: string;
-  examId: string;
+  buttonTitle: string;
+  isConfirm: boolean;
+  to: string;
 }
 
-const ExamTitle = ({ isLoaded, title, examId }: IExamTitle) => {
+const ExamTitle = ({ isLoaded, title,isConfirm,buttonTitle,to }: IExamTitle) => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleConfirmation = async () => {
+    setIsOpen(false);
+    navigate(to);
+  };
+
+  const onClick = () => {
+    if(isConfirm) {
+      setIsOpen(true);
+      return;
+    }
+    navigate(to);
+  }
  
   return (
     <Flex alignItems={"center"} justifyContent={"center"}>
@@ -20,17 +37,25 @@ const ExamTitle = ({ isLoaded, title, examId }: IExamTitle) => {
       </Skeleton>
       <Button
         ml={"10px"}
-        border={"1px solid black"}
+        border={"1px solid #2b6cb0"}
         backgroundColor={"white"}
+        color={"#2b6cb0"}
         _hover={{
           border: "1px solid #2b6cb0",
           backgroundColor: "#2b6cb0",
           color: "white",
         }}
-        onClick={() => navigate('/exams/'+examId)}
+        onClick={() => onClick()}
       >
-        Thoát
+        {buttonTitle}
       </Button>
+      <ModalConfirm
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={handleConfirmation}
+        title={"Bạn có muốn thoát khỏi bài thi ?"}
+        description={"Lưu ý quá trình làm bài của bạn sẽ không được lưu"}
+      />
     </Flex>
   );
 };

@@ -107,7 +107,7 @@ const UserUpdateForm = ({
     }
     try {
       const data = await mutate();
-      if(getItem(LocalStorageKeys.id) === userId) {
+      if(getItem(LocalStorageKeys.id) == userId) {
         setItem(LocalStorageKeys.avatar,data.avatar);
       }
     } catch (error) {

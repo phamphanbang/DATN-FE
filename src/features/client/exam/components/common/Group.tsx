@@ -3,15 +3,29 @@ import { ExamGroup } from "models/exam";
 import Question from "./Question";
 import { getImage, getAudio } from "utils";
 import { partTypeValue } from "common/constants";
+import "./groupQuestion.css";
+import parse from "html-react-parser";
 
 interface IGroup extends BoxProps {
   group: ExamGroup;
   partType: string;
   examId: string;
-  onAnswerSelect: (question_id:string,answer_id:string,is_right:boolean) => void;
+  onAnswerSelect: (
+    question_id: string,
+    answer_id: string,
+    is_right: boolean
+  ) => void;
+  showAudio: boolean;
 }
 
-const Group = ({ group, partType, examId,onAnswerSelect, ...inputProps }: IGroup) => {
+const Group = ({
+  group,
+  partType,
+  examId,
+  onAnswerSelect,
+  showAudio,
+  ...inputProps
+}: IGroup) => {
   const attachment = () => {
     return getImage("exams/" + examId, group.attachment);
   };
@@ -20,7 +34,17 @@ const Group = ({ group, partType, examId,onAnswerSelect, ...inputProps }: IGroup
     return getAudio("exams/" + examId, group.audio);
   };
   return (
-    <Box my={"10px"} {...inputProps}>
+    <Box
+      my={"20px"}
+      {...inputProps}
+      style={
+        partType === partTypeValue.READING
+          ? {
+              borderBottom: "1px solid #c7c7c7"
+            }
+          : {}
+      }
+    >
       <Box>
         <b>
           {group.from_question} - {group.to_question}
@@ -40,13 +64,13 @@ const Group = ({ group, partType, examId,onAnswerSelect, ...inputProps }: IGroup
           style={
             partType === partTypeValue.READING
               ? {
-                  width: "50%",
+                  width: "60%",
                   overflowY: "auto",
                 }
               : {}
           }
         >
-          {group.audio && (
+          {showAudio && group.audio && (
             <audio
               controls
               src={audio()}
@@ -57,7 +81,8 @@ const Group = ({ group, partType, examId,onAnswerSelect, ...inputProps }: IGroup
               }}
             ></audio>
           )}
-          <Box>{group.question}</Box>
+          {group.question && <Box className="groupQuestion">{parse(group.question)}</Box>}
+
           {group.attachment && (
             <Box>
               <Image
@@ -75,11 +100,10 @@ const Group = ({ group, partType, examId,onAnswerSelect, ...inputProps }: IGroup
 
         <Box
           p={"10px"}
-          w={"50%"}
           style={
             partType === partTypeValue.READING
               ? {
-                  width: "50%",
+                  width: "40%",
                   overflowY: "auto",
                 }
               : {}
@@ -93,6 +117,7 @@ const Group = ({ group, partType, examId,onAnswerSelect, ...inputProps }: IGroup
                 question={question}
                 examId={examId}
                 onAnswerSelect={onAnswerSelect}
+                showAudio={showAudio}
               />
             );
           })}

@@ -48,18 +48,19 @@ const ImageFieldInput = ({
     const file = e.target.files?.[0];
     const res =
       typeof file === "string"
-        ? getImage(imagePrefix, file ?? imageIfNull)
+        ? getImage(imagePrefix, (file ?? imageIfNull) + "?x=" + Math.random() )
         : URL.createObjectURL(file as File);
     setCurrentImage(res);
   };
 
   useEffect(() => {
+    const defImage = image ?? imageIfNull;
     const res =
-      typeof image === "string"
-        ? getImage(imagePrefix, image)
+      typeof defImage === "string"
+        ? getImage(imagePrefix, defImage + "?x=" + Math.random() )
         : URL.createObjectURL(image as File);
     setCurrentImage(res);
-  }, []);
+  }, [image]);
 
   const showCondition = (): boolean => {
     const isCurrentImage = currentImage ? true : false;

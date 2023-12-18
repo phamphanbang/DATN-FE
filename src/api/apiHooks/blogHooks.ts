@@ -3,7 +3,7 @@ import { useCreate, useDelete, useGetList, useGetOne, useUpdate } from "api/apiH
 import { QueryKeys } from 'common/constants';
 import { FormParams } from 'models/app';
 import { TableFilterParams } from 'models/app';
-import { Blog, BlogRequestResult, IBlogUpdateRequest } from 'models/blog';
+import { Blog, BlogRequestResult, IBlogUpdateRequest, UserBlog, UserBlogRequestResult } from 'models/blog';
 
 export const useGetBlogList = (filter: TableFilterParams) => {
   return useGetList<BlogRequestResult>(
@@ -38,3 +38,18 @@ export const useUpdateBlog = (blogId: string, blog: IBlogUpdateRequest) => {
   );
 }
 
+
+export const useUserGetBlogList = (filter: TableFilterParams) => {
+  return useGetList<UserBlogRequestResult>(
+    [QueryKeys.USER_GET_ALL_BLOGS, filter],
+    '/blogs',
+    filter
+  );
+}
+
+export const useUserGetBlogDetail = (id: string) => {
+  return useGetOne<UserBlog>(
+    [QueryKeys.USER_GET_BLOG, id],
+    `/blogs/${id}`
+  );
+};

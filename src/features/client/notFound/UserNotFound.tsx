@@ -1,6 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { NavLink } from "common/usercomponents/NavLink";
-import theme from "themes/theme";
 
 const UserNotFound = () => {
   return (
@@ -12,8 +11,8 @@ const UserNotFound = () => {
     >
       <Box
         padding={"30px 50px"}
-        border={`1px solid ${theme.colors.borderColor}`}
         borderRadius={"10px"}
+        border={`1px solid #c7c7c7`}
       >
         <Box fontSize={"30px"} fontWeight={"700"} p={"8px"}>
           Không tìm thấy trang

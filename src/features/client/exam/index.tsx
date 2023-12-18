@@ -1,12 +1,14 @@
 import { Flex } from "@chakra-ui/react";
 import ExamIndexTable from "./components/index";
-import SideBar from "./components/SideBar";
+import { setItem } from "utils";
+import { LocalStorageKeys } from "common/enums";
 
 const ExamIndexPage = () => {
+  setItem(LocalStorageKeys.prevURL, '/exams');
   return (
     <Flex justifyContent={"center"}>
       <ExamIndexTable />
-      <SideBar />
+      {/* <SideBar /> */}
     </Flex>
   );
 };

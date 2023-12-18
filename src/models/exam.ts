@@ -8,7 +8,9 @@ export interface Exam {
   total_views: number;
   status: string;
   audio: string;
+  type: string;
   comments_count: string;
+  histories_count: number;
   template: Template;
 }
 
@@ -19,6 +21,7 @@ export interface ExamAdminDetail {
   total_views: number;
   status: string;
   audio: string;
+  type: string;
   template: Template;
   parts: ExamPart[];
 }
@@ -103,6 +106,7 @@ export interface IUpdateExam {
   name: string;
   status: string;
   audio: string | File;
+  type: string;
 }
 
 export interface IUpdateQuestion {
@@ -123,7 +127,9 @@ export interface IUserExamDetail {
   total_parts: number;
   total_questions: number;
   comments_count: number;
+  type: string;
   parts: IUserExamDetailPart[];
+  histories: HistoryList[];
 }
 
 export interface IUserExamDetailPart {
@@ -139,6 +145,7 @@ export interface IUserExamForTest {
   name: string;
   duration: string;
   audio: string;
+  exam_type: string;
   parts: IUserExamPart[];
 }
 
@@ -165,16 +172,29 @@ export interface IExamNavigateQuestion {
   order_in_test: number;
 }
 
+export interface IExamHistoryNavigate {
+  part: number;
+  questions: IExamHistoryNavigateQuestion[];
+}
+
+export interface IExamHistoryNavigateQuestion {
+  id: string;
+  order_in_test: number;
+  is_right: boolean;
+}
+
 export interface IExamRequest {
   duration: string;
   test_type: string;
-  parts: IExamPartRequest[]
+  exam_type: string;
+  parts: IExamPartRequest[];
 }
 
 export interface IExamPartRequest {
   part_id: string;
   part_type: string;
-  answers: IExamAnswerRequest[]
+  order_in_test: number;
+  answers: IExamAnswerRequest[];
 }
 
 export interface IExamAnswerRequest {
@@ -196,13 +216,15 @@ export interface ExamHistoryDetail {
   wrong_questions: number;
   score: number;
   test_type: string;
+  exam_type: string;
+  audio: string;
+  duration: string;
   parts: ExamHistoryPart[];
 }
 
 export interface ExamHistoryPart {
   id: string;
   exam_id: number;
-  template_part_id: number;
   order_in_test: number;
   part_type: string;
   questions?: ExamHistoryQuestion[];
@@ -242,4 +264,64 @@ export interface ExamAnswer {
   is_right: boolean;
 }
 
+export interface HistoryList {
+  id: string;
+  exam_id: string;
+  total_questions: number;
+  right_questions: number;
+  duration: string;
+  test_type: string;
+  exam_type: string;
+  created_at: string;
+  score: number;
+  parts: HistoryPart[];
+}
+
+export interface HistoryListIndex {
+  id: string;
+  exam_id: string;
+  total_questions: number;
+  right_questions: number;
+  exam_type: string;
+  duration: string;
+  test_type: string;
+  created_at: string;
+  score: number;
+  test: HistoryExamInfo;
+  parts: HistoryPart[];
+}
+
+export interface HistoryExamInfo {
+  id: string;
+  name: string;
+}
+
+export interface HistoryPart {
+  id: number;
+  history_id: number;
+  order_in_test: number;
+  part_id: number;
+}
+
+export interface HistoryStat {
+  number_of_test: number;
+  listening_total_questions: number;
+  listening_right_questions: number;
+  reading_total_questions: number;
+  reading_right_questions: number;
+  min_score: number;
+  max_score: number;
+  total_duration: string;
+}
+
+export interface ListHistoryResult {
+  totalCount: number;
+  items: HistoryListIndex[];
+  stat: HistoryStat;
+}
+
+export type HistoryRequestResult = ListHistoryResult;
+
 export type ExamRequestResult = ListResult<Exam>;
+
+

@@ -10,9 +10,17 @@ export interface TableFilterParams {
   maxResultCount: number;
   skipCount: number;
   sorting: string;
+  search?: string;
+  user?: string;
+  type?: string
+  time?: number
 }
 
 export type FormParams = Record<
   string,
-  string | number | File | ITemplatePartCreateRequest[] | ICreateExamPartRequest[]
+  | string
+  | number
+  | File
+  | ITemplatePartCreateRequest[]
+  | ICreateExamPartRequest[]
 >;

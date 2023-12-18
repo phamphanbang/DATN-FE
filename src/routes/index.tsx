@@ -28,6 +28,12 @@ import ExamIndexPage from 'features/client/exam';
 import ExamDetailPage from 'features/client/exam/detail';
 import ExamStartPage from 'features/client/exam/start';
 import HistoryDetailPage from 'features/client/exam/history';
+import ExamHistoryDetailPage from 'features/client/exam/historyDetail';
+import ExamPracticePage from 'features/client/exam/practice';
+import ExamSolutionPage from 'features/client/exam/solution';
+import BlogIndexPage from 'features/client/blog';
+import UserIndexPage from 'features/client/user';
+import BlogDetailPage from 'features/client/blog/detail';
 
 const routeList: RouteObject[] = [
   {
@@ -56,12 +62,40 @@ const routeList: RouteObject[] = [
         element: <ExamStartPage />,
       },
       {
+        path: "exams/:id/practice",
+        element: <ExamPracticePage />,
+      },
+      {
+        path: "exams/:exam_id/solution/",
+        element: <ExamSolutionPage />,
+      },
+      {
+        path: "exams/:exam_id/part/:part/solution",
+        element: <ExamSolutionPage />,
+      },
+      {
+        path: "exams/:exam_id/history/:history_id/detail",
+        element: <ExamHistoryDetailPage />,
+      },
+      {
         path: "exams/:exam_id/history/:history_id",
         element: <HistoryDetailPage />,
       },
       {
         path: "exams/:id",
         element: <ExamDetailPage />,
+      },
+      {
+        path: "blogs",
+        element: <BlogIndexPage />,
+      },
+      {
+        path: "blogs/:id",
+        element: <BlogDetailPage />,
+      },
+      {
+        path: "my_account",
+        element: <UserIndexPage />,
       },
       {
         path: "notFound",

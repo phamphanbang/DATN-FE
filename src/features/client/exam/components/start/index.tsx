@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Flex,
+  Skeleton,
   Tab,
   TabList,
   TabPanel,
@@ -9,10 +10,11 @@ import {
   Tabs,
 } from "@chakra-ui/react";
 import {
-  useUserGetExamForTest, useUserSubmitExam,
+  useUserGetExamForTest,
+  useUserSubmitExam,
 } from "api/apiHooks/examHook";
 import styles from "./style.module.scss";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import theme from "themes/theme";
 import {
   IExamAnswerRequest,
@@ -23,7 +25,7 @@ import {
   IUserExamForTest,
   IUserGetExamRequest,
 } from "models/exam";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ExamTitle from "../common/ExamTitle";
 import Group from "../common/Group";
 import Question from "../common/Question";
@@ -40,12 +42,19 @@ const ExamStart = ({ examId }: IExamStart) => {
   const { mutateAsync, isSuccess } = useUserGetExamForTest(examId);
   const [exam, setExam] = useState<IUserExamForTest>();
   const [examNavigate, setExamNavigate] = useState<IExamNavigate[]>();
-  const [answer,setAnswer] = useState<IExamPartRequest[]>([]);
+  const [answer, setAnswer] = useState<IExamPartRequest[]>([]);
   const [partIndex, setPartIndex] = useState<number>(0);
-  const [submit,setSubmit] = useState<IExamRequest>();
-  const {mutateAsync : submitExam} = useUserSubmitExam(examId,submit as IExamRequest);
+  // const [duration, setDuration] = useState<string>("");
+  const startDate = useRef(Date.now());
+  let duration = useRef<string>("");
+  let def = useRef<string>("");
+  const [submit, setSubmit] = useState<IExamRequest>();
+  const { mutateAsync: submitExam } = useUserSubmitExam(
+    examId,
+    submit as IExamRequest
+  );
 
-  const newNavigate = (data : IUserExamForTest): IExamNavigate[] => {
+  const newNavigate = (data: IUserExamForTest): IExamNavigate[] => {
     return data.parts.map((item) => {
       const questions: IExamNavigateQuestion[] = [];
       if (item.has_group_question) {
@@ -72,7 +81,7 @@ const ExamStart = ({ examId }: IExamStart) => {
     });
   };
 
-  const defaultAnswer = (data : IUserExamForTest): IExamPartRequest[] => {
+  const defaultAnswer = (data: IUserExamForTest): IExamPartRequest[] => {
     return data.parts.map((item) => {
       const answers: IExamAnswerRequest[] = [];
       if (item.has_group_question) {
@@ -81,7 +90,7 @@ const ExamStart = ({ examId }: IExamStart) => {
             answers.push({
               question_id: question.id,
               answer_id: "",
-              is_right: false
+              is_right: false,
             });
           });
         });
@@ -90,14 +99,15 @@ const ExamStart = ({ examId }: IExamStart) => {
           answers.push({
             question_id: question.id,
             answer_id: "",
-            is_right: false
+            is_right: false,
           });
         });
       }
       return {
         part_id: item.id,
         part_type: item.part_type,
-        answers: answers
+        order_in_test: item.order_in_test,
+        answers: answers,
       };
     });
   };
@@ -110,24 +120,51 @@ const ExamStart = ({ examId }: IExamStart) => {
     setExamNavigate(nav);
     const ans = defaultAnswer(exam);
     setAnswer(ans);
-    const defaultSubmit : IExamRequest = {
+    const defaultSubmit: IExamRequest = {
       duration: exam.duration,
-      test_type: 'fulltest',
-      parts: [...ans]
-    }
+      test_type: "fulltest",
+      exam_type: exam.exam_type,
+      parts: [...ans],
+    };
     setSubmit(defaultSubmit);
+    def.current = exam.duration;
   };
 
-  const onAnswerSelect = (question_id:string,answer_id:string,is_right:boolean) => {
+  const setTime = (time: string) => {
+    const t = parseInt(time) * 60 * 1000;
+    return startDate.current + t;
+  };
+
+  const getDuration = () => {
+    const pad = (n: number) => (n < 10 ? `0${n}` : n);
+    const total = parseInt(exam?.duration ?? "0") * 60 * 1000;
+    const time = parseInt(duration.current ?? "0");
+    const dur = total - time;
+    const hours = Math.floor(dur / (1000 * 60 * 60));
+    const minutes = Math.floor((dur % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((dur % (1000 * 60)) / 1000);
+    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  };
+
+  const onAnswerSelect = (
+    question_id: string,
+    answer_id: string,
+    is_right: boolean
+  ) => {
+    const el = document.querySelector("#navButton_" + question_id);
+    if(el) {
+      el.classList.add('question_answered');
+    }
     const newAnswer = [...answer];
-    const obj = newAnswer[partIndex].answers.find((item) => item.question_id === question_id);
-    if(obj) {
-      console.log(answer_id)
+    const obj = newAnswer[partIndex].answers.find(
+      (item) => item.question_id === question_id
+    );
+    if (obj) {
       obj.answer_id = answer_id;
       obj.is_right = is_right;
     }
     setAnswer(answer);
-  }
+  };
 
   const rendererCountdown = ({
     hours,
@@ -135,10 +172,10 @@ const ExamStart = ({ examId }: IExamStart) => {
     seconds,
     completed,
   }: CountdownRenderProps) => {
-    if (completed) {
-      console.log("done");
-    }
     const pad = (n: number) => (n < 10 ? `0${n}` : n);
+    if (completed) {
+      onSubmit();
+    }
     return (
       <Box fontWeight={"700"} fontSize={"24px"}>
         {pad(hours)}:{pad(minutes)}:{pad(seconds)}
@@ -149,7 +186,7 @@ const ExamStart = ({ examId }: IExamStart) => {
   const onNavigateClick = (index: number, id: string) => {
     const el = document.querySelector("#questions_" + id);
     if (el) {
-      setPartIndex(index - 1);
+      setPartIndex(index);
       el.classList.add(styles["question-hightlight"]);
       el.scrollIntoView({
         behavior: "smooth",
@@ -178,29 +215,37 @@ const ExamStart = ({ examId }: IExamStart) => {
   // }, []);
 
   const onSubmit = async () => {
-    const finalSubmit = {...submit};
-    finalSubmit.parts = [...answer];
+    if(submit) {
+      const finalSubmit : IExamRequest = { ...submit };
+      finalSubmit.parts = [...answer];
+      finalSubmit.duration = getDuration();
+      // console.log(getDuration());
+      setSubmit(finalSubmit);
+    }
+    
     try {
-      const {history_id} = await submitExam();
-      navigate('/exams/'+examId+'/history/'+history_id);
+      const { history_id } = await submitExam();
+      navigate("/exams/" + examId + "/history/" + history_id);
     } catch (e) {
       toast({
         description: "Đã có lỗi xảy ra trong hệ thống",
         status: "error",
       });
     }
-  }
+  };
 
   const onSubmitButton = () => {
     onSubmit();
-  }
+  };
 
   return (
     <Box mt={"10px"} w={"100%"}>
       <ExamTitle
-        examId={examId}
+        to={"/exams/" + examId}
         isLoaded={isSuccess}
         title={exam?.name ?? ""}
+        buttonTitle="Thoát"
+        isConfirm={true}
       />
 
       <Flex>
@@ -210,7 +255,7 @@ const ExamStart = ({ examId }: IExamStart) => {
           m={"15px"}
           backgroundColor={"white"}
           borderRadius={"10px"}
-          border={`1px solid ${theme.colors.borderColor}`}
+          border={`1px solid #c7c7c7`}
           p={"15px"}
         >
           <audio
@@ -241,10 +286,12 @@ const ExamStart = ({ examId }: IExamStart) => {
                     {item.groups?.map((group) => {
                       return (
                         <Group
+                          key={'group_'+group.id}
                           partType={item.part_type}
                           examId={examId}
                           group={group}
                           onAnswerSelect={onAnswerSelect}
+                          showAudio={false}
                         />
                       );
                     })}
@@ -258,6 +305,7 @@ const ExamStart = ({ examId }: IExamStart) => {
                           examId={examId}
                           question={question}
                           onAnswerSelect={onAnswerSelect}
+                          showAudio={false}
                         />
                       );
                     })}
@@ -274,12 +322,19 @@ const ExamStart = ({ examId }: IExamStart) => {
           m={"15px"}
           backgroundColor={"white"}
           borderRadius={"10px"}
-          border={`1px solid ${theme.colors.borderColor}`}
+          border={`1px solid #c7c7c7`}
           p={"15px"}
           h={"fit-content"}
         >
           <Box>Thời gian còn lại:</Box>
-          <Countdown date={Date.now() + 10000} renderer={rendererCountdown} />
+          <Skeleton h={"30px"} isLoaded={exam?.duration ? true : false}>
+            <Countdown
+              date={setTime(exam?.duration as string)}
+              renderer={rendererCountdown}
+              onTick={(e) => (duration.current = e.total.toString())}
+            />
+          </Skeleton>
+
           <Button
             mt={"10px"}
             w={"100%"}
@@ -298,6 +353,7 @@ const ExamStart = ({ examId }: IExamStart) => {
             return (
               <NavPart
                 key={"navpart_" + index}
+                partIndex={index}
                 onNavigateClick={onNavigateClick}
                 navPart={item}
               />

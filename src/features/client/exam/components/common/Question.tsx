@@ -1,10 +1,10 @@
 import {
   Box,
   BoxProps,
+  Button,
   Flex,
   Image,
-  Radio,
-  RadioGroup,
+  Text
 } from "@chakra-ui/react";
 
 import { ExamQuestion } from "models/exam";
@@ -14,10 +14,21 @@ import Answer from "./Answer";
 interface IQuestion extends BoxProps {
   question: ExamQuestion;
   examId: string;
-  onAnswerSelect: (question_id:string,answer_id:string,is_right:boolean) => void;
+  onAnswerSelect: (
+    question_id: string,
+    answer_id: string,
+    is_right: boolean
+  ) => void;
+  showAudio: boolean;
 }
 
-const Question = ({ question, examId,onAnswerSelect, ...inputProps }: IQuestion) => {
+const Question = ({
+  question,
+  examId,
+  onAnswerSelect,
+  showAudio,
+  ...inputProps
+}: IQuestion) => {
   const attachment = () => {
     return getImage("exams/" + examId, question.attachment);
   };
@@ -25,22 +36,32 @@ const Question = ({ question, examId,onAnswerSelect, ...inputProps }: IQuestion)
   const audio = () => {
     return getAudio("exams/" + examId, question.audio);
   };
+
+  const onMarked = () => {
+    const el = document.querySelector("#navButton_" + question.id);
+    const qe = document.querySelector("#navQuestion_" + question.id);
+    if (el && qe) {
+      el.classList.toggle("question_marked");
+      qe.classList.toggle("question_marked");
+    }
+  };
+
   return (
     <Box my={"10px"} p={"10px"} {...inputProps}>
       {question.attachment && (
-        <Box>
+        <Box ml={'20px'}>
           <Image
-            w={"300px"}
-            h={"200px"}
+            // w={"300px"}
+            // h={"200px"}
             src={attachment()}
             alt={"attachment"}
-            mx={"auto"}
+            // mx={"auto"}
             my={"10px"}
             borderRadius={"none"}
           />
         </Box>
       )}
-      {question.audio && (
+      {showAudio  && question.audio && (
         <audio
           controls
           src={audio()}
@@ -51,137 +72,34 @@ const Question = ({ question, examId,onAnswerSelect, ...inputProps }: IQuestion)
           }}
         ></audio>
       )}
-      <Box>
-        <b style={{ marginRight: "10px" }}>{question.order_in_test}.</b>
-        {question.question}
-      </Box>
-      <fieldset>
-        {/* <Flex my={"5px"}>
-          <Answer
-            // name={"question_answers_" + question.id}
-            key={'answers_'+question.answers[0].id}
-            answer={question.answers[0]}
-            w={"50%"}
-            p={"5px"}
-            // onRadioChange={onRadioChange}
-          />
-          <Answer
-            // name={"question_answers_" + question.id}
-            key={'answers_'+question.answers[1].id}
-            answer={question.answers[1]}
-            w={"50%"}
-            p={"5px"}
-            // onRadioChange={onRadioChange}
-          />
-        </Flex>
-        <Flex my={"5px"}>
-          <Answer
-            // name={"question_answers_" + question.id}
-            key={'answers_'+question.answers[2].id}
-            answer={question.answers[2]}
-            w={"50%"}
-            p={"5px"}
-            // onRadioChange={onRadioChange}
-          />
-          {question.answers.length == 4 ? (
-            <Answer
-              // name={"question_answers_" + question.id}
-              key={'answers_'+question.answers[3].id}
-              answer={question.answers[3]}
-              w={"50%"}
-              p={"5px"}
-              // onRadioChange={onRadioChange}
-            />
-          ) : (
-            ""
-          )}
-        </Flex> */}
-        {/* <legend>{'Question ' + question.id}</legend> */}
-        {/* <Flex my={"5px"}>
-          <label htmlFor={"answers_" + question.answers[0].id}>
-            <input
-              type="radio"
-              id={"answers_" + question.answers[0].id}
-              value={question.answers[0].id}
-              name={"question_" + question.id}
-              onChange={(e) => console.log(e.target.value)}
-            />
-            {question.answers[0].answer}
-          </label>
-          <label htmlFor={"answers_" + question.answers[1].id}>
-            <input
-              type="radio"
-              id={"answers_" + question.answers[1].id}
-              value={question.answers[1].id}
-              name={"question_" + question.id}
-              onChange={(e) => console.log(e.target.value)}
-            />
-            {question.answers[1].answer}
-          </label>
-        </Flex>
-        <Flex my={"5px"}>
-          <label htmlFor={"answers_" + question.answers[2].id}>
-            <input
-              type="radio"
-              id={"answers_" + question.answers[2].id}
-              value={question.answers[2].id}
-              name={"question_" + question.id}
-              onChange={(e) => console.log(e.target.value)}
-            />
-            {question.answers[2].answer}
-          </label>
-          {question.answers.length == 4 ? (
-            <label htmlFor={"answers_" + question.answers[3].id}>
-              <input
-                type="radio"
-                id={"answers_" + question.answers[3].id}
-                value={question.answers[3].id}
-                name={"question_" + question.id}
-                onChange={(e) => console.log(e.target.value)}
+      <Flex alignItems={'flex-start'} mb={'10px'} gap={'10px'}>
+        <Button
+          id={"navQuestion_" + question.id}
+          onClick={onMarked}
+          borderRadius={"50%"}
+          width={"35px"}
+          height={"35px"}
+        >
+          {question.order_in_test}
+        </Button>
+        <Text>{question.question}</Text>
+      </Flex>
+      <Box ml={"20px"}>
+        <fieldset>
+          {question.answers.map((answer) => {
+            return (
+              <Answer
+                questionId={question.id}
+                answer={answer}
+                // w={"50%"}
+                p={"5px"}
+                my={"10px"}
+                onAnswerSelect={onAnswerSelect}
               />
-              {question.answers[3].answer}
-            </label>
-          ) : (
-            ""
-          )}
-        </Flex> */}
-        <Flex my={"5px"}>
-          <Answer
-            questionId={question.id}
-            answer={question.answers[0]}
-            w={"50%"}
-            p={"5px"}
-            onAnswerSelect={onAnswerSelect}
-          />
-          <Answer
-            questionId={question.id}
-            answer={question.answers[1]}
-            w={"50%"}
-            p={"5px"}
-            onAnswerSelect={onAnswerSelect}
-          />
-        </Flex>
-        <Flex my={"5px"}>
-          <Answer
-            questionId={question.id}
-            answer={question.answers[2]}
-            w={"50%"}
-            p={"5px"}
-            onAnswerSelect={onAnswerSelect}
-          />
-          {question.answers.length == 4 ? (
-            <Answer
-              questionId={question.id}
-              answer={question.answers[3]}
-              w={"50%"}
-              p={"5px"}
-              onAnswerSelect={onAnswerSelect}
-            />
-          ) : (
-            ""
-          )}
-        </Flex>
-      </fieldset>
+            );
+          })}
+        </fieldset>
+      </Box>
     </Box>
   );
 };

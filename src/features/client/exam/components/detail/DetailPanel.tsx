@@ -20,18 +20,18 @@ import { SelectField } from "common/components/SelectField";
 import clock from "assets/clock.svg";
 import edit from "assets/edit.svg";
 import styles from "./style.module.scss";
-import comment from "assets/comment.svg";
-import theme from "themes/theme";
 import { FaRegLightbulb } from "react-icons/fa";
 import { option } from "common/types";
-import { NavLink } from "common/usercomponents/NavLink";
 import { MdErrorOutline } from "react-icons/md";
 import { useState } from "react";
+import HistoryTable from "./HistoryTable";
 import {
   NavigateOptions,
   createSearchParams,
   useNavigate,
 } from "react-router-dom";
+import { getItem } from "utils";
+import { LocalStorageKeys } from "common/enums";
 
 interface IDetailPanel {
   exam: IUserExamDetail;
@@ -39,6 +39,7 @@ interface IDetailPanel {
 
 const DetailPanel = ({ exam }: IDetailPanel) => {
   const navigate = useNavigate();
+  const token = getItem(LocalStorageKeys.accessToken) ?? "";
   const defaultSelected = Array(exam.parts.length).fill(false);
   const [selectedPart, setSelectedPart] = useState<boolean[]>(defaultSelected);
   const [duration, setDuration] = useState<string>("");
@@ -47,7 +48,7 @@ const DetailPanel = ({ exam }: IDetailPanel) => {
     const step = 5;
     const num_of_step = 28;
     const option: option[] = [];
-    for (let i = 0; i < num_of_step; i++) {
+    for (let i = 1; i < num_of_step; i++) {
       option.push({
         value: (i * step).toString(),
         label: (i * step).toString(),
@@ -72,11 +73,10 @@ const DetailPanel = ({ exam }: IDetailPanel) => {
 
   const onPractice = () => {
     const to = "/exams/" + exam.id + "/practice";
-    const part = selectedPart
-      .filter((item) => item === true)
-      .map((item, index) => {
-        return exam.parts[index].order_in_test.toString();
-      });
+    const part: string[] = [];
+    selectedPart.forEach((item, index) => {
+      if (item === true) part.push((index + 1).toString());
+    });
     const params: Record<string, string | string[]> = {
       part: part,
       duration: duration.toString(),
@@ -86,7 +86,7 @@ const DetailPanel = ({ exam }: IDetailPanel) => {
 
   const disablePractice = () => {
     const isSelected = selectedPart.filter((item) => item === true).length;
-    return isSelected === 0 ? true : false;
+    return isSelected === 0 || duration === "" ? true : false;
   };
 
   const onStart = () => {
@@ -126,6 +126,9 @@ const DetailPanel = ({ exam }: IDetailPanel) => {
           Chú ý: để được quy đổi sang thang điểm 990 vui lòng chọn chế độ làm
           FULL TEST.
         </Box>
+        {exam.histories.length > 0 && (
+          <HistoryTable histories={exam.histories} examId={exam.id} />
+        )}
 
         <Tabs mt={"15px"}>
           <TabList>
@@ -162,9 +165,7 @@ const DetailPanel = ({ exam }: IDetailPanel) => {
                   );
                 })}
               </Stack>
-              <Text my={"10px"}>
-                Giới hạn thời gian (Để trống để làm bài không giới hạn)
-              </Text>
+              <Text my={"10px"}>Giới hạn thời gian</Text>
               <FormControl my={"10px"}>
                 <SelectField
                   options={examDurationOption()}
@@ -172,22 +173,29 @@ const DetailPanel = ({ exam }: IDetailPanel) => {
                   onChange={(e) => handleSelectChangeValue(e.target.value)}
                 />
               </FormControl>
-              <Flex mt="14px" alignItems={'center'}>
-                <Button
-                  _hover={{ background: "blue.800" }}
-                  background="blue.600"
-                  color="white"
-                  onClick={onPractice}
-                  isDisabled={disablePractice()}
-                >
-                  Luyện tập
-                </Button>
-                {disablePractice() && (
-                  <Text ml={'10px'} fontStyle={"italic"}>
-                    Bạn cần chọn ít nhất 1 phần thi để có thể luyện tập
-                  </Text>
-                )}
-              </Flex>
+              {token ? (
+                <Flex mt="14px" alignItems={"center"}>
+                  <Button
+                    _hover={{ background: "blue.800" }}
+                    background="blue.600"
+                    color="white"
+                    onClick={onPractice}
+                    isDisabled={disablePractice()}
+                  >
+                    Luyện tập
+                  </Button>
+                  {disablePractice() && (
+                    <Text ml={"10px"} fontStyle={"italic"}>
+                      Bạn cần chọn giới hạn thời gian và ít nhất 1 phần thi để
+                      có thể luyện tập
+                    </Text>
+                  )}
+                </Flex>
+              ) : (
+                <Text ml={"10px"} mt="14px" fontStyle={"italic"}>
+                  Bạn cần đăng nhập để có thể luyện tập.
+                </Text>
+              )}
             </TabPanel>
             <TabPanel className={styles.panel} px={"0px"} pb={"0px"}>
               <Flex
@@ -200,18 +208,24 @@ const DetailPanel = ({ exam }: IDetailPanel) => {
                 <MdErrorOutline />
                 <Text pl={"10px"}>
                   Sẵn sàng để bắt đầu làm full test? Để đạt được kết quả tốt
-                  nhất, bạn cần dành ra 120 phút cho bài test này.
+                  nhất, bạn cần dành ra {exam.duration} phút cho bài test này.
                 </Text>
               </Flex>
-              <Button
-                mt="14px"
-                _hover={{ background: "blue.800" }}
-                background="blue.600"
-                color="white"
-                onClick={onStart}
-              >
-                Bắt đầu thi
-              </Button>
+              {token ? (
+                <Button
+                  mt="14px"
+                  _hover={{ background: "blue.800" }}
+                  background="blue.600"
+                  color="white"
+                  onClick={onStart}
+                >
+                  Bắt đầu thi
+                </Button>
+              ) : (
+                <Text ml={"10px"} mt="14px" fontStyle={"italic"}>
+                  Bạn cần đăng nhập để có thể bắt đầu thi.
+                </Text>
+              )}
             </TabPanel>
           </TabPanels>
         </Tabs>

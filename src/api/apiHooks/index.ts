@@ -52,6 +52,30 @@ export const useUpdate = <T, D, U>(
   return useMutation(mutate);
 };
 
+export const useUpdateMutate = <T, D, U>(
+  url: string,
+  params?: T,
+  body?: D,
+  config?: AxiosRequestConfig
+) => {
+  const axios = useAxios();
+  // const requestBody = {
+  //   _method: "PUT",
+  //   ... body
+  // }
+
+  const mutate = async (b: D) => {
+    const requestBody = {
+      _method: "PUT",
+      ... b
+    }
+    const data: U = await axios.post(`${url}/${params}`, requestBody, config);
+    return data;
+  };
+
+  return useMutation(mutate);
+};
+
 export const useGetOne = <T>(
   key: QueryKey,
   url: string,
@@ -65,6 +89,21 @@ export const useGetOne = <T>(
   };
 
   return useQuery(key, () => getData());
+};
+
+export const useGetOneWithoutCache = <T>(
+  key: QueryKey,
+  url: string,
+  config?: AxiosRequestConfig
+) => {
+  const axios = useAxios();
+
+  const getData = async () => {
+    const data: T = await axios.get(`${url}`, config);
+    return data;
+  };
+
+  return useQuery(key, () => getData(),{cacheTime: 0});
 };
 
 export const useDelete = (url: string) => {

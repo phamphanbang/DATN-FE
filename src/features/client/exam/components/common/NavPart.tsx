@@ -1,15 +1,17 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { IExamNavigate } from "models/exam";
 import NavButton from "./NavButton";
+import "./navPart.css";
 
 interface INavPart {
   navPart: IExamNavigate;
+  partIndex: number;
   onNavigateClick: (index: number, id: string) => void;
 }
 
-const NavPart = ({ navPart,onNavigateClick }: INavPart) => {
+const NavPart = ({ navPart,onNavigateClick,partIndex }: INavPart) => {
   return (
-    <Box p={"10px"}>
+    <Box p={"10px"} >
       <Box fontWeight={"600"} my={"10px"}>
         Part {navPart.part}
       </Box>
@@ -18,7 +20,7 @@ const NavPart = ({ navPart,onNavigateClick }: INavPart) => {
           return (
             <NavButton
               key={"navbutton_" + question.id}
-              partIndex={navPart.part}
+              partIndex={partIndex}
               question={question}
               onNavigateClick={onNavigateClick}
             />

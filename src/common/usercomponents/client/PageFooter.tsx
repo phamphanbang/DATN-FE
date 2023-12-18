@@ -9,7 +9,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import LogoWeb from "assets/images/logo_full_sm.webp";
+import LogoWeb from "assets/images/logo_full_sm.png";
 import TwitterIcon from "assets/twitter-154-svgrepo-com.svg";
 import InstagramIcon from "assets/insta-svgrepo-com.svg";
 import LinkedinIcon from "assets/linkedin-svgrepo-com.svg";
@@ -27,10 +27,11 @@ export const PageFooter = () => {
       <HStack
         alignItems="start"
         display="flex"
-        justifyContent="space-between"
-        gap="20px"
+        justifyContent="flex-start"
+        gap="40px"
+        w={'100%'}
       >
-        <VStack alignItems="start" maxW="250px" flex="1">
+        <VStack alignItems="start" maxW="350px" flex="2">
           <Image src={LogoWeb} alt="logo-web-footer" h="30px" />
           <Text fontSize="18px" fontWeight="700">
             &#169; 2023
@@ -53,67 +54,20 @@ export const PageFooter = () => {
           </Flex>
         </VStack>
 
-        <VStack maxW="250px" flex="2" alignItems="start">
-          <Box fontWeight="700">Khoá học online</Box>
-          <List display="flex" flexDirection="column" fontSize="15.3px">
-            <ListItem>
-              <Link href="#">
-                [Complete TOEIC] Chiến lược làm bài - Từ vựng - Ngữ pháp - Luyện
-                nghe với Dictation [Tặng khoá TED Talks]
-              </Link>
-            </ListItem>
-            <ListItem>
-              <Link href="#">
-                [IELTS Fundamentals] Từ vựng và ngữ pháp cơ bản IELTS
-              </Link>
-            </ListItem>
-          </List>
-        </VStack>
-
-        <VStack maxW="250px" flex="2" alignItems="start">
+        <VStack maxW="350px" flex="2" alignItems="start">
           <Box fontWeight="700">Tài nguyên</Box>
           <List display="flex" flexDirection="column" fontSize="15.3px">
-            <ListItem>
-              <Link href="#">Lịch khai giảng</Link>
-            </ListItem>
             <ListItem>
               <Link href="#">Thư viện đề thi</Link>
             </ListItem>
             <ListItem>
               <Link href="#">Bài viết</Link>
             </ListItem>
-            <ListItem>
-              <Link href="#">Kho tài liệu</Link>
-            </ListItem>
-            <ListItem>
-              <Link href="#">Live class</Link>
-            </ListItem>
-            <ListItem>
-              <Link href="#">Study spaces</Link>
-            </ListItem>
           </List>
         </VStack>
 
-        <VStack maxW="250px" flex="2" alignItems="start">
-          <Box fontWeight="700">Hỗ trợ</Box>
-          <List display="flex" flexDirection="column" fontSize="15.3px">
-            <ListItem>
-              <Link href="#">Hướng dẫn sử dụng</Link>
-            </ListItem>
-            <ListItem>
-              <Link href="#">Hướng dẫn mua hàng</Link>
-            </ListItem>
-            <ListItem>
-              <Link href="#">Chăm sóc khách hàng</Link>
-            </ListItem>
-            <ListItem>
-              <Link href="#">Phản hồi khiếu nại</Link>
-            </ListItem>
-          </List>
-        </VStack>
-
-        <VStack maxW="250px" flex="2" alignItems="start">
-          <Box fontWeight="700">STUDY4</Box>
+        <VStack maxW="350px" flex="2" alignItems="start">
+          <Box fontWeight="700">TOECIAMP</Box>
           <List display="flex" flexDirection="column" fontSize="15.3px">
             <ListItem>
               <Link href="#">Về chúng tôi</Link>

@@ -10,6 +10,7 @@ const UserLayout = () => {
   useEffect(() => {
     setItem(LocalStorageKeys.notFoundUrl, '/notFound');
   },[]);
+
   return (
     <Flex direction={"column"} minH={"100dvh"}>
       <ScrollToTop />

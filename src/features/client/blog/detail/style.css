@@ -1,0 +1,23 @@
+#blog_content ul {
+    padding-left: 30px;
+}
+
+#blog_content ol {
+    padding-left: 30px;
+}
+
+#blog_content li {
+    margin: 5px 0px;
+}
+
+#blog_content h2 {
+    margin-bottom: 10px;
+}
+
+#blog_content p {
+    margin-bottom: 5px;
+}
+
+#blog_content .scroll {
+    scroll-margin-top: 100px;
+  }

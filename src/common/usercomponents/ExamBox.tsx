@@ -13,12 +13,17 @@ import edit from "assets/edit.svg";
 import comment from "assets/comment.svg";
 import { Exam } from "models/exam";
 import { NavLink } from "./NavLink";
+import { FaCheckCircle } from "react-icons/fa";
 
 interface IExamProps extends BoxProps {
   exam: Exam;
 }
 
-const ExamBox = ({exam, ...props }: IExamProps) => {
+const ExamBox = ({ exam, ...props }: IExamProps) => {
+  const examType = (type:string) => {
+    if(type=="test") return "Đề thi thử";
+    return "Luyện tập"
+  }
   return (
     <VStack
       p="16px"
@@ -37,32 +42,58 @@ const ExamBox = ({exam, ...props }: IExamProps) => {
       cursor="pointer"
       {...props}
     >
-      <VStack maxW={'100%'} alignItems="start" gap="5px">
-        <Box style={{ fontWeight: "700" }}>
+      <VStack maxW={"100%"} alignItems="start" gap="5px">
+        <Flex alignItems={'center'} style={{ fontWeight: "700" }} gap={'10px'}>
           <Text>{exam.name}</Text>
-        </Box>
+          {exam.histories_count > 0 && (
+            <Box
+              fontSize={"25px"}
+              fontWeight={"700"}
+              color={"#3cb46e"}
+            >
+              <FaCheckCircle />
+            </Box>
+          )}
+        </Flex>
 
-        <VStack maxW={'100%'} fontSize="15px" textColor="#677788" alignItems="start">
-          <Box maxW={'100%'}>
-            <Text as="span">Bộ đề thi: {exam.template.name}</Text>
+        <VStack
+          maxW={"100%"}
+          fontSize="15px"
+          textColor="#677788"
+          alignItems="start"
+        >
+          <Box maxW={"100%"}>
+            <Text as="span">Bộ đề thi: <strong>{exam.template.name}</strong> </Text>
+          </Box>
+          <Box maxW={"100%"}>
+            <Text as="span">Loại đề thi: <strong>{examType(exam.type)}</strong></Text>
           </Box>
           <Box display="flex" flexWrap="wrap" alignItems="center" gap="2px">
-            <Flex alignItems={'center'} as="span">
+            <Flex alignItems={"center"} as="span">
               <Image src={clock} alt="clock" h="17px" w="17px" />
-              <Text ml={'5px'} as="span" textOverflow={'clip'}>{exam.template.duration} phút | </Text>
+              <Text ml={"5px"} as="span" textOverflow={"clip"}>
+                {exam.template.duration} phút |{" "}
+              </Text>
             </Flex>
 
-            <Flex alignItems={'center'} as="span">
+            <Flex alignItems={"center"} as="span">
               <Image src={edit} alt="clock" h="17px" w="17px" />{" "}
-              <Text ml={'5px'} as="span">{exam.total_views} | </Text>
+              <Text ml={"5px"} as="span">
+                {exam.total_views} |{" "}
+              </Text>
             </Flex>
 
-            <Flex alignItems={'center'} as="span">
+            <Flex alignItems={"center"} as="span">
               <Image src={comment} alt="clock" h="17px" w="17px" />{" "}
-              <Text ml={'5px'} as="span">{exam.comments_count}</Text>
+              <Text ml={"5px"} as="span">
+                {exam.comments_count}
+              </Text>
             </Flex>
 
-            <Text as="span">{exam.template.total_parts} phần thi | {exam.template.total_questions} câu hỏi</Text>
+            <Text as="span">
+              {exam.template.total_parts} phần thi |{" "}
+              {exam.template.total_questions} câu hỏi
+            </Text>
           </Box>
         </VStack>
       </VStack>
@@ -75,7 +106,7 @@ const ExamBox = ({exam, ...props }: IExamProps) => {
         border="1px solid #2a4365"
       >
         <NavLink
-          to={"/exams/"+exam.id}
+          to={"/exams/" + exam.id}
           px="12px"
           py="6px"
           w="100%"

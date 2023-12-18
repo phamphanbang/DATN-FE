@@ -18,6 +18,7 @@ const NavButton = ({ question, partIndex, onNavigateClick }: INavButton) => {
         backgroundColor: "#2b6cb0",
         color: "white",
       }}
+      id={'navButton_'+question.id}
       onClick={() => onNavigateClick(partIndex, question.id)}
     >
       {question.order_in_test}

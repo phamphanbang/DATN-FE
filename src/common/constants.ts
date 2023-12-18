@@ -15,7 +15,11 @@ export const QueryKeys = {
   USER_GET_ALL_EXAMS: 'userGetAllExams',
   USER_GET_HOME: 'userGetHome',
   USER_GET_EXAM: 'userGetExam',
-  USER_GET_HISTORY_DETAIL: 'userGetHistoryDetail'
+  USER_GET_HISTORY_DETAIL: 'userGetHistoryDetail',
+  GET_ALL_COMMENT: 'getAllComment',
+  USER_GET_ALL_BLOGS: 'userGetAllBlogs',
+  USER_GET_BLOG: 'userGetBlog',
+  USER_GET_ALL_HISTORY: 'userGetAllHistory'
 }
 
 export const userRole: option[] = [
@@ -78,11 +82,52 @@ export const examStatus: option[] = [
   {
     value: "disable",
     label: "Disable"
+  }
+]
+
+export const examType: option[] = [
+  {
+    value: "practice",
+    label: "Practice"
   },
   {
-    value: 'draft',
-    label: 'Draft'
+    value: "test",
+    label: "Test"
   }
+]
+
+export const userExamType: option[] = [
+  {
+    value: "practice",
+    label: "Luyện tập"
+  },
+  {
+    value: "test",
+    label: "Đề thi"
+  }
+]
+
+export const historyTime: option[] = [
+  {
+    value: 3,
+    label: "3 ngày"
+  },
+  {
+    value: 7,
+    label: "7 ngày"
+  },
+  {
+    value: 30,
+    label: "30 ngày"
+  },
+  {
+    value: 60,
+    label: "60 ngày"
+  },
+  {
+    value: 90,
+    label: "90 ngày"
+  },
 ]
 
 export const partType: option[] = [

@@ -1,5 +1,7 @@
+import { UserBlog } from "./blog";
 import { Exam } from "./exam";
 
 export interface IHomeResult {
-    exams: Exam[]
+    exams: Exam[];
+    blogs: UserBlog[];
 }

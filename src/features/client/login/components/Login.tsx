@@ -1,10 +1,4 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Link,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, FormControl, Link, VStack } from "@chakra-ui/react";
 // import "slick-carousel/slick/slick.css";
 // import "slick-carousel/slick/slick-theme.css";
 import { PasswordField } from "common/components/PasswordField";
@@ -20,6 +14,8 @@ import { useEffect, useState } from "react";
 import { ErrorResponse, ValidationErrorMessage } from "models/appConfig";
 import { AxiosError } from "axios";
 import { NavLink } from "common/usercomponents/NavLink";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 const initialLoginParams: LoginParams = {
   email: "",
@@ -30,6 +26,8 @@ const Login = () => {
   const redirectURL = getItem(LocalStorageKeys.prevURL)
     ? getItem(LocalStorageKeys.prevURL)
     : "/";
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [isValidationErrorDisplay, setIsValidationErrorDisplay] =
     useState<boolean>(true);
   const [validationError, setValidationError] =
@@ -39,11 +37,13 @@ const Login = () => {
     else setIsValidationErrorDisplay(false);
   }, [validationError]);
 
-  const { mutateAsync: loginMutate, isLoading: isLoginLoading } = useUserLogin();
+  const { mutateAsync: loginMutate, isLoading: isLoginLoading } =
+    useUserLogin();
 
   const {
     handleSubmit,
     register,
+    setValue,
     formState: { errors },
   } = useForm<LoginParams>({ defaultValues: initialLoginParams });
 
@@ -58,10 +58,12 @@ const Login = () => {
         setItem(LocalStorageKeys.accessToken, data.token);
         setItem(LocalStorageKeys.name, data.name);
         setItem(LocalStorageKeys.isAdmin, data.isAdmin);
-        setItem(LocalStorageKeys.avatar,data.avatar);
+        setItem(LocalStorageKeys.avatar, data.avatar);
         setItem(LocalStorageKeys.prevURL, "");
         setItem(LocalStorageKeys.id, data.id);
-        window.location.href = redirectURL ?? "/";
+        // window.location.href = redirectURL ?? "/";
+        queryClient.clear();
+        navigate(redirectURL ?? "/");
       }
     } catch (error) {
       const err = error as AxiosError;
@@ -81,7 +83,7 @@ const Login = () => {
     if (typeof validationError == "string" || !validationError) return;
     const errors = validationError.filter((item) => item.type !== key);
     setValidationError(errors);
-  }
+  };
 
   return (
     <VStack>
@@ -95,7 +97,7 @@ const Login = () => {
         spacing="20px"
         p={"24px"}
         backgroundColor={"white"}
-        borderRadius={'10px'}
+        borderRadius={"10px"}
         borderBottom={`1px solid ${theme.colors.borderColor}`}
       >
         <p>
@@ -113,12 +115,12 @@ const Login = () => {
                 {...register("email", {
                   required: "Email không được để trống",
                 })}
-                onChange={() => removeValidationMessage('email')}
+                onChange={() => removeValidationMessage("email")}
               />
               {isValidationErrorDisplay && getValidationMessage("email")}
             </FormControl>
 
-            <FormControl key={'password'}>
+            <FormControl key={"password"}>
               <PasswordField
                 h="50px"
                 placeholder="Mật khẩu"
@@ -134,7 +136,10 @@ const Login = () => {
                 buttonProps={{
                   mr: "10px",
                 }}
-                onChange={() => removeValidationMessage('password')}
+                onChange={(e) => {
+                  setValue("password", e.target.value);
+                  removeValidationMessage("password");
+                }}
               />
               {isValidationErrorDisplay && getValidationMessage("password")}
             </FormControl>
@@ -154,7 +159,10 @@ const Login = () => {
           </VStack>
         </form>
         <Box>
-          <NavLink to="/register" text="Bạn chưa là một thành viên? Đăng ký ngay!" />
+          <NavLink
+            to="/register"
+            text="Bạn chưa là một thành viên? Đăng ký ngay!"
+          />
         </Box>
       </VStack>
     </VStack>

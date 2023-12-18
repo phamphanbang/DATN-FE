@@ -20,7 +20,6 @@ const Answer = ({ answer,questionId,onAnswerSelect ,...inputProps }: IAnswer) =>
     <label htmlFor={"answers_" + answer.id} style={{
       display: 'flex',
       alignItems: 'center',
-      width: '50%'
     }}>
       <input
         type="radio"

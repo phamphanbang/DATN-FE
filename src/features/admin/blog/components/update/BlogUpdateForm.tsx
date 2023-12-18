@@ -41,7 +41,7 @@ const BlogUpdateForm = ({ blogId }: IBlogUpdateForm) => {
     name: "",
     post: "",
     thumbnail: "",
-    panel: "",
+    description: "",
   });
   const [post, setPost] = useState<string>("");
 
@@ -50,18 +50,15 @@ const BlogUpdateForm = ({ blogId }: IBlogUpdateForm) => {
       name: data?.name as string,
       post: data?.post as string,
       thumbnail: data?.thumbnail as string,
-      panel: data?.panel as string
-    }
+      description: data?.description as string,
+    };
     setFormParams(initValue);
     setPost(data?.post as string);
-    setValue("name",data?.name as string);
-  },[data])
-  
+    setValue("name", data?.name as string);
+  }, [data]);
+
   const postDebounced = useDebounced(post, 500);
-  const { mutateAsync } = useUpdateBlog(
-    blogId,
-    formParams
-  );
+  const { mutateAsync } = useUpdateBlog(blogId, formParams);
   const queryClient = useQueryClient();
 
   const {
@@ -78,7 +75,7 @@ const BlogUpdateForm = ({ blogId }: IBlogUpdateForm) => {
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    const input = ["name"];
+    const input = ["name", "description"];
     if (input.includes(variable)) {
       updatedFormParams[variable as keyof IBlogUpdateRequest] = e.target.value;
     }
@@ -92,9 +89,6 @@ const BlogUpdateForm = ({ blogId }: IBlogUpdateForm) => {
   ) => {
     const updatedFormParams = { ...formParams };
     const file = e.target.files?.[0] ?? "";
-    if (variable === "panel") {
-      updatedFormParams.panel = file;
-    }
     if (variable === "thumbnail") {
       updatedFormParams.thumbnail = file;
     }
@@ -133,9 +127,10 @@ const BlogUpdateForm = ({ blogId }: IBlogUpdateForm) => {
   };
 
   const renderImage = (image: string | File) => {
-    if((typeof image) === "string") return getImage("blogs/" + blogId ,image as string);
-    return URL.createObjectURL(image as File)
-  }
+    if (typeof image === "string")
+      return getImage("blogs/" + blogId, image as string);
+    return URL.createObjectURL(image as File);
+  };
 
   return (
     <>
@@ -152,6 +147,17 @@ const BlogUpdateForm = ({ blogId }: IBlogUpdateForm) => {
             defaultValue={formParams.name as string}
           />
 
+          <TextFieldInput
+            inputKey="description"
+            title="Blog Description"
+            placeholder="Enter blog description"
+            handleChangeValue={handleChangeValue}
+            errors={errors}
+            register={register}
+            validationError={validationError}
+            defaultValue={formParams.description as string}
+          />
+
           <FormControl key={"thumbnail"}>
             <FormLabel fontSize={16} my={1} fontWeight="normal">
               Thumbnail
@@ -162,7 +168,8 @@ const BlogUpdateForm = ({ blogId }: IBlogUpdateForm) => {
             </FormLabel>
             {formParams.thumbnail && (
               <Image
-                boxSize="100px"
+                w={"300px"}
+                h={"200px"}
                 src={renderImage(formParams.thumbnail)}
                 alt="Blog thumbnail"
                 mx={"auto"}
@@ -176,7 +183,7 @@ const BlogUpdateForm = ({ blogId }: IBlogUpdateForm) => {
             />
           </FormControl>
 
-          <FormControl key={"panel"}>
+          {/* <FormControl key={"panel"}>
             <FormLabel fontSize={16} my={1} fontWeight="normal">
               Panel
               <FormHelperText my={1} style={{ color: "red" }} as="span">
@@ -198,7 +205,7 @@ const BlogUpdateForm = ({ blogId }: IBlogUpdateForm) => {
               accept="image/*"
               onChange={(e) => handleFileChangeValue(e, "panel")}
             />
-          </FormControl>
+          </FormControl> */}
 
           <FormControl key={"post"}>
             <FormLabel fontSize={16} my={1} fontWeight="normal">

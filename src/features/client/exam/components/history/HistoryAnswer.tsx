@@ -7,12 +7,14 @@ import {
 import { ReactNode, useState } from "react";
 import { FaTimes, FaMinus, FaCheck } from "react-icons/fa";
 import AnswerDetailModal from "./AnswerDetailModal";
+import { useNavigate } from "react-router-dom";
 
 interface IHistoryAnswer {
   history: ExamHistoryDetail;
 }
 
 const HistoryAnswer = ({ history }: IHistoryAnswer) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectQuestion, setSelectQuestion] = useState<ExamHistoryQuestion>();
   const renderAnswer = (order: string) => {
@@ -53,7 +55,6 @@ const HistoryAnswer = ({ history }: IHistoryAnswer) => {
   };
 
   const renderQuestion = (questions: ExamHistoryQuestion[]): ReactNode => {
-    // console.log(questions);
     return (
       <Box>
         {questions.map((item) => {
@@ -101,8 +102,8 @@ const HistoryAnswer = ({ history }: IHistoryAnswer) => {
                 }}
                 size="xs"
                 onClick={() => {
-                    setSelectQuestion(item);
-                    setIsOpen(true);
+                  setSelectQuestion(item);
+                  setIsOpen(true);
                 }}
               >
                 Chi tiết
@@ -147,9 +148,33 @@ const HistoryAnswer = ({ history }: IHistoryAnswer) => {
 
   return (
     <Box>
-      <Text fontWeight={"600"} fontSize={"20px"} mb={"10px"}>
-        Đáp án
-      </Text>
+      <Flex alignItems={'center'} gap={'20px'} mb={'20px'}>
+        <Text fontWeight={"600"} fontSize={"20px"}>
+          Đáp án
+        </Text>
+        <Button
+          border={"1px solid #2b6cb0"}
+          backgroundColor={"white"}
+          color={"#2b6cb0"}
+          _hover={{
+            border: "1px solid #2b6cb0",
+            backgroundColor: "#2b6cb0",
+            color: "white",
+          }}
+          onClick={() =>
+            navigate(
+              "/exams/" +
+                history.exam_id +
+                "/history/" +
+                history.history_id +
+                "/detail"
+            )
+          }
+        >
+          Xem đáp án chi tiết
+        </Button>
+      </Flex>
+
       {history.parts.map((part) => {
         return (
           <Box>

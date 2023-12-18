@@ -1,0 +1,9 @@
+.right_questions {
+    background-color: #ddfbe1 !important;
+    border-color: #3cb46e !important;
+}
+
+.wrong_questions {
+    background-color: #ffe8e8 !important;
+    border-color: #e43a45 !important;
+}

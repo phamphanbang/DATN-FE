@@ -42,6 +42,7 @@
     "qs": "^6.11.2",
     "rc-pagination": "^3.6.1",
     "react": "^18.2.0",
+    "react-aws-s3-typescript": "^1.1.5",
     "react-beautiful-dnd": "^13.1.1",
     "react-countdown": "^2.3.5",
     "react-datepicker": "^4.17.0",

@@ -37,17 +37,24 @@ interface IGroupModal {
   isOpen: boolean;
   onClose: () => void;
   examId: string;
+  partType: string;
 }
 
-const GroupUpdateModal = ({ isOpen, onClose, group, examId }: IGroupModal) => {
+const GroupUpdateModal = ({
+  isOpen,
+  onClose,
+  group,
+  examId,
+  partType,
+}: IGroupModal) => {
   const [validationError, setValidationError] = useState<
     ValidationErrorMessage[]
   >([]);
   const queryClient = useQueryClient();
   const [formParams, setFormParams] = useState<FormParams>({
     question: group?.question as string,
-    attachment: group.attachment ?? "" as string,
-    audio: group.audio ?? "" as string
+    attachment: group.attachment ?? ("" as string),
+    audio: group.audio ?? ("" as string),
   });
   const [request, setRequest] = useState<IUpdateGroup>();
   const {
@@ -89,16 +96,16 @@ const GroupUpdateModal = ({ isOpen, onClose, group, examId }: IGroupModal) => {
 
   const deleteAudio = () => {
     const updatedFormParams = { ...formParams };
-    updatedFormParams['audio'] = "";
+    updatedFormParams["audio"] = "";
     setFormParams(updatedFormParams);
-  }
+  };
 
   const onSubmit = async () => {
     const updateGroup: IUpdateGroup = {
       question: formParams["question"] as string,
       attachment: formParams["attachment"] as string | File,
       audio: formParams["audio"] as string | File,
-      exam_id: examId
+      exam_id: examId,
     };
     setRequest(updateGroup);
     try {
@@ -152,29 +159,32 @@ const GroupUpdateModal = ({ isOpen, onClose, group, examId }: IGroupModal) => {
               onSubmit={handleSubmit(onSubmit)}
             >
               <VStack spacing="14px" alignItems="flex-start">
+                {partType == "listening" && (
+                  <ImageFieldInput
+                    inputKey="attachment"
+                    title="Attachment"
+                    image={formParams["attachment"] as string | File}
+                    imagePrefix={"exams/" + examId}
+                    imageIfNull="defaultAvatar.png"
+                    isShowDefault={false}
+                    deleteImage={deleteAttachment}
+                    handleFileChangeValue={handleFileChangeValue}
+                    imageBorderRadius="none"
+                    imageW="300px"
+                    imageH="200px"
+                  />
+                )}
 
-              <ImageFieldInput
-                  inputKey="attachment"
-                  title="Attachment"
-                  image={formParams["attachment"] as string | File}
-                  imagePrefix={"exams/" + examId}
-                  imageIfNull="defaultAvatar.png"
-                  isShowDefault={false}
-                  deleteImage={deleteAttachment}
-                  handleFileChangeValue={handleFileChangeValue}
-                  imageBorderRadius="none"
-                  imageW="300px"
-                  imageH="200px"
-                />
-
-                <AudioFieldInput
-                  inputKey="audio"
-                  audioPrefix={"exams/" + examId}
-                  title="Audio"
-                  audio={group.audio}
-                  deleteAudio={deleteAudio}
-                  handleFileChangeValue={handleFileChangeValue}
-                />
+                {partType == "listening" && (
+                  <AudioFieldInput
+                    inputKey="audio"
+                    audioPrefix={"exams/" + examId}
+                    title="Audio"
+                    audio={group.audio}
+                    deleteAudio={deleteAudio}
+                    handleFileChangeValue={handleFileChangeValue}
+                  />
+                )}
 
                 <FormControl key={"question"}>
                   <FormLabel fontSize={16} my={1} fontWeight="normal">
