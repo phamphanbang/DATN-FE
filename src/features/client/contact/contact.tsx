@@ -1,7 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { NavLink } from "common/usercomponents/NavLink";
 
-const UserNotFound = () => {
+const Contact = () => {
   return (
     <Flex
       justifyContent={"center"}
@@ -12,19 +11,20 @@ const UserNotFound = () => {
       <Box
         padding={"30px 50px"}
         backgroundColor={"white"}
+        w={"80%"}
         borderRadius={"10px"}
         border={`1px solid #c7c7c7`}
       >
         <Box fontSize={"30px"} fontWeight={"700"} p={"8px"}>
-          Không tìm thấy trang
+          Liên hệ
         </Box>
         <Box p={"8px"}>
-          Xin lỗi chúng tôi không tìm thấy trang web bạn muốn tới..
+          Xin vui lòng gửi email cho chúng tôi tại toeicamp@gmail.com. Chúng tôi
+          sẽ trả lời bạn trong thời gian sớm nhất :){" "}
         </Box>
-        <NavLink to="/" text="Quay về trang chủ" />
       </Box>
     </Flex>
   );
 };
 
-export default UserNotFound;
+export default Contact;

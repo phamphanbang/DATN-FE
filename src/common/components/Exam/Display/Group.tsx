@@ -8,7 +8,7 @@ interface IGroup extends BoxProps {
   examId: string;
 }
 
-const Group = ({ group,examId, ...inputProps }: IGroup) => {
+const Group = ({ group, examId, ...inputProps }: IGroup) => {
   const attachment = () => {
     return getImage("exams/" + examId, group.attachment);
   };
@@ -19,22 +19,22 @@ const Group = ({ group,examId, ...inputProps }: IGroup) => {
   return (
     <Box my={"10px"} {...inputProps}>
       <Box>
-        <b>{group.from_question} - {group.to_question}</b>
+        <b>
+          {group.from_question} - {group.to_question}
+        </b>
       </Box>
       {group.audio && (
         <audio
-        controls
-        src={audio()}
-        preload="none"
-        style={{
-          width: "100%",
-          padding: "0px 14px",
-        }}
-      ></audio>
+          controls
+          src={audio()}
+          preload="none"
+          style={{
+            width: "100%",
+            padding: "0px 14px",
+          }}
+        ></audio>
       )}
-      <Box>
-        {group.question}
-      </Box>
+      <Box>{group.question}</Box>
       {group.attachment && (
         <Box>
           <Image
@@ -48,12 +48,10 @@ const Group = ({ group,examId, ...inputProps }: IGroup) => {
           />
         </Box>
       )}
-      
-      <Box p={'10px'}>
+
+      <Box p={"10px"}>
         {group.questions.map((question) => {
-            return (
-                <Question question={question} examId={examId}/>
-            )
+          return <Question question={question} examId={examId} />;
         })}
       </Box>
     </Box>

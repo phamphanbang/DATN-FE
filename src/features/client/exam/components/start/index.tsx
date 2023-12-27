@@ -32,6 +32,9 @@ import Question from "../common/Question";
 import NavPart from "../common/NavPart";
 import Countdown, { CountdownRenderProps } from "react-countdown";
 import { toast } from "common/components/StandaloneToast";
+import { ModalConfirm } from "common/components/ModalConfirm";
+import { getItem } from "utils";
+import { LocalStorageKeys } from "common/enums";
 
 interface IExamStart {
   examId: string;
@@ -44,6 +47,7 @@ const ExamStart = ({ examId }: IExamStart) => {
   const [examNavigate, setExamNavigate] = useState<IExamNavigate[]>();
   const [answer, setAnswer] = useState<IExamPartRequest[]>([]);
   const [partIndex, setPartIndex] = useState<number>(0);
+  const [isOpen, setIsOpen] = useState(false);
   // const [duration, setDuration] = useState<string>("");
   const startDate = useRef(Date.now());
   let duration = useRef<string>("");
@@ -152,8 +156,8 @@ const ExamStart = ({ examId }: IExamStart) => {
     is_right: boolean
   ) => {
     const el = document.querySelector("#navButton_" + question_id);
-    if(el) {
-      el.classList.add('question_answered');
+    if (el) {
+      el.classList.add("question_answered");
     }
     const newAnswer = [...answer];
     const obj = newAnswer[partIndex].answers.find(
@@ -199,6 +203,11 @@ const ExamStart = ({ examId }: IExamStart) => {
   };
 
   useEffect(() => {
+    const token = getItem(LocalStorageKeys.accessToken) ?? "";
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     getExamData();
   }, []);
 
@@ -215,14 +224,13 @@ const ExamStart = ({ examId }: IExamStart) => {
   // }, []);
 
   const onSubmit = async () => {
-    if(submit) {
-      const finalSubmit : IExamRequest = { ...submit };
+    if (submit) {
+      const finalSubmit: IExamRequest = { ...submit };
       finalSubmit.parts = [...answer];
       finalSubmit.duration = getDuration();
-      // console.log(getDuration());
       setSubmit(finalSubmit);
     }
-    
+
     try {
       const { history_id } = await submitExam();
       navigate("/exams/" + examId + "/history/" + history_id);
@@ -235,6 +243,11 @@ const ExamStart = ({ examId }: IExamStart) => {
   };
 
   const onSubmitButton = () => {
+    onSubmit();
+  };
+
+  const handleConfirmation = async () => {
+    setIsOpen(false);
     onSubmit();
   };
 
@@ -286,7 +299,7 @@ const ExamStart = ({ examId }: IExamStart) => {
                     {item.groups?.map((group) => {
                       return (
                         <Group
-                          key={'group_'+group.id}
+                          key={"group_" + group.id}
                           partType={item.part_type}
                           examId={examId}
                           group={group}
@@ -345,7 +358,7 @@ const ExamStart = ({ examId }: IExamStart) => {
               backgroundColor: "#2b6cb0",
               color: "white",
             }}
-            onClick={() => onSubmitButton()}
+            onClick={() => setIsOpen(true)}
           >
             Nộp Bài
           </Button>
@@ -361,6 +374,15 @@ const ExamStart = ({ examId }: IExamStart) => {
           })}
         </Box>
       </Flex>
+      <ModalConfirm
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={handleConfirmation}
+        title={"Bạn xác nhận sẽ nộp bài thi ?"}
+        description={
+          "Bài thi sẽ được nộp và bạn không thể chỉnh sửa sau khi nộp"
+        }
+      />
     </Box>
   );
 };

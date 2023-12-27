@@ -9,14 +9,6 @@ interface IAnswer extends RadioProps {
 
 const Answer = ({ answer,questionId,onAnswerSelect ,...inputProps }: IAnswer) => {
   return (
-    // <Radio
-    //   {...inputProps}
-    //   value={answer.id}
-    //   // onChange={(e) => onRadioChange(e.target.value)}
-    //   onChange={(e) => console.log(e.target.value)}
-    // >
-    //   {answer.answer}
-    // </Radio>
     <label htmlFor={"answers_" + answer.id} style={{
       display: 'flex',
       alignItems: 'center',

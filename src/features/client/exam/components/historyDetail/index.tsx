@@ -108,7 +108,7 @@ const HistoryDetail = ({ examId, historyId }: IExamStart) => {
           border={`1px solid #c7c7c7`}
           p={"15px"}
         >
-          <audio
+          {/* <audio
             controls
             src={exam?.audio}
             preload="none"
@@ -116,7 +116,7 @@ const HistoryDetail = ({ examId, historyId }: IExamStart) => {
               width: "100%",
               padding: "0px 14px",
             }}
-          ></audio>
+          ></audio> */}
           <Tabs
             variant="soft-rounded"
             mt={"30px"}

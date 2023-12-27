@@ -34,6 +34,11 @@ import ExamSolutionPage from 'features/client/exam/solution';
 import BlogIndexPage from 'features/client/blog';
 import UserIndexPage from 'features/client/user';
 import BlogDetailPage from 'features/client/blog/detail';
+import About from 'features/client/about/about';
+import Contact from 'features/client/contact/contact';
+import Privacy from 'features/client/privacy/privacy';
+import Terms from 'features/client/terms/terms';
+import BuyingTerms from 'features/client/buying-terms/buyingTerms';
 
 const routeList: RouteObject[] = [
   {
@@ -96,6 +101,26 @@ const routeList: RouteObject[] = [
       {
         path: "my_account",
         element: <UserIndexPage />,
+      },
+      {
+        path: "about",
+        element: <About />,
+      },
+      {
+        path: "contact",
+        element: <Contact />,
+      },
+      {
+        path: "privacy",
+        element: <Privacy />,
+      },
+      {
+        path: "terms",
+        element: <Terms />,
+      },
+      {
+        path: "buying-terms",
+        element: <BuyingTerms />,
       },
       {
         path: "notFound",

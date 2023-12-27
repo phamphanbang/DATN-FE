@@ -14,6 +14,7 @@ import TwitterIcon from "assets/twitter-154-svgrepo-com.svg";
 import InstagramIcon from "assets/insta-svgrepo-com.svg";
 import LinkedinIcon from "assets/linkedin-svgrepo-com.svg";
 import theme from "themes/theme";
+import { NavLink as NavLinkComponent } from "react-router-dom";
 
 export const PageFooter = () => {
   return (
@@ -29,7 +30,7 @@ export const PageFooter = () => {
         display="flex"
         justifyContent="flex-start"
         gap="40px"
-        w={'100%'}
+        w={"100%"}
       >
         <VStack alignItems="start" maxW="350px" flex="2">
           <Image src={LogoWeb} alt="logo-web-footer" h="30px" />
@@ -58,10 +59,14 @@ export const PageFooter = () => {
           <Box fontWeight="700">Tài nguyên</Box>
           <List display="flex" flexDirection="column" fontSize="15.3px">
             <ListItem>
-              <Link href="#">Thư viện đề thi</Link>
+              <Link as={NavLinkComponent} to={"/exams"}>
+                Thư viện đề thi
+              </Link>
             </ListItem>
             <ListItem>
-              <Link href="#">Bài viết</Link>
+              <Link as={NavLinkComponent} to={"/blogs"}>
+                Bài viết
+              </Link>
             </ListItem>
           </List>
         </VStack>
@@ -70,19 +75,29 @@ export const PageFooter = () => {
           <Box fontWeight="700">TOECIAMP</Box>
           <List display="flex" flexDirection="column" fontSize="15.3px">
             <ListItem>
-              <Link href="#">Về chúng tôi</Link>
+              <Link as={NavLinkComponent} to={"/about"}>
+                Về chúng tôi
+              </Link>
             </ListItem>
             <ListItem>
-              <Link href="#">Liên hệ</Link>
+              <Link as={NavLinkComponent} to={"/contact"}>
+                Liên hệ
+              </Link>
             </ListItem>
             <ListItem>
-              <Link href="#">Điều khoản bảo mật</Link>
+              <Link as={NavLinkComponent} to={"/privacy"}>
+                Điều khoản bảo mật
+              </Link>
             </ListItem>
             <ListItem>
-              <Link href="#">Điều khoản sử dụng</Link>
+              <Link as={NavLinkComponent} to={"/terms"}>
+                Điều khoản sử dụng
+              </Link>
             </ListItem>
             <ListItem>
-              <Link href="#">Điều khoản và Điều Kiện Giao Dịch</Link>
+              <Link as={NavLinkComponent} to={"/buying-terms"}>
+                Điều khoản và Điều Kiện Giao Dịch
+              </Link>
             </ListItem>
           </List>
         </VStack>

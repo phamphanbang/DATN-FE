@@ -99,7 +99,7 @@ const AnswerDetailModal = ({
                     src={getAudio("exams/" + examId, question.audio)}
                     preload="none"
                     style={{
-                      width: "80%",
+                      // width: "80%",
                       padding: "0px 14px",
                     }}
                   ></audio>
@@ -111,7 +111,7 @@ const AnswerDetailModal = ({
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        width: "50%",
+                        // width: "50%",
                         gap:'10px'
                       }}
                       

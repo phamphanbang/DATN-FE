@@ -64,6 +64,7 @@ const Register = () => {
         setItem(LocalStorageKeys.avatar, data.avatar);
         setItem(LocalStorageKeys.prevURL, "");
         setItem(LocalStorageKeys.id, data.id);
+        // navigate(0);
         window.location.href = redirectURL ?? "/";
       }
     } catch (error) {
@@ -97,8 +98,9 @@ const Register = () => {
         alignItems={"flex-start"}
         spacing="20px"
         p={"24px"}
-        border={`1px solid ${theme.colors.borderColor}`}
+        backgroundColor={"white"}
         borderRadius={"10px"}
+        border={`1px solid #c7c7c7`}
       >
         <p>
           Đăng ký ngay để bắt đầu trải nghiệm học tiếng Anh và luyện thi

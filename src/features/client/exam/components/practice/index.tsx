@@ -32,6 +32,9 @@ import Question from "../common/Question";
 import NavPart from "../common/NavPart";
 import Countdown, { CountdownRenderProps } from "react-countdown";
 import { toast } from "common/components/StandaloneToast";
+import { ModalConfirm } from "common/components/ModalConfirm";
+import { getItem } from "utils";
+import { LocalStorageKeys } from "common/enums";
 
 interface IExamStart {
   examId: string;
@@ -50,6 +53,7 @@ const ExamPractice = ({ examId,part,duration }: IExamStart) => {
   const startDate = useRef(Date.now());
   let practiceDuration = useRef<string>("");
   const [submit, setSubmit] = useState<IExamRequest>();
+  const [isOpen, setIsOpen] = useState(false);
   const { mutateAsync: submitExam } = useUserSubmitExam(
     examId,
     submit as IExamRequest
@@ -202,6 +206,11 @@ const ExamPractice = ({ examId,part,duration }: IExamStart) => {
   };
 
   useEffect(() => {
+    const token = getItem(LocalStorageKeys.accessToken) ?? "";
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     getExamData();
   }, []);
 
@@ -222,7 +231,6 @@ const ExamPractice = ({ examId,part,duration }: IExamStart) => {
       const finalSubmit : IExamRequest = { ...submit };
       finalSubmit.parts = [...answer];
       finalSubmit.duration = getDuration();
-      console.log(finalSubmit);
       setSubmit(finalSubmit);
     }
     
@@ -238,6 +246,11 @@ const ExamPractice = ({ examId,part,duration }: IExamStart) => {
   };
 
   const onSubmitButton = () => {
+    onSubmit();
+  };
+
+  const handleConfirmation = async () => {
+    setIsOpen(false);
     onSubmit();
   };
 
@@ -347,7 +360,7 @@ const ExamPractice = ({ examId,part,duration }: IExamStart) => {
               backgroundColor: "#2b6cb0",
               color: "white",
             }}
-            onClick={() => onSubmitButton()}
+            onClick={() => setIsOpen(true)}
           >
             Nộp Bài
           </Button>
@@ -363,6 +376,13 @@ const ExamPractice = ({ examId,part,duration }: IExamStart) => {
           })}
         </Box>
       </Flex>
+      <ModalConfirm
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={handleConfirmation}
+        title={"Bạn xác nhận sẽ nộp bài thi ?"}
+        description={"Bài thi sẽ được nộp và bạn không thể chỉnh sửa sau khi nộp"}
+      />
     </Box>
   );
 };

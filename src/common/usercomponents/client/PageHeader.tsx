@@ -34,7 +34,6 @@ export const PageHeader = () => {
 
   useEffect(() => {
     const onStorage = () => {
-      console.log('trigger')
       const next = getItem(LocalStorageKeys.avatar) + "?x=" + Math.random();
       setAvatarLink(getImage("users/" + userId, next as string));
     };
@@ -53,6 +52,10 @@ export const PageHeader = () => {
       removeItem(LocalStorageKeys.isAdmin);
       removeItem(LocalStorageKeys.avatar);
       removeItem(LocalStorageKeys.id);
+      // navigate(0);
+      // navigate("/");
+      window.location.href = "/";
+      return;
     }
     queryClient.clear();
     navigate(to);

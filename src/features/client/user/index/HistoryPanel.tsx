@@ -229,7 +229,7 @@ const HistoryPanel = ({ userId }: IHistoryPanel) => {
               w={"100%"}
               textAlign={"center"}
             >
-              Độ chính xác (#đúng/#tổng)
+              Độ chính xác tổng (#đúng/#tổng)
             </Text>
             <Text
               fontSize={"20px"}

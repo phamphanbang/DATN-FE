@@ -26,7 +26,6 @@ import { MdErrorOutline } from "react-icons/md";
 import { useState } from "react";
 import HistoryTable from "./HistoryTable";
 import {
-  NavigateOptions,
   createSearchParams,
   useNavigate,
 } from "react-router-dom";

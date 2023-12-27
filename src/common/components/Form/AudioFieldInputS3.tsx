@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Image,
-} from "@chakra-ui/react";
-import { getAudio } from "utils";
+import { Box, Button, FormControl, FormLabel } from "@chakra-ui/react";
 import { FileField } from "../FileField";
 import { ChangeEvent, useEffect, useState } from "react";
 
@@ -27,7 +19,6 @@ const AudioFieldInput = ({
   audio,
   title,
   inputKey,
-  audioPrefix,
   handleFileChangeValue,
 }: IAudioFieldInput) => {
   const [currentAudio, setCurrentAudio] = useState<string>("");
@@ -42,9 +33,7 @@ const AudioFieldInput = ({
   useEffect(() => {
     if (!audio) return;
     const res =
-      typeof audio === "string"
-        ? audio
-        : URL.createObjectURL(audio as File);
+      typeof audio === "string" ? audio : URL.createObjectURL(audio as File);
     setCurrentAudio(res);
   }, [audio]);
 

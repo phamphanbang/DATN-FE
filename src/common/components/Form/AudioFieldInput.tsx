@@ -2,9 +2,7 @@ import {
   Box,
   Button,
   FormControl,
-  FormHelperText,
-  FormLabel,
-  Image,
+  FormLabel
 } from "@chakra-ui/react";
 import { getAudio } from "utils";
 import { FileField } from "../FileField";

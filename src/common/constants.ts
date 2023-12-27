@@ -19,7 +19,8 @@ export const QueryKeys = {
   GET_ALL_COMMENT: 'getAllComment',
   USER_GET_ALL_BLOGS: 'userGetAllBlogs',
   USER_GET_BLOG: 'userGetBlog',
-  USER_GET_ALL_HISTORY: 'userGetAllHistory'
+  USER_GET_ALL_HISTORY: 'userGetAllHistory',
+  USER_GET_HOMEPAGE: 'userGetHomepage'
 }
 
 export const userRole: option[] = [

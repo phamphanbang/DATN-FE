@@ -1,9 +1,9 @@
 import { FormControl, FormHelperText, FormLabel } from "@chakra-ui/react";
-import { FieldErrors, UseFormRegister, Controller } from "react-hook-form";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { ValidationErrorMessage } from "models/appConfig";
 import { ErrorDisplay } from "../ErrorDisplay";
 import { ErrorMessage } from "@hookform/error-message";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { NumberField } from "../NumberField";
 import { FormParams } from "models/app";
 
@@ -40,7 +40,7 @@ export const NumberFieldInput = ({
   max,
   index,
   value,
-  isDisabled
+  isDisabled,
 }: ITextFieldInputProps) => {
   const [isValidationErrorDisplay, setIsValidationErrorDisplay] =
     useState<boolean>(true);
@@ -52,7 +52,6 @@ export const NumberFieldInput = ({
 
   const getValidationMessage = (key: string) => {
     if (typeof validationError == "string") return;
-    // console.log(validationError);
     const error = validationError.find((item) => item.type === key);
     if (error) return <ErrorDisplay message={error.message} />;
   };
@@ -80,7 +79,11 @@ export const NumberFieldInput = ({
           handleChangeValue(valueAsString, inputKey, inputIndex);
           setIsValidationErrorDisplay(false);
         }}
-        value={(value === "0" || value === "" || value === 0 || isNaN(value as number))  ? "" : value}
+        value={
+          value === "0" || value === "" || value === 0 || isNaN(value as number)
+            ? ""
+            : value
+        }
         isDisabled={isDisabled ? true : false}
         min={min ?? 0}
         max={max}

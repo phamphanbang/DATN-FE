@@ -141,7 +141,7 @@ const UserUpdateForm = ({
             <HStack>
               <Heading ml={1} w="550px">
                 <Text fontSize={18} fontWeight={400} mt={1.5}>
-                  Create New User
+                  Update User
                 </Text>
               </Heading>
             </HStack>

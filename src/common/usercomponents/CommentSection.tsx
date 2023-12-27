@@ -29,6 +29,7 @@ const initialFilter: TableFilterParams = {
 
 const CommentSection = ({ comment_id, comment_type }: ICommentSection) => {
   const userId = getItem(LocalStorageKeys.id);
+  const token = getItem(LocalStorageKeys.accessToken) ?? "";
   const [filter, setFilter] = useState<TableFilterParams>(initialFilter);
   const { data, isLoading } = useGetCommentList(
     filter,
@@ -79,7 +80,7 @@ const CommentSection = ({ comment_id, comment_type }: ICommentSection) => {
       borderRadius={"10px"}
       border={`1px solid #c7c7c7`}
     >
-      <Flex alignItems={"center"}>
+      {token ? (<Flex alignItems={"center"}>
         <TextAreaField
           size={"sm"}
           value={comment}
@@ -99,7 +100,30 @@ const CommentSection = ({ comment_id, comment_type }: ICommentSection) => {
         >
           Gửi
         </Button>
-      </Flex>
+      </Flex>) : (
+        <Text fontStyle={'italic'}>Bạn cần đăng nhập để có thể bình luận.</Text>
+      )}
+      {/* <Flex alignItems={"center"}>
+        <TextAreaField
+          size={"sm"}
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          padding={"6px 12px 6px 24px"}
+          overflow={"auto"}
+          minH={"50px"}
+          placeholder="Nhập bình luận của bạn tại đây"
+        />
+        <Button
+          _hover={{ background: "blue.800" }}
+          background="blue.600"
+          color="white"
+          maxH={"50px"}
+          onClick={() => onSubmit()}
+          isLoading={isCommentLoading}
+        >
+          Gửi
+        </Button>
+      </Flex> */}
       <VStack alignItems={"flex-start"} my={"20px"}>
         {comments.map((comment) => {
           return (

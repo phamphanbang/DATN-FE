@@ -61,9 +61,10 @@ const Login = () => {
         setItem(LocalStorageKeys.avatar, data.avatar);
         setItem(LocalStorageKeys.prevURL, "");
         setItem(LocalStorageKeys.id, data.id);
-        // window.location.href = redirectURL ?? "/";
-        queryClient.clear();
-        navigate(redirectURL ?? "/");
+        window.location.href = redirectURL ?? "/";
+        // navigate(0);
+        // navigate(redirectURL ?? "/");
+        // window.location.reload();
       }
     } catch (error) {
       const err = error as AxiosError;
@@ -98,7 +99,7 @@ const Login = () => {
         p={"24px"}
         backgroundColor={"white"}
         borderRadius={"10px"}
-        borderBottom={`1px solid ${theme.colors.borderColor}`}
+        border={`1px solid #c7c7c7`}
       >
         <p>
           Đăng nhập ngay để bắt đầu trải nghiệm học tiếng Anh và luyện thi

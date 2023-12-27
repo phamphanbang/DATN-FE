@@ -60,7 +60,11 @@ export const SideBarContent = () => {
       removeItem(LocalStorageKeys.accessToken);
       removeItem(LocalStorageKeys.name);
       removeItem(LocalStorageKeys.isAdmin);
+      removeItem(LocalStorageKeys.currentUser);
       removeItem(LocalStorageKeys.avatar);
+      removeItem(LocalStorageKeys.id);
+      removeItem(LocalStorageKeys.prevURL);
+      removeItem(LocalStorageKeys.userPrevUrl);
     }
     navigate(to);
   };

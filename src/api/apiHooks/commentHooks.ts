@@ -1,8 +1,7 @@
 import { QueryKeys } from "common/constants";
 import { TableFilterParams } from "models/app";
-import { ExamRequestResult, ICreateExamRequest } from "models/exam";
 import { useGetList, useCreate } from ".";
-import { IComment, ICommentRequest, ICommentResult } from "models/comment";
+import { ICommentRequest, ICommentResult } from "models/comment";
 
 
 export const useGetCommentList = (filter: TableFilterParams,id:string,type:string) => {

@@ -189,10 +189,10 @@ const GroupUpdateModal = ({
                 <FormControl key={"question"}>
                   <FormLabel fontSize={16} my={1} fontWeight="normal">
                     Question
-                    <FormHelperText my={1} style={{ color: "red" }} as="span">
+                    {/* <FormHelperText my={1} style={{ color: "red" }} as="span">
                       {" "}
                       *
-                    </FormHelperText>
+                    </FormHelperText> */}
                   </FormLabel>
                   <ErrorMessage
                     errors={errors}

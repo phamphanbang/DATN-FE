@@ -92,7 +92,6 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
 
   const {
     register,
-    unregister,
     handleSubmit,
     control,
     formState: { errors },
@@ -105,7 +104,6 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
     isLoading,
     error,
     data,
-
   } = useUpdateExam(examId, request as IUpdateExam);
 
   const handleChangeValue = (
@@ -113,11 +111,11 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
     variable: string
   ) => {
     const updatedFormParams = { ...formParams };
-    const input = ["name"];
-    if (input.includes(variable)) {
-      updatedFormParams[variable as keyof FormParams] = e.target.value;
-    }
-
+    // const input = ["name"];
+    // if (input.includes(variable)) {
+    //   updatedFormParams[variable as keyof FormParams] = e.target.value;
+    // }
+    updatedFormParams.name = e.target.value;
     setFormParams(updatedFormParams);
   };
 
@@ -178,7 +176,6 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
   const onSubmit = async () => {
     try {
       const url = await updateFileToS3();
-      console.log("url", url);
       setIsS3Upload(false);
       const updateExam: IUpdateExam = {
         name: formParams["name"] as string,
@@ -186,9 +183,7 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
         type: formParams["type"] as string,
         audio: url as string,
       };
-      console.log(updateExam);
       await setRequest(updateExam);
-      console.log(data);
       await mutate(updateExam);
     } catch (error) {
       setIsS3Upload(false);

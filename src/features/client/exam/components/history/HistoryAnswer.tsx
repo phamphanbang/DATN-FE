@@ -134,7 +134,6 @@ const HistoryAnswer = ({ history }: IHistoryAnswer) => {
   };
 
   const renderQuestionPart = (questions: ExamHistoryQuestion[]): ReactNode => {
-    console.log(questions);
     const halfwayPoint = Math.ceil(questions.length / 2);
     const right = questions.slice(0, halfwayPoint);
     const left = questions.slice(halfwayPoint);

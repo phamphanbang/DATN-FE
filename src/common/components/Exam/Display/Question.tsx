@@ -34,14 +34,14 @@ const Question = ({ question, examId, ...inputProps }: IQuestion) => {
       )}
       {question.audio && (
         <audio
-        controls
-        src={audio()}
-        preload="none"
-        style={{
-          width: "100%",
-          padding: "0px 14px",
-        }}
-      ></audio>
+          controls
+          src={audio()}
+          preload="none"
+          style={{
+            width: "100%",
+            padding: "0px 14px",
+          }}
+        ></audio>
       )}
       <Box>
         <b style={{ marginRight: "10px" }}>{question.order_in_test}.</b>

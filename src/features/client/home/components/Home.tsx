@@ -16,6 +16,10 @@ import { useGetHomepage } from "api/apiHooks/homeHooks";
 import ExamBox from "common/usercomponents/ExamBox";
 import { EmptyWrapper } from "common/components/EmptyWrapper";
 import BlogItem from "./BlogItem";
+import { TableFilterParams } from "models/app";
+import { getItem } from "utils";
+import { LocalStorageKeys } from "common/enums";
+import { useEffect, useState } from "react";
 
 const Home = () => {
   // const settingsCarousel = {
@@ -26,8 +30,15 @@ const Home = () => {
   //   slidesToScroll: 1,
   //   arrows: false,
   // };
-
-  const { data, isLoading } = useGetHomepage();
+  const userId: string | null = getItem(LocalStorageKeys.id);
+  const initialFilter: TableFilterParams = {
+    maxResultCount: 8,
+    skipCount: 0,
+    sorting: ["created_at", "desc"].join(" "),
+    user: userId ?? "",
+  };
+  const [filter, setFilter] = useState<TableFilterParams>(initialFilter);
+  const { data, isLoading } = useGetHomepage(filter);
   const { exams = [], blogs = [] } = data ?? {};
 
   return (
@@ -95,15 +106,13 @@ const Home = () => {
             >
               <SimpleGrid columns={[2, null, 4]} spacing="20px" p={"30px"}>
                 {blogs.map((item) => (
-                  <BlogItem blog={item}/>
+                  <BlogItem blog={item} />
                 ))}
               </SimpleGrid>
             </EmptyWrapper>
           )}
         </VStack>
       </Box>
-
-      
     </VStack>
   );
 };

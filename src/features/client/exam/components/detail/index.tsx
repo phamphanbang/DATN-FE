@@ -131,53 +131,6 @@ const ExamDetail = ({ examId }: IExamDetail) => {
               )}
             </Flex>
 
-            {/* <Tabs variant="soft-rounded" isLazy={true}>
-              <TabList>
-                <Tab _selected={{ color: "blue.600", bg: "#e8f2ff" }}>
-                  Thông tin đề thi
-                </Tab>
-                <Tab _selected={{ color: "blue.600", bg: "#e8f2ff" }}>
-                  Đáp án
-                </Tab>
-              </TabList>
-              <TabPanels>
-                <TabPanel className={styles.panel} px={"0px"} pb={"0px"}>
-                  <DetailPanel exam={exam as IUserExamDetail} />
-                </TabPanel>
-                <TabPanel className={styles.panel} px={"0px"} pb={"0px"}>
-                  <Box>
-                    <NavLink
-                      my={"10px"}
-                      pl={"0px"}
-                      to={"/exams/" + examId + "/solution"}
-                      text="Xem đáp án đề thi"
-                    />
-                    <Box my={"10px"}>Xem đáp án các phần thi</Box>
-                    <UnorderedList my={"10px"} pl={"20px"}>
-                      {exam?.parts.map((item) => {
-                        return (
-                          <ListItem>
-                            <Flex alignItems={"center"}>
-                              <Box>Part {item.order_in_test}</Box>
-                              <NavLink
-                                to={
-                                  "/exams/" +
-                                  examId +
-                                  "/part/" +
-                                  item.order_in_test +
-                                  "/solution"
-                                }
-                                text="Đáp án"
-                              />
-                            </Flex>
-                          </ListItem>
-                        );
-                      })}
-                    </UnorderedList>
-                  </Box>
-                </TabPanel>
-              </TabPanels>
-            </Tabs> */}
             {exam.type == "practice" ? practicePanel() : testPanel()}
           </Box>
         )}

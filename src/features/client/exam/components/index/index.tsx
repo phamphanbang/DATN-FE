@@ -30,7 +30,7 @@ const ExamIndexTable = () => {
   const initialFilter: TableFilterParams = {
     maxResultCount: 12,
     skipCount: 0,
-    sorting: ["id", "asc"].join(" "),
+    sorting: ["created_at", "desc"].join(" "),
     user: user_id
   };
   const [txtSearch, setTxtSearch] = useState<string>("");

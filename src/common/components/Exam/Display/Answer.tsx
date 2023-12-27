@@ -7,7 +7,10 @@ interface IAnswer extends BoxProps {
 
 const Answer = ({ answer, ...inputProps }: IAnswer) => {
   return (
-    <Box {...inputProps} backgroundColor={answer.is_right == true ? "#36b08f" : ""}>
+    <Box
+      {...inputProps}
+      backgroundColor={answer.is_right == true ? "#36b08f" : ""}
+    >
       {answer.answer}
     </Box>
   );
