@@ -2,23 +2,21 @@ import {
   Box,
   Button,
   Center,
-  Divider,
   Flex,
   FormControl,
   SimpleGrid,
   Spinner,
 } from "@chakra-ui/react";
-import { useGetExamList, useUserGetExamList } from "api/apiHooks/examHook";
+import { useUserGetExamList } from "api/apiHooks/examHook";
 import { Pagination } from "common/components/Pagination";
 import { SelectField } from "common/components/SelectField";
 import { TextField } from "common/components/TextField";
-import { noOfRows, userExamType } from "common/constants";
+import { userExamType } from "common/constants";
 import { option } from "common/types";
 import { useGetAllTemplateList } from "api/apiHooks/templateHook";
 import ExamBox from "common/usercomponents/ExamBox";
 import { TableFilterParams } from "models/app";
-import { useCallback, useEffect, useState } from "react";
-import theme from "themes/theme";
+import { useState } from "react";
 import { EmptyWrapper } from "common/components/EmptyWrapper";
 import { getItem } from "utils";
 import { LocalStorageKeys } from "common/enums";
@@ -92,6 +90,7 @@ const ExamIndexTable = () => {
       border={`1px solid #c7c7c7`}
       flexDirection={"column"}
       my={"30px"}
+      pb={'10px'}
     >
       {/* Header */}
       <Box p={"30px"} borderBottom={`1px solid #c7c7c7`}>

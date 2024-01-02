@@ -118,6 +118,7 @@ const GroupDetail = ({
                 onOpenQuestionUpdate={onOpenQuestionUpdate}
                 id={`question_${question.id}`}
                 examId={examId}
+                key={`question_${question.id}`}
               />
             );
           })}

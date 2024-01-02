@@ -10,11 +10,7 @@ import {
   FormLabel,
   Center,
   Spinner,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
+  Accordion
 } from "@chakra-ui/react";
 
 import { ChangeEvent, useEffect, useState } from "react";
@@ -25,7 +21,6 @@ import { ErrorResponse, ValidationErrorMessage } from "models/appConfig";
 import { AxiosError } from "axios";
 import { TextFieldInput } from "common/components/Form/TextFieldInput";
 import styles from "./style.module.scss";
-import { useNavigate } from "react-router-dom";
 import { FormParams } from "models/app";
 import { getItem, setItem } from "utils";
 import { ExamGroup, ExamQuestion, IUpdateExam } from "models/exam";
@@ -44,7 +39,6 @@ interface IExamUpdateForm {
 }
 
 const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
-  const navigate = useNavigate();
   const { data: exam, isLoading: isExamLoading } = useGetExamDetail(examId);
   const [validationError, setValidationError] = useState<
     ValidationErrorMessage[]
@@ -55,6 +49,7 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
     audio: "",
     type: "",
   });
+  const [examName, setExamName] = useState<string>("");
   const queryClient = useQueryClient();
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [isS3Upload, setIsS3Upload] = useState<boolean>(false);
@@ -110,13 +105,15 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
     e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>,
     variable: string
   ) => {
-    const updatedFormParams = { ...formParams };
+    // const updatedFormParams = { ...formParams };
     // const input = ["name"];
     // if (input.includes(variable)) {
     //   updatedFormParams[variable as keyof FormParams] = e.target.value;
     // }
-    updatedFormParams.name = e.target.value;
-    setFormParams(updatedFormParams);
+    // updatedFormParams.name = e.target.value;
+    console.log(e.target.value)
+    // setFormParams(updatedFormParams);
+    setExamName(e.target.value);
   };
 
   const handleSelectChangeValue = (value: string, variable: string) => {
@@ -178,7 +175,7 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
       const url = await updateFileToS3();
       setIsS3Upload(false);
       const updateExam: IUpdateExam = {
-        name: formParams["name"] as string,
+        name: examName as string,
         status: formParams["status"] as string,
         type: formParams["type"] as string,
         audio: url as string,
@@ -209,7 +206,7 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
 
   const partType = () => {
     return exam?.parts[tabIndex].part_type;
-  }
+  };
 
   return (
     <>
@@ -257,15 +254,6 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
               value={formParams["type"] as string}
             />
 
-            {/* <AudioFieldInput
-              inputKey="audio"
-              audioPrefix={"exams/" + examId}
-              title="Audio"
-              audio={formParams["audio"] as string}
-              deleteAudio={deleteAudio}
-              handleFileChangeValue={handleFileChangeValue}
-            /> */}
-
             <AudioFieldInputS3
               inputKey="audio"
               audioPrefix={"exams/" + examId}
@@ -307,14 +295,16 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
               w={"100%"}
             >
               <TabList>
-                {exam?.parts.map((item) => {
-                  return <Tab>Part {item.order_in_test}</Tab>;
+                {exam?.parts.map((item, index) => {
+                  return (
+                    <Tab key={"part_" + index}>Part {item.order_in_test}</Tab>
+                  );
                 })}
               </TabList>
               <TabPanels w={"100%"}>
-                {exam?.parts.map((item) => {
+                {exam?.parts.map((item, index) => {
                   return !("groups" in item) ? (
-                    <TabPanel w={"100%"}>
+                    <TabPanel w={"100%"} key={"tab_panel_" + index}>
                       <Accordion allowToggle>
                         {item.questions?.map((question) => {
                           return (
@@ -324,13 +314,14 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
                               id={`question_${question.id}`}
                               itemRef={`question_${question.id}`}
                               examId={examId}
+                              key={`question_${question.id}`}
                             />
                           );
                         })}
                       </Accordion>
                     </TabPanel>
                   ) : (
-                    <TabPanel>
+                    <TabPanel key={"tab_panel_" + index}>
                       {item.groups?.map((group) => {
                         return (
                           <GroupDetail
@@ -340,6 +331,7 @@ const ExamUpdateForm = ({ examId }: IExamUpdateForm) => {
                             group={group}
                             examId={examId}
                             partType={item.part_type}
+                            key={`group_${group.id}`}
                           />
                         );
                       })}
